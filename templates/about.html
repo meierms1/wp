@@ -135,16 +135,44 @@
                     <div class="card-body text-center text-md-left">
                         <div class="row align-items-center">
                             <div class="col-md-6">
-                                <h2 class="h1 mb-3">Become one of us</h2>
-                                <p class="lead mb-4">
-                                    Do you want to join our team and work remotely from anywhere you’d like? We can’t wait to hear from you!
-                                </p>
-                                <a href="#" class="btn btn-primary">
-                                    <span class="me-1">
-                                        <span class="fas fa-file-invoice"></span>
-                                    </span>
-                                    Back to top
-                                </a>
+                                <h2 class="h1 mb-3">Contact me</h2>
+                                <h3>meierms@icloud.com</h3>
+                                <!-- Contact Card -->
+                        <div class="card border-0 p-2 p-md-3 p-lg-5">
+                            
+                            <div class="card-body pt-0">
+                                <form onsubmit="sendEmail(); reset(); return false">
+                                    <!-- Form -->
+                                    <div class="mb-4">
+                                        <label for="name">Your Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-circle"></span></span>
+                                            <input type="text" class="form-control" placeholder="e.g. Bonnie Green" id="name" required>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="mb-4">
+                                        <label for="email">Your Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon4"><span class="fas fa-envelope"></span></span>
+                                            <input type="email" class="form-control" placeholder="example@company.com" id="email" required>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <div class="mb-4">
+                                        <label for="message">Your Message</label>
+                                        <textarea placeholder="Your message" class="form-control" id="message" rows="4" required></textarea>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-secondary">Send message</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- End of Contact Card -->
+                                
                             </div>
                             <div class="col-12 col-md-6 mt-5 mt-md-0 text-md-right">
                                 <img src="/static/assets/img/office.png" alt="">
@@ -152,7 +180,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><a href="#" class="btn btn-primary ">
+                <span class="me-1">
+                    <span class="fas fa-file-invoice"></span>
+                </span>
+                Back to top
+            </a>
         </div>
         </div>
     </section>
@@ -163,5 +196,14 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-
+function sendEmail(){Email.send(
+    {
+         Host: "",
+         username: ,
+         Password: ,
+         To:"meierms@icloud.com",
+         From: document.getElementById("email").value, 
+         Subject: "field", 
+         Body: document.getElementById("name").value +" -- DIV -- "+ document.getElementById("message").value
+        }).then(message=>alert(message));}
 {% endblock javascripts %}

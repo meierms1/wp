@@ -12,7 +12,7 @@ app=Flask(__name__)
 
 @app.route("/")
 def home():
-    return "hello"
+    return render_template("index.html")
 
 @app.route("/about/")
 def about():
@@ -22,13 +22,26 @@ def about():
 def resume():
     return render_template("resume.html")
 
-@app.route("/tools/")
-def tools():
-    return render_template("tools.html")
+@app.route("/finance")
+def finance():
+    return render_template("finance.html")
 
-@app.route("/Links/")
-def links():
-    return render_template("links.html")
+@app.route("/projects/")
+def projects():
+    return render_template("projects.html")
+
+@app.route("/unittool/")
+def unittool():
+    return render_template("unittool.html")
+
+@app.route("/index")
+def index():
+    return render_template("index.html")
+
+@app.route("/sign-in/")
+def signin():
+    return render_template("signin.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

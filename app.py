@@ -6,7 +6,7 @@ import math
 
 from apitk import IEX_CLOUD_API_TOKEN
 
-from flask import Flask, render_template, requests
+from flask import Flask, render_template, request
 
 app=Flask(__name__)
 

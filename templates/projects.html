@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %} Projects {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<main>
+    <section class="section-header bg-secondary text-white">
+        <div class="container">
+            <div class=" justify-content-between align-items-center">
+                <div class="col-auto text-center text-md-left">
+                    <h1>Rocket Propellant Burn Simulation</h1>
+                    <h3>Diffuse interface method for parallel computation and adaptive mesh refinement</h3>
+                    <div class="row mb-2">
+                        <div class="col-8 col-8 mb-5 mb-lg-0">
+                            <ul>
+                                <li>
+                                    <p>This work was implemented using C++ and is public avaliable at </p>
+                                </li>
+                                <li>
+                                    <p>The results have been publish in the RSC Advances journal and can be found here.
+                                    </p>
+                                </li>
+                            </ul>
+
+                            <p>
+
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <img src="/static/gcolors.gif">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <div class=" justify-content-between align-items-center">
+                <div class="col-auto text-center text-md-left">
+                    <h1>Warfare gas classification</h1>
+                    <h3>Machine Learning - Dimension Reduction</h3>
+                    <div class="row mb-2">
+                        <div class="col-8 col-8 mb-5 mb-lg-0">
+                            <ul>
+                                <li>
+                                    <p>This work was implemented using Python and is public avaliable at </p>
+                                </li>
+                                <li>
+                                    <p>The results have been publish in the RSC Advances journal and can be found here.
+                                    </p>
+                                </li>
+                            </ul>
+                            <p>Photonic crystals have demonstrated optical sensitivity that allows for accurate
+                                detection and identification of vapor.
+                                In brief, natural photonic crystals contain a polarity gradient within their periodic
+                                nanoarchitecture.
+                                Light moving through this nanoarchitecture is sensitive to changes in the refractive
+                                index of the system caused by the presence of a vapor.
+                                Thus, the light reflected from a natural photonic crystal changes as a function of vapor
+                                concentration, vapor refractive index,
+                                and polarity-based location of the vapor within the nanoarchitecture</p>
+                            <p>In this work, five different dimension reduction methods were applied to reflectance data
+                                renerated from exposing the wings of a Morpho Didius Buterfly
+                                to different Warfare gases.
+                                The orginal dataset is composed by 438 waivelength dimensions, and good classification
+                                results were found after reducing the dimensionaly to 2.
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/kittle.jpeg" width="500px" />
+                            <p><a href="https://doi.org/10.1021/acsomega.7b01680">[Source]</a></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/PCA7.png" />
+                            <p> Principal Component Analysis (PCA)</p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/SPCA7.png" />
+                            <p> Supervised PCA (SPCA) </p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/PLS7.png" />
+                            <p>Partial Least Square (PLS)</p>
+                            <div class="cmath"> `f(x) = (x+2)/(2x+1)` `x in RR,\ x !=-1/2`</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/LSR-PCA7.png" />
+                            <p>Least Square Regression PCA (LSR-PCA)</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/LDA7.png" />
+                            <p>Linear Discriminant Analysis (LDA)</p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/data2.png" />
+                            <p>K-nearest neighboor classification accuracy</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {%include "/footer.html"%}
+</main>
+{% endblock content %}

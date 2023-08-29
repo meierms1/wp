@@ -20,17 +20,17 @@ def about():
 
 @app.route("/resume/")
 def resume():
-    return render_template("resume.html")
+    return render_template("resume2.html")
 
-@app.route("/finance")
+@app.route("/finance/")
 def finance():
     return render_template("finance.html")
 
-@app.route("/projects")
+@app.route("/projects/")
 def projects():
     return render_template("projects.html")
 
-@app.route("/unittool")
+@app.route("/unittool/")
 def unittool():
     return render_template("unittool.html")
 

@@ -6,9 +6,17 @@ import math
 
 from apitk import IEX_CLOUD_API_TOKEN
 
-from flask import Flask, render_template
+from flask import Flask, render_template, requests
 
 app=Flask(__name__)
+
+def user_on_mobile() -> bool:
+    user_agent = request.headers.get("User-Agent")
+    user_agent = user_agent.lower()
+    mobile = ["android", "iphone"]
+    if any(x in user_agent for x in mobile):
+        return True
+    return False
 
 @app.route("/")
 def home():
@@ -20,7 +28,8 @@ def about():
 
 @app.route("/resume/")
 def resume():
-    return render_template("resume2.html")
+    if (user_on_mobile()): return render_template("resume2.html")
+    return render_template("resume.html")
 
 @app.route("/finance/")
 def finance():
@@ -44,4 +53,4 @@ def signin():
 
 
 if __name__ == "__main__":
-    app.run(debug=True) #debug=False, host="0.0.0.0", port = 5000)
+    app.run(debug=False, host="0.0.0.0", port = 5000)

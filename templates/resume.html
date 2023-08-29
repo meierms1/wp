@@ -1,15 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %} About {% endblock %} 
+{% block title %} About {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 {% endblock stylesheets %}
 
 {% block content %}
-
-     <!-- Section -->
-     <div class="section section-md">
+<main>
+    <!-- Section -->
+    <div class="section-header bg-primary text-white">
+        <div class="container">
+            <div class="row justify-content-center mb-5 mb-lg-6">
+                <div class="col-6 col-md-3 text-center">
+                    <div class="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
+                        <a href="https://www.linkedin.com/in/maycon-meier/"><span
+                                class="fab fa-linkedin text-tertiary"></span></a>
+                    </div>
+                    <h3 class="fw-bolder">Linked-in</h3>
+                </div>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
+                        <a href="https://drive.google.com/file/d/1AutjpB4esuJ_1da8uyvPp6adHNqR0Hw7/view?usp=sharing"
+                            target="_blank"><span class="fa fa-file text-tertiary"></span></a>
+                    </div>
+                    <h3 class="fw-bolder">Download PDF Version</h3>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-10 col-lg-12">
@@ -18,7 +36,8 @@
                         <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-text" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-text-1-tab" data-bs-toggle="tab"
-                                    href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" aria-selected="true">Work Experience</a>
+                                    href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" aria-selected="true">Work
+                                    Experience</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link mb-sm-3 mb-md-0" id="tabs-text-2-tab" data-bs-toggle="tab"
@@ -44,178 +63,270 @@
                     </div>
                     <!-- End of Tab Nav -->
                     <!-- Tab Content -->
-                    <div class="card border-0 ">
-                        <div class="card-body p-0 ">
+                    <div class="card border-2 ">
+                        <div class="card-body p-3 ">
                             <div class="tab-content" id="tabcontent1">
-                                <div class="tab-pane fade show active " id="tabs-text-1" role="tabpanel"
+                                <div class="tab-pane fade show active text-black" id="tabs-text-1" role="tabpanel"
                                     aria-labelledby="tabs-text-1-tab">
                                     <li>Graduate Research Assistant
-                                        <p><a href="https://www.uccs.edu">University of Colorado</p>
+                                        <p><a href="https://www.uccs.edu" target="_blank">University of Colorado</p>
                                         <p>Preiod: March, 2020 - Present</p>
                                     </li>
                                     <li>Financial Advisor
-                                        <p><a href="https://www.xpi.com.br/">XP Inc.</a></p>
+                                        <p><a href="https://www.xpi.com.br/" target="_blank">XP Inc.</a></p>
                                         <p>Preiod: June, 2019 - May, 2019</p>
                                     </li>
                                     <li>Supervisor (Trainee)
-                                        <p><a href="https://www.brf-global.com/en/">brf - Brasil Foods</a></p>
+                                        <p><a href="https://www.brf-global.com/en/" target="_blank">brf - Brasil
+                                                Foods</a></p>
                                         <p>Preiod: January, 2017 - January, 2018</p>
 
                                     </li>
                                     <li>
-                                        Mechanical Engineering intern 
-                                        <p><a href="https://www.houseindustriesinc.com/">ECS House Industries</a></p>
+                                        Mechanical Engineering intern
+                                        <p><a href="https://www.houseindustriesinc.com/" target="_blank">ECS House
+                                                Industries</a></p>
                                         <p>Preiod: June, 2015 - August, 2015 </p>
                                     </li>
-                                    
+
                                 </div>
-                                <div class="tab-pane fade " id="tabs-text-2" role="tabpanel"
+                                <div class="tab-pane fade text-black" id="tabs-text-2" role="tabpanel"
                                     aria-labelledby="tabs-text-2-tab">
-                                    <li> Programming: <button class="btn btn-sm btn-outline-info" type="button">Python</button>, <button class="btn btn-sm btn-outline-info" type="button">C++</button>, <button class="btn btn-sm btn-outline-info" type="button">Java</button>, <button class="btn btn-sm btn-outline-info" type="button">HTML</button>, <button class="btn btn-sm btn-outline-info" type="button">CSS</button>, <button class="btn btn-sm btn-outline-info" type="button">GIT</button>, <button class="btn btn-sm btn-outline-info" type="button">SQL</button>, <button class="btn btn-sm btn-outline-info" type="button">LateX</button></li>
-                                    <li> Frameworks: <button class="btn btn-sm btn-outline-info" type="button">Flask</button>, <button class="btn btn-sm btn-outline-info" type="button">.NET</button></li>
-                                    <li> Tools: <button class="btn btn-sm btn-outline-info" type="button">Github</button>, <button class="btn btn-sm btn-outline-info" type="button">AWS</button>, <button class="btn btn-sm btn-outline-info" type="button">Inkscape</button></li>
-                                    <li> Engineering: <button class="btn btn-sm btn-outline-info" type="button">SolidWorks</button>, <button class="btn btn-sm btn-outline-info" type="button">Comsol</button>, <button class="btn btn-sm btn-outline-info" type="button">MS Excel</button>, <button class="btn btn-sm btn-outline-info" type="button">ISO 9000</button>    </li>                                
-                                    <li> Languages: , <button class="btn btn-sm btn-outline-info" type="button">English</button>, <button class="btn btn-sm btn-outline-info" type="button">Portuguese</button>, <button class="btn btn-sm btn-outline-info" type="button">Spanish</button></li>
-                                    <li> Soft Skills: <button class="btn btn-sm btn-outline-info" type="button">Team Management and Team work</button>, <button class="btn btn-sm btn-outline-info" type="button">Accountability</button>, <button class="btn btn-sm btn-outline-info" type="button">Empathy</button>, <button class="btn btn-sm btn-outline-info" type="button">Problem Solving</button>,  <button class="btn btn-sm btn-outline-info" type="button">Interpersonal Communication</button>,  <button class="btn btn-sm btn-outline-info" type="button">Work Ethics</button></li>  
+                                    <li> Programming: <button class="btn btn-sm btn-outline-info"
+                                            type="button">Python</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">C++</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">Java</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">HTML</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">CSS</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">GIT</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">SQL</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">LateX</button></li>
+                                    <li> Frameworks: <button class="btn btn-sm btn-outline-info"
+                                            type="button">Flask</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">.NET</button></li>
+                                    <li> Tools: <button class="btn btn-sm btn-outline-info"
+                                            type="button">Github</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">AWS</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">Inkscape</button></li>
+                                    <li> Engineering: <button class="btn btn-sm btn-outline-info"
+                                            type="button">SolidWorks</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">Comsol</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">MS Excel</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">ISO 9000</button> </li>
+                                    <li> Languages: , <button class="btn btn-sm btn-outline-info"
+                                            type="button">English</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">Portuguese</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">Spanish</button></li>
+                                    <li> Soft Skills: <button class="btn btn-sm btn-outline-info" type="button">Team
+                                            Management and Team work</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">Accountability</button>,
+                                        <button class="btn btn-sm btn-outline-info" type="button">Empathy</button>,
+                                        <button class="btn btn-sm btn-outline-info" type="button">Problem
+                                            Solving</button>, <button class="btn btn-sm btn-outline-info"
+                                            type="button">Interpersonal Communication</button>, <button
+                                            class="btn btn-sm btn-outline-info" type="button">Work Ethics</button>
+                                    </li>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-text-3" role="tabpanel"
+                                <div class="tab-pane fade text-black" id="tabs-text-3" role="tabpanel"
                                     aria-labelledby="tabs-text-3-tab">
                                     <li>
-                                    <span class="fw-bold">PhD in Mechanical and Aerospace Engineering</span>
-                                    <p><a href="https://www.uccs.edu">University of Colorado</a></p>
-                                    <p>Period: 2020 - Current</p>
-                                    <p>Emphasis in Computational Solid Mechanics.</p>
+                                        <span class="fw-bold">PhD in Mechanical and Aerospace Engineering</span>
+                                        <p><a href="https://www.uccs.edu" target="_blank">University of Colorado</a></p>
+                                        <p>Period: 2020 - Current</p>
+                                        <p>Emphasis in Computational Solid Mechanics.</p>
                                     </li>
                                     <li>
                                         <span class="fw-bold">MSc in Industrial Mechanical Engineering</span>
-                                        <p><a href="https://portal3.ipb.pt/index.php/en/">Polytechnic Institute of Braganca</a></p>
+                                        <p><a href="https://portal3.ipb.pt/index.php/en/" target="_blank">Polytechnic
+                                                Institute of Braganca</a></p>
                                         <p>Period: 2018 - 2019</p>
                                         <p>Emphasis in numerical problems and data science.</p>
                                     </li>
                                     <li>
                                         <span class="fw-bold">BSc in Mechanical Engineering</span>
-                                        <p><a href="http://www.utfpr.edu.br/">Federal University of Tecnology - Parana</a></p>
+                                        <p><a href="http://www.utfpr.edu.br/" target="_blank">Federal University of
+                                                Tecnology - Parana</a></p>
                                         <p>Period: 2012 - 2017</p>
-                                        
+
                                     </li>
                                     <li>
                                         <span class="fw-bold">Tecnical degree in Business</span>
-                                        <p><a href="http://www.fnbmarioandrade.seed.pr.gov.br/modules/noticias/">Colegio Estadual Mario de Andrade</a></p>
+                                        <p><a href="http://www.fnbmarioandrade.seed.pr.gov.br/modules/noticias/"
+                                                target="_blank">Colegio Estadual Mario de Andrade</a></p>
                                         <p>Period: 2008 - 2011</p>
-                                        
+
                                     </li>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-text-4" role="tabpanel"
+                                <div class="tab-pane fade text-black" id="tabs-text-4" role="tabpanel"
                                     aria-labelledby="tabs-text-4-tab">
-                                    
-                                    <li><a href="https://www.rotary.org/en">Rotary Club - District 4640 </a>
-                                        <p>Rotary is an organization of business and professional people united worldwide who provide humani-
-                                            tarian service, encourage high ethical standards in all vocations, and help build goodwill and peace in
+
+                                    <li><a href="https://www.rotary.org/en" target="_blank">Rotary Club - District 4640
+                                        </a>
+                                        <p>Rotary is an organization of business and professional people united
+                                            worldwide who provide humani-
+                                            tarian service, encourage high ethical standards in all vocations, and help
+                                            build goodwill and peace in
                                             the world.</p>
                                     </li>
-                                    <li><a href="https://michaelshof-sammatz.de/blog/en/volunteer/volunteering-in-germany/">Volunteer in Sammatz - Germany</a>
-                                        <p>Sammatz is a small community focused on community growth with sustainability.</p>
+                                    <li><a href="https://michaelshof-sammatz.de/blog/en/volunteer/volunteering-in-germany/"
+                                            target="_blank">Volunteer in Sammatz - Germany</a>
+                                        <p>Sammatz is a small community focused on community growth with sustainability.
+                                        </p>
                                     </li>
-                                    <li><a href="https://mlc.uccs.edu/organization/ostemuccs">Member of oSTEM, UCCS</a>
-                                        <p>oSTem looks to promote diversity, social activities and to provide resources for the lgbt+ STEM com-
+                                    <li><a href="https://mlc.uccs.edu/organization/ostemuccs" target="_blank">Member of
+                                            oSTEM, UCCS</a>
+                                        <p>oSTem looks to promote diversity, social activities and to provide resources
+                                            for the lgbt+ STEM com-
                                             munity</p>
                                     </li>
-                                    <li><a href="https://www.instagram.com/atleticapatobranco/">Director of the Academic Athletic Association for Engineers</a>
-                                        <p>The Athletic Association is responsible for organizing all the athletic activities on campus and to rep-
+                                    <li><a href="https://www.instagram.com/atleticapatobranco/" target="_blank">Director
+                                            of the Academic Athletic Association for Engineers</a>
+                                        <p>The Athletic Association is responsible for organizing all the athletic
+                                            activities on campus and to rep-
                                             resent the university in the state competitions.</p>
                                     </li>
-                                    <li><a href="https://www.pb.utfpr.edu.br/utech/">UTech Performance research group</a>
-                                        <p>UTech is an automotive project focused on converting a passenger car into a racing car while observing
+                                    <li><a href="https://www.pb.utfpr.edu.br/utech/" target="_blank">UTech Performance
+                                            research group</a>
+                                        <p>UTech is an automotive project focused on converting a passenger car into a
+                                            racing car while observing
                                             efficiency, safety, and performance parameters</p>
                                     </li>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-text-5" role="tabpanel"
+                                <div class="tab-pane fade text-black" id="tabs-text-5" role="tabpanel"
                                     aria-labelledby="tabs-text-5-tab">
-                                    <li>Meier, M.; Schmidt, E.; Quinlan, J.; Runnels, B: Diffuse interface method for solid composite
-                                        propellant ignition and regression. Submitted (2023). <a href="https://engrxiv.org/preprint/view/3085"> [link] </a></li>
-                                    <li>Meier, M; Kittle, J. D.; Yee, X. C.: Supervised Dimension Reduction for Optical Vapor Sens-
-                                        ing. RSC advances 12.16 (2022): 9579-9586. <a href="https://pubs.rsc.org/en/content/articlehtml/2022/ra/d1ra08774f"> [link] </a></li>
-                                    <li>Saggin, R. F., Prado, N. V. D., Meier, M., Balbinot-Alfaro, E., & da Trindade Alfaro, A. (2022).
-                                         Air chilling of Turkey carcasses: process efficiency and impact in the meat quality traits. 
-                                         Journal of Food Science and Technology, 59(9), 3683-3692. <a href="https://link.springer.com/article/10.1007/s13197-022-05391-7"> [link] </a></li>
-                                    <li>Meier, M.; Balsa, C.; Veiga, C. R.: Reconstitution of weather time series with an analog
-                                        ensemble model. Master’s Degree Thesis. Polytechnic Institute of Braganca (2019).<a href="https://bibliotecadigital.ipb.pt/handle/10198/19762"> [link] </a></li>
-                                    <li>Meier, M.; Lafay, J. S. : Structured energy management methodology applied to the poultry
-                                        industry. Bachelor’s Degree Thesis. Parana Federal University of Technology. ROCA DAMEC. Pato
-                                        Branco, Paran ́a, (2017). <a href="https://repositorio.utfpr.edu.br/jspui/handle/1/15231"> [link] </a></li>
-                                    <li>Goffi, A. S. ; Meier, M. ; Lafay, J. S. . Brazilian poultry industry: challanges to the implemen-
-                                        tation of energy efficiency policies. in: (conbrepro 2016), 2016. v. vi <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=DsWpAHMAAAAJ&authuser=1&citation_for_view=DsWpAHMAAAAJ:9yKSN-GCB0IC"> [link] </a></li>
+                                    <li>Meier, M.; Schmidt, E.; Quinlan, J.; Runnels, B: Diffuse interface method for
+                                        solid composite
+                                        propellant ignition and regression. Submitted (2023). <a
+                                            href="https://engrxiv.org/preprint/view/3085" target="_blank"> [link] </a>
+                                    </li>
+                                    <li>Meier, M; Kittle, J. D.; Yee, X. C.: Supervised Dimension Reduction for Optical
+                                        Vapor Sens-
+                                        ing. RSC advances 12.16 (2022): 9579-9586. <a
+                                            href="https://pubs.rsc.org/en/content/articlehtml/2022/ra/d1ra08774f"
+                                            target="_blank"> [link] </a></li>
+                                    <li>Saggin, R. F., Prado, N. V. D., Meier, M., Balbinot-Alfaro, E., & da Trindade
+                                        Alfaro, A. (2022).
+                                        Air chilling of Turkey carcasses: process efficiency and impact in the meat
+                                        quality traits.
+                                        Journal of Food Science and Technology, 59(9), 3683-3692. <a
+                                            href="https://link.springer.com/article/10.1007/s13197-022-05391-7"
+                                            target="_blank"> [link] </a></li>
+                                    <li>Meier, M.; Balsa, C.; Veiga, C. R.: Reconstitution of weather time series with
+                                        an analog
+                                        ensemble model. Master’s Degree Thesis. Polytechnic Institute of Braganca
+                                        (2019).<a href="https://bibliotecadigital.ipb.pt/handle/10198/19762"
+                                            target="_blank"> [link] </a></li>
+                                    <li>Meier, M.; Lafay, J. S. : Structured energy management methodology applied to
+                                        the poultry
+                                        industry. Bachelor’s Degree Thesis. Parana Federal University of Technology.
+                                        ROCA DAMEC. Pato
+                                        Branco, Paran ́a, (2017). <a
+                                            href="https://repositorio.utfpr.edu.br/jspui/handle/1/15231"
+                                            target="_blank"> [link] </a></li>
+                                    <li>Goffi, A. S. ; Meier, M. ; Lafay, J. S. . Brazilian poultry industry: challanges
+                                        to the implemen-
+                                        tation of energy efficiency policies. in: (conbrepro 2016), 2016. v. vi <a
+                                            href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=DsWpAHMAAAAJ&authuser=1&citation_for_view=DsWpAHMAAAAJ:9yKSN-GCB0IC"
+                                            target="_blank"> [link] </a></li>
                                 </div>
-   
+
                             </div>
                         </div>
                     </div>
                     <!-- End of Tab Content -->
+                </div>
+            </div>
+        </div>
 
-    <main>
-        
+
         <!-- Section -->
         <section class="section section-lg bg-gray-200">
-         <figure class="position-absolute top-0 left-0 w-100 d-none d-md-block mt-n3">
-             <png class="fill-gray-200" version="1.1" xmlns="/static/assets/img/office.png"  x="0px" y="0px" viewBox="0 0 1920 43.4" style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
-                <path d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z"></path>
-             </png>
-          </figure>
-         <div class="container">
-             <div class="row text-center">
-                 <div class="col">
-                     <h2 class="h1 fw-light"><span class="fw-bold">Our</span> history</h2>
-                 </div>
-             </div>
-             <div class="row justify-content-center mt-6">
-                 <div class="row justify-content-center">
-                     <div class="col-md-12 col-lg-8">
-                         <div class="timeline timeline-one dark px-3 px-sm-0">
-                             <!-- Timeline Item 1 -->
-                             <div class="timeline-item">
-                                 <h3 class="h4 mb-4">Present</h3>
-                                 <p>Now over seven years old, Bootstrap is an established and widely-used HTML, CSS, and JavaScript framework. It can be used as a basis for creating responsive web and mobile sites and web applications.</p>
-                             </div>
-                             <!-- Timeline Item 2 -->
-                             <div class="timeline-item">
-                                 <h3 class="h4 mb-4">Our first products</h3>
-                                 <div class="my-3">
-                                     <span class="icon icon-sm icon-purple me-2"><span class="fab fa-bootstrap"></span></span>
-                                     <span class="icon icon-sm icon-info me-2"><span class="fab fa-react"></span></span>
-                                     <span class="icon icon-sm icon-success me-2"><span class="fab fa-vuejs"></span></span>
-                                     <span class="icon icon-sm icon-danger"><span class="fab fa-angular"></span></span>
-                                 </div>
-                                 <p>Bootstrap. Build responsive, mobile-first projects on the web with the world's most popular front-end component library. Bootstrap is an open source toolkit for developing with HTML, CSS, and JS. Quickly prototype your
-                                     ideas.
-                                 </p>
-                             </div>
-                             <!-- Timeline Item 3 -->
-                             <div class="timeline-item">
-                                 <h3 class="h4 mb-4">Our office</h3>
-                                 <img class="mt-2" src="/static/assets/img/office.png" alt="Themesberg workspace" width="300">
-                                 <p>AngularJS is a JavaScript-based open-source front-end web application framework mainly maintained by Google and by a community of individuals and corporations to address many of the challenges encountered in developing
-                                     single-page applications.
-                                 </p>
-                             </div>
-                             <!-- Timeline Item 4 -->
-                             <div class="timeline-item">
-                                 <h3 class="h4 mb-4">An ideea becomes a business</h3>
-                                 <p>AngularJS is a JavaScript-based open-source front-end web application framework mainly maintained by Google and by a community of individuals and corporations to address many of the challenges encountered in developing
-                                     single-page applications.
-                                 </p>
-                                 <img class="mt-2" src="/static/assets/img/office.png" alt="signature" width="100">
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-         </div>
-         <figure class="position-absolute bottom-0 left-0 w-100 d-none d-md-block mb-n2">
-             <png class="fill-white" version="1.1" xmlns="/static/assets/img/office.png" x="0px" y="0px" viewBox="0 0 1920 43.4" style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
-                <path d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z"></path>
-             </png>
-          </figure>
-     </section>
+            <div class="container text-black">
+                <figure class="position-absolute top-0 left-0 w-100 d-none d-md-block mt-n3">
+                    <png class="fill-gray-200" version="1.1" xmlns="/static/assets/img/office.png" x="0px" y="0px"
+                        viewBox="0 0 1920 43.4" style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
+                        <path
+                            d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z">
+                        </path>
+                    </png>
+                </figure>
+                <div class="container">
+                    <div class="row text-center">
+                        <div class="col">
+                            <h2 class="h1 fw-light"><span class="fw-bold">Timeline</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mt-6">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 col-lg-8">
+                                <div class="timeline timeline-one dark px-3 px-sm-0">
+                                    <!-- Timeline Item 1 -->
+                                    <div class="timeline-item">
+                                        <h3 class="h4 mb-4">Present</h3>
+                                        <p>Now over seven years old, Bootstrap is an established and
+                                            widely-used HTML, CSS, and JavaScript framework. It can be used
+                                            as a basis for creating responsive web and mobile sites and web
+                                            applications.</p>
+                                    </div>
+                                    <!-- Timeline Item 2 -->
+                                    <div class="timeline-item">
+                                        <h3 class="h4 mb-4">Our first products</h3>
+                                        <div class="my-3">
+                                            <span class="icon icon-sm icon-purple me-2"><span
+                                                    class="fab fa-bootstrap"></span></span>
+                                            <span class="icon icon-sm icon-info me-2"><span
+                                                    class="fab fa-react"></span></span>
+                                            <span class="icon icon-sm icon-success me-2"><span
+                                                    class="fab fa-vuejs"></span></span>
+                                            <span class="icon icon-sm icon-danger"><span
+                                                    class="fab fa-angular"></span></span>
+                                        </div>
+                                        <p>Bootstrap. Build responsive, mobile-first projects on the web
+                                            with the world's most popular front-end component library.
+                                            Bootstrap is an open source toolkit for developing with HTML,
+                                            CSS, and JS. Quickly prototype your
+                                            ideas.
+                                        </p>
+                                    </div>
+                                    <!-- Timeline Item 3 -->
+                                    <div class="timeline-item">
+                                        <h3 class="h4 mb-4">Our office</h3>
+                                        <img class="mt-2" src="/static/assets/img/office.png" alt="Themesberg workspace"
+                                            width="300">
+                                        <p>AngularJS is a JavaScript-based open-source front-end web
+                                            application framework mainly maintained by Google and by a
+                                            community of individuals and corporations to address many of the
+                                            challenges encountered in developing
+                                            single-page applications.
+                                        </p>
+                                    </div>
+                                    <!-- Timeline Item 4 -->
+                                    <div class="timeline-item">
+                                        <h3 class="h4 mb-4">An ideea becomes a business</h3>
+                                        <p>AngularJS is a JavaScript-based open-source front-end web
+                                            application framework mainly maintained by Google and by a
+                                            community of individuals and corporations to address many of the
+                                            challenges encountered in developing
+                                            single-page applications.
+                                        </p>
+                                        <img class="mt-2" src="/static/assets/img/office.png" alt="signature"
+                                            width="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <figure class="position-absolute bottom-0 left-0 w-100 d-none d-md-block mb-n2">
+                    <png class="fill-white" version="1.1" xmlns="/static/assets/img/office.png" x="0px" y="0px"
+                        viewBox="0 0 1920 43.4" style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
+                        <path
+                            d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z">
+                        </path>
+                    </png>
+                </figure>
+            </div>
+        </section>
         {% include '/footer.html' %}
-    </main>
+</main>
 {% endblock content %}

@@ -50,6 +50,8 @@ d.addEventListener("DOMContentLoaded", function(event) {
         headroom.init();
     }
 
+    
+
     // dropdowns to show on hover when desktop
     if (d.body.clientWidth > breakpoints.lg) {
         var dropdownElementList = [].slice.call(document.querySelectorAll('.navbar .dropdown-toggle'))

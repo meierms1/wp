@@ -85,7 +85,7 @@ def about():
 
 @app.route("/resume/")
 def resume():
-    if (user_on_mobile()): return render_template("resume2.html")
+    if (user_on_mobile()): return render_template("resume-mobile.html")
     return render_template("resume.html")
 
 @app.route("/finance/")
@@ -95,6 +95,7 @@ def finance():
 
 @app.route("/projects/")
 def projects():
+    if (user_on_mobile()): return render_template("projects-mobile.html")
     return render_template("projects.html")
 
 @app.route("/unittool/")

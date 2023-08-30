@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %} Projects {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<main>
+    <section class="section-header bg-secondary text-white">
+        <div class="container">
+            <div class=" justify-content-between align-items-center">
+                <div class="col-auto text-center text-md-left">
+                    <h1>Rocket Propellant Burn Simulation</h1>
+                    <h3>Diffuse interface method for parallel computation and adaptive mesh refinement</h3>
+                    <div class="row mb-2">
+                        <div class="col-12 col-8 mb-5 mb-lg-0">
+                            <ul>
+                                <li>
+                                    <p>This work was implemented using C++ and is public avaliable at <button class="btn-sm btn-black" type="button">
+                                        <a href="https://github.com/solidsgroup/alamo.git" target="_blank"><span class="me-1"><span class="fab fa-github-alt"></span></span>
+                                        GitHub</a>
+                                    </button>, flame branch.</p>
+                                </li>
+                                <li>
+                                    <p>The results have been publish in the RSC Advances journal and can be found <button class="btn-sm btn-black" type="button">
+                                        <a href="https://doi.org/10.31224/3085" target="_blank"><span class="me-1"><span class="fa fa-file"></span></span>
+                                        here</a>
+                                    </button>.</p>
+                                    </p>
+                                </li>
+                            </ul>
+
+                            <p>Solid Composite Propellants (SCPs) are extensively used in the field of propulsion for their
+                                chemical and mechanical stability in long-term storage, and for having simple production and
+                                operation processes. Computational modeling enables cost reduction, increased efficiency, and
+                                greater coverage of the configuration space in the SCP design process. 
+                            </p>
+                            <p>This work presents a phase-field model for the regression of the burn interface during ignition and deflagration of
+                                an SCP with arbitrary morphology. It is an extention to Alamo open-source software, which is built with focus on parallel
+                            processing, and utilizes <a href="https://amrex-codes.github.io/amrex/" target="_blank">AMReX</a> Framework for adaptive refinement.
+                        </p>
+                        <p>
+                            This work is sponsored by the Department of Defense - Office of Naval Reseach grant #N00014-21-1-2113.
+                        </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mb-5 mb-lg-0">
+                        <video autoplay="true" loop src="/static/gcolors3.webm" type="video/mp4"></video>
+                        <p>Mesoscale 3D simulations of composite solid propellant regression.</p>
+                    </div>
+                    <div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <div class=" justify-content-between align-items-center">
+                <div class="col-auto text-center text-md-left">
+                    <h1>Warfare gas classification</h1>
+                    <h3>Machine Learning - Dimension Reduction</h3>
+                    <div class="row mb-2">
+                        <div class="col-auto mb-5 mb-lg-0">
+                            <ul>
+                                <li>
+                                    <p>This work was implemented using Python and is public avaliable at  <button class="btn-sm btn-black" type="button">
+                                        <a  href="https://github.com/meierms1/Supervised-Dimension-Reduction-For-Optical-Vapor-Sensing.git" target="_blank"><span class="me-1"><span class="fab fa-github-alt"></span></span>
+                                        GitHub</a>
+                                    </button></p>
+                                </li>
+                                <li>
+                                    <p>The results have been publish in the RSC Advances journal and can be found <button class="btn-sm btn-black" type="button">
+                                        <a href="https://doi.org/10.1039/D1RA08774F" target="_blank"><span class="me-1"><span class="fa fa-file"></span></span>
+                                        here</a>
+                                    </button>.</p>
+                                    </p>
+                                </li>
+                            </ul>
+                            <p>Photonic crystals have demonstrated optical sensitivity that allows for accurate
+                                detection and identification of vapor.
+                                In brief, natural photonic crystals contain a polarity gradient within their periodic
+                                nanoarchitecture.
+                                Light moving through this nanoarchitecture is sensitive to changes in the refractive
+                                index of the system caused by the presence of a vapor.
+                                Thus, the light reflected from a natural photonic crystal changes as a function of vapor
+                                concentration, vapor refractive index,
+                                and polarity-based location of the vapor within the nanoarchitecture</p>
+                            <p>In this work, five different dimension reduction methods were applied to reflectance data
+                                renerated from exposing the wings of a Morpho Didius Buterfly
+                                to different Warfare gases.
+                                The orginal dataset is composed by 438 waivelength dimensions, and good classification
+                                results were found after reducing the dimensionaly to 2.
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/kittle.jpeg" width="500px" />
+                            <p><a href="https://doi.org/10.1021/acsomega.7b01680" target="_blank">[Source]</a></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/PCA7.webp" />
+                            <p> Principal Component Analysis (PCA)</p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/SPCA7.webp" />
+                            <p> Supervised PCA (SPCA) </p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/PLS7.webp" />
+                            <p>Partial Least Square (PLS)</p>
+                        
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/LSR-PCA7.webp" />
+                            <p>Least Square Regression PCA (LSR-PCA)</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/LDA7.webp" />
+                            <p>Linear Discriminant Analysis (LDA)</p>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0">
+                            <img src="/static/data2.webp" />
+                            <p>K-nearest neighboor classification accuracy</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {%include "/footer.html"%}
+</main>
+{% endblock content %}

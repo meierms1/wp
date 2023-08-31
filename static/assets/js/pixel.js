@@ -17,7 +17,7 @@
 
 "use strict";
 const d = document;
-d.addEventListener("DOMContentLoaded", function(event) {
+d.addEventListener("DOMContentLoaded", function (event) {
 
     // options
     const breakpoints = {
@@ -26,15 +26,15 @@ d.addEventListener("DOMContentLoaded", function(event) {
         lg: 960,
         xl: 1140
     };
-    
+
     var preloader = d.querySelector('.preloader');
-    if(preloader) {
+    if (preloader) {
 
         const animations = ['oneByOne', 'delayed', 'sync', 'scenario'];
 
-        new Vivus('loader-logo', {duration: 80, type: 'oneByOne'}, function () {});
+        new Vivus('loader-logo', { duration: 80, type: 'oneByOne' }, function () { });
 
-        setTimeout(function() {
+        setTimeout(function () {
             preloader.classList.add('show');
         }, 1500);
     }
@@ -50,7 +50,7 @@ d.addEventListener("DOMContentLoaded", function(event) {
         headroom.init();
     }
 
-    
+
 
     // dropdowns to show on hover when desktop
     if (d.body.clientWidth > breakpoints.lg) {
@@ -73,32 +73,32 @@ d.addEventListener("DOMContentLoaded", function(event) {
             dropdownMenu.addEventListener('mouseout', function () {
                 dropdown.hide();
             });
-            
+
         });
     }
 
-    [].slice.call(d.querySelectorAll('[data-background]')).map(function(el) {
+    [].slice.call(d.querySelectorAll('[data-background]')).map(function (el) {
         el.style.background = 'url(' + el.getAttribute('data-background') + ')';
     });
 
-    [].slice.call(d.querySelectorAll('[data-background-color]')).map(function(el) {
+    [].slice.call(d.querySelectorAll('[data-background-color]')).map(function (el) {
         el.style.background = 'url(' + el.getAttribute('data-background-color') + ')';
     });
 
-    [].slice.call(d.querySelectorAll('[data-color]')).map(function(el) {
+    [].slice.call(d.querySelectorAll('[data-color]')).map(function (el) {
         el.style.color = 'url(' + el.getAttribute('data-color') + ')';
     });
 
     // Tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
+        return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 
     // Popovers
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-      return new bootstrap.Popover(popoverTriggerEl)
+        return new bootstrap.Popover(popoverTriggerEl)
     })
 
     // Datepicker
@@ -106,7 +106,7 @@ d.addEventListener("DOMContentLoaded", function(event) {
     var datepickersList = datepickers.map(function (el) {
         return new Datepicker(el, {
             buttonClass: 'btn'
-          });
+        });
     })
 
     // Toasts

@@ -103,10 +103,6 @@ def projects():
 def unittool():
     return render_template("tools.html")
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
-
 @app.route("/sign-in/", methods=["GET", "POST"])
 def signin():
     form = LoginForm()
@@ -120,7 +116,7 @@ def signin():
                 return "Bad Password"
     return render_template("/sign-in.html", form=form)
 
-@app.route("/dashboard")
+@app.route("/dashboard/")
 @login_required
 def dashboard():
     return "Dashboard"

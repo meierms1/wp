@@ -1,0 +1,25 @@
+# A .YAML file is used to export DNS records to a
+# domain managed by Google Cloud. The format is
+# exclusive to Google Cloud DNS.
+
+---
+kind: dns#resourceRecordSet
+name: '_701c429332764580240a19d5aad36c04.meierms.com.'
+rrdatas:
+- '_a29b8534a0d7298f51334ae726382aa9.mhvfxnchzy.acm-validations.aws.'
+ttl: 600
+type: CNAME
+---
+kind: dns#resourceRecordSet
+name: '_8286a824580ad3c34413c67ecabd6e9b.meierms.com.'
+rrdatas:
+- '_d47739d6d530873c59c5adf79f137d81.mhvfxnchzy.acm-validations.aws.'
+ttl: 3600
+type: CNAME
+---
+kind: dns#resourceRecordSet
+name: 'www.meierms.com.'
+rrdatas:
+- 'd-ivr1d2g7ii.execute-api.us-west-2.amazonaws.com.'
+ttl: 600
+type: CNAME

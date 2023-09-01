@@ -12,13 +12,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError 
-
+from flask_mail import Mail, Message
 app=Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SECRET_KEY'] = "secret"
 db = SQLAlchemy(app)
 app.app_context().push()
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'm85830874@gmail.com'
+app.config['MAIL_PASSWORD'] = 'wplpnspxnnnlgvwh'
+mail = Mail(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -75,12 +82,26 @@ def user_on_mobile() -> bool:
         return True
     return False
 
-@app.route("/")
+@app.route("/", methods=["GET","POST"])
 def home():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        msg = Message(subject = f"Mail From Flask page, from {name} ",body = f"name = {name} \n \n email = {email} \n\n {message}",sender = 'm85830874@gmail.com',recipients = ["m85830874@gmail.com", "meierms@icloud.com"])
+        mail.send(msg)
+        return render_template("about.html", success=True)
     return render_template("about.html")
 
-@app.route("/about/")
+@app.route("/about/", methods=["GET","POST"])
 def about():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        msg = Message(subject = f"Mail From Flask page, from {name} ",body = f"name = {name} \n \n email = {email} \n\n {message}",sender = 'm85830874@gmail.com',recipients = ["m85830874@gmail.com","meierms@icloud.com"])
+        mail.send(msg)
+        return render_template("about.html", success=True)
     return render_template("about.html")
 
 @app.route("/resume/")

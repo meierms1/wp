@@ -14,7 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Contact us if you want to remove it.
 
 */
-
+var critical = require("critical");
 "use strict";
 const d = document;
 d.addEventListener("DOMContentLoaded", function (event) {

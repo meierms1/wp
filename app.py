@@ -3,6 +3,7 @@ import pandas as pd
 import requests as r
 import xlsxwriter as x
 import math 
+from calculator import material,  BaseConverter
 
 from apitk import IEX_CLOUD_API_TOKEN
 
@@ -119,10 +120,36 @@ def projects():
     if (user_on_mobile()): return render_template("projects-mobile.html")
     return render_template("projects.html")
 
-@app.route("/unittool/")
+@app.route("/calculator/", methods=["GET","POST"])
 @login_required
 def unittool():
-    return render_template("tools.html")
+    if (request.method == "POST"):
+        try:
+            e = -1; g = -1; k = -1; l = -1; v = -1
+            first = request.form.get("first_property_name")
+            second = request.form.get("second_property_name")
+            if first == "young": e = float(request.form.get("first_property_value"))
+            elif first == "shear": g = float(request.form.get("first_property_value"))
+            elif first == "bulk": k = float(request.form.get("first_property_value"))
+            elif first == "lame": l = float(request.form.get("first_property_value"))
+            elif first == "poisson": v = float(request.form.get("first_property_value"))
+            if second == "young": e = float(request.form.get("second_property_value"))
+            elif second == "shear": g = float(request.form.get("second_property_value"))
+            elif second == "bulk": k = float(request.form.get("second_property_value"))
+            elif second == "lame": l = float(request.form.get("second_property_value"))
+            elif second == "poisson": v = float(request.form.get("second_property_value"))
+            calc = material(K = k, E = e, lame = l, G = g, Poisson = v)
+            return render_template("tools.html", success_compute=True, E=round(calc.E, 3), G=round(calc.G, 3), K=round(calc.K, 3), L=round(calc.lame, 3), V=round(calc.Poisson, 3),value="Value")
+        except:
+            input_value = float(request.form.get("input_value"))
+            input_unit = request.form.get("input_unit")
+            output_unit = request.form.get("output_unit")
+            convert = BaseConverter(input_value, input_unit, output_unit)
+            output_value = convert.converted_value
+            print(output_value)
+            return render_template("tools.html", success_convert=True, value=str(output_value))
+
+    return render_template("tools.html", value= "Value")
 
 @app.route("/sign-in/", methods=["GET", "POST"])
 def signin():

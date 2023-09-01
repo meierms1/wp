@@ -1,10 +1,142 @@
-{% extends "/base-auth.html" %}
+{% extends "base.html" %}
 
-{% block title %} Tools {% endblock %} 
+{% block title %} Calculators {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<h1> This content can currently only be accessed by admin user. </h1>
-{% endblock content%}
+<main>
+    <section class="section-header bg-secondary text-white ">
+        <div class="container z-2">
+            <h2 class="h1 mb-3">Unit Conversion</h2>
+            <!-- Contact Card -->
+            <div class="card border-0 p-2 p-md-3 p-lg-5 text-black ">
+                <div class="card-body pt-0">
+                    <form method="post" name="form1">
+                        <div class="mb-4">
+                            <label for="name">Input</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Value" id="input_value"
+                                    name="input_value" required>
+                                <input type="text" class="form-control" placeholder="unit" id="input_unit"
+                                    name="input_unit" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email">Output</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="{{value}}" id="output_value"
+                                    name="output_value" disabled>
+                                <input type="text" class="form-control" placeholder="Unit" id="output_unit"
+                                    name="output_unit" required>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-secondary">Convert</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="section-md bg-secondary text-white">
+
+
+        <div class="container z-2">
+            <h2 class="h1 mb-3">Compute Material Properties</h2>
+            <!-- Contact Card -->
+            <div class="card border-0 p-2 p-md-3 p-lg-5 text-black ">
+
+                <div class="card-body pt-0">
+                    <form method="POST" name="form2">
+                        <div class="mb-4">
+                            <label for="name">First Property</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="First Property Value"
+                                    id="first_property_value" name="first_property_value" required>
+
+                                <select name="first_property_name" id="first_property_name">
+                                    <option value="young">Young's Module</option>
+                                    <option value="shear">Shear Module</option>
+                                    <option value="bulk">Bulk Modulus</option>
+                                    <option value="lame">Lame's First Parameter</option>
+                                    <option value="poisson">Poisson Coeficient</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email">Second Propety</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Second Property Value"
+                                    id="second_property_value" name="second_property_value" required>
+
+                                <select class="input" name="second_property_name" id="second_property_name">
+                                    <option value="young">Young Module</option>
+                                    <option value="shear">Shear Module</option>
+                                    <option value="bulk">Bulk Modulus</option>
+                                    <option value="lame">Lame First Parameter</option>
+                                    <option value="poisson">Poisson Coeficient</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        {% if success_compute %}
+
+                        <div class="mb-0 text-black">
+                            <table class="table">
+                                <tr>
+                                    <th scope="col" id="names">Property Name</th>
+                                    <th scope="col" id="values">Propery Value</th>
+            
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="E" >Youngs Module</th>
+                                    <th scope="row" id="EV" >{{E}}</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="G" >Shear Module</th>
+                                    <th scope="row" id="GV" >{{G}}</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="K">Bulk Module</th>
+                                    <th scope="row" id="KV" >{{K}}</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="L">Lame First Parameter</th>
+                                    <th scope="row" id="LV" >{{L}}</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="v" >Poisson Coeficient</th>
+                                    <th scope="row" id="vV" >{{V}}</th>
+                                </tr>
+                            </table>
+                        </div>
+                        {% endif %}
+
+
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-secondary">Compute</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+</main>
+{% include '/footer.html' %}
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %} {% endblock javascripts %}

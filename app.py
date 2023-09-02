@@ -7,7 +7,7 @@ from calculator import material,  BaseConverter
 
 from apitk import IEX_CLOUD_API_TOKEN
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -66,13 +66,13 @@ def login():
     if form.validate_on_submit():
         login_user(user)
 
-        flask.flash('Logged in successfully.')
+        flash('Logged in successfully.')
 
-        next = flask.request.args.get('next')
+        next = request.args.get('next')
         if not url_has_allowed_host_and_scheme(next, request.host):
             return flask.abort(400)
 
-        return flask.redirect(next or flask.url_for('index'))
+        return flask.redirect(next or flask.url_for('/about/'))
     return render_template('/sign-in.html', form=form)
 
 def user_on_mobile() -> bool:

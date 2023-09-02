@@ -4,16 +4,43 @@ import numpy as np
 class GeneralConverter():
     def __init__(value, input_unit, output_unit):
         self.value = value
-        self.input_unit = input_unit.split('.')
-        self.output_unit = output_unit.split('.')
+        input_prefix = [] 
+        output_prefix = []
+        input = [] 
+        output = [] 
+        
+        for i in input_unit.split('.'):
+            if i in prefix_:
+                input_prefix.append(i)
+            else:
+                input.append(i)
+        for i in output_unit.split('.'):
+            if i in prefix_:
+                output_prefix.append(i)
+            else:
+                output.append(i)
 
-    def extend():
-        pass
+        input = logical_sort(simplify(input))
+        output = logical_sort(simplify(output))
+
+        if len(output) != len(input):
+            raise ValueError("Input and Output units are not equivalent")
+        
+        if not _assert(intput, output):
+            raise ValueError("Input and Output units are not equivalent")
+        
+        ratio = 1.0
+        for i,j in zip(input, output):
+            hold = BaseConverter(i,j)
+            param = hold.ratio
+            ratio = ratio * param
+        for i in input_prefix:
+            ratio = ratio*_handler(i)
+        for i in output_prefix:
+            ratio = ratio*_handler(i)
+
     
     def simplify():
-        pass
-
-    def unit_split():
         pass
 
     def _handler(prefix:str):
@@ -27,13 +54,16 @@ class GeneralConverter():
 
         return param
 
-    def unit_match():
-        pass
-
+    def _assert(input, output) -> bool:
+        return True
+    
     def is_under():
         pass
 
     def is_exp():
+        pass
+
+    def logical_sort():
         pass
 
 class BaseConverter:

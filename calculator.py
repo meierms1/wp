@@ -11,9 +11,6 @@
 
 import numpy as np
 
-
-import numpy as np
-
 def tests():
     var1 = 'BTU./lb'
     var2 = 'kJ./kg'

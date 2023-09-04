@@ -3,11 +3,11 @@ import pandas as pd
 import requests as r
 import xlsxwriter as x
 import math 
-from calculator import material,  BaseConverter
+from calculator import material,  BaseConverter, GeneralConverter
 
 from apitk import IEX_CLOUD_API_TOKEN
 
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, url_for, abort
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -60,20 +60,38 @@ class LoginForm(FlaskForm):
     email = StringField( render_kw={"placeholder":"email"})
     submit = SubmitField("Register")
 
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        login_user(user)
-
-        flash('Logged in successfully.')
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if user.password == form.password.data:
+                login_user(user)
+                flash('Logged in successfully.')
 
         next = request.args.get('next')
         if not url_has_allowed_host_and_scheme(next, request.host):
-            return flask.abort(400)
+            return abort(400)
 
-        return flask.redirect(next or flask.url_for('/about/'))
+        return redirect(next or url_for('/about/'))
+    
     return render_template('/sign-in.html', form=form)
+
+@app.route("/sign-in/", methods=["GET", "POST"])
+def signin():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if user.password == form.password.data:
+                login_user(user)
+                return redirect("/about/")
+            else:
+                return "Bad Password"
+    return render_template("/sign-in.html", form=form)
 
 def user_on_mobile() -> bool:
     user_agent = request.headers.get("User-Agent")
@@ -121,7 +139,6 @@ def projects():
     return render_template("projects.html")
 
 @app.route("/calculator/", methods=["GET","POST"])
-@login_required
 def unittool():
     if (request.method == "POST"):
         try:
@@ -144,25 +161,19 @@ def unittool():
             input_value = float(request.form.get("input_value"))
             input_unit = request.form.get("input_unit")
             output_unit = request.form.get("output_unit")
-            convert = BaseConverter(input_value, input_unit, output_unit)
-            output_value = convert.converted_value
-            print(output_value)
-            return render_template("tools.html", success_convert=True, value=str(output_value))
-
+            if len(input_unit) > 50 or len(output_unit) > 50:
+                flash("String is too long. Stopping for security")
+                return render_template("tools.html", success_convert=True, value="String is too long")
+            try:
+                convert = GeneralConverter(input_value, input_unit, output_unit)
+                output_value = convert.converted_value
+                print(output_value)
+                return render_template("tools.html", success_convert=True, value=str(output_value))
+            except:
+                return render_template("tools.html", success_convert=True, value="Incompatible units")
     return render_template("tools.html", value= "Value")
 
-@app.route("/sign-in/", methods=["GET", "POST"])
-def signin():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if user.password == form.password.data:
-                login_user(user)
-                return redirect("/about/")
-            else:
-                return "Bad Password"
-    return render_template("/sign-in.html", form=form)
+
 
 @app.route("/dashboard/")
 @login_required

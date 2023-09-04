@@ -11,781 +11,329 @@
 
 import numpy as np
 
-def tests():
-    var1 = 'BTU./lb'
-    var2 = 'kJ./kg'
-    coef = 2.326
+class GeneralConverter():
+    def __init__(self, value, input_unit, output_unit):
 
-    var1 = 'BTU./lb'
-    var2 = 'kcal./kg' 
-    coef = 0.5559
-
-    var1 = 'psi'
-    var2 = 'N./mm**2'
-    coef = 6.895e-3
-
-    var1 = 'degC./W'
-    var2 = 'degF.hr./BTU'
-    coef = 0.5275
-
-    var1 = 'm./m./degC' 
-    var2 = 'in./in./degF'
-    coef = 0.5556
-
-    var1 = 'BTU./ft**2./hr./degF'
-    var2 = 'kcal./m**2./hr./degC'
-    coef = 4.882
-
-
-def main(value, iunit, ounit):
-    ivar = iunit.split('.')
-    ovar = ounit.split('.')
-    
-    ivar_new = []
-    ovar_new = []
-
-    for i in ivar:
-        ivar_new.extend(Simplify(i))
-
-    for i in ovar:
-        ovar_new.extend(Simplify(i))
-       
-    factor = 1
-    constant_list = ['Holdkgf','Holdozf','Holdcal','Holdcal15','Holdcal20','HoldBTU','Holderg','Holdhp', 'Holdbhp', 'Holdehp', 'Holdshp', 'Holdacre', 'Holdbarn', 'Holdha']
-
-    for i,j in zip(ivar_new, ovar_new):
-        mod1 = False; mod2 = True; g1 = ''; g2 = '';
+        self.value = value
+        ratio = 1.0
         
-        if i.count('/') == 1:
-            ii = i.replace('/', '')
-            mod1 = True
-            g1 = '/'
-            
-        else: ii = i
-            
-        if ii in constant_list:
-            pp, _ = MetrixPrefix(ii, mod1)
-            factor = factor * pp
-            ivar_new.remove(g1 + ii)
-            
-        if j.count('/') == 1:
-            jj = j.replace('/', '')
-            mod2 = False
-            g2 = '/'
-            
-        else: jj = j
+        input_unit=input_unit.split(".")
+        output_unit=output_unit.split(".")
+
+        if len(input_unit) == 1 and len(output_unit) == 1:
+            simple_temperature=["degC","K","degF","R"]
+            if input_unit[0] in simple_temperature and output_unit[0] in simple_temperature:
+                self.converted_value = BaseConverter(self.value,input_unit[0],output_unit[0], select_key="temp",temp_control=False).Temperature()
+                return 
+
+        _input, param_input = self.simplify(input_unit)
+        _output, param_output = self.simplify(output_unit)
+        ratio = ratio * param_input / param_output
+
+
+        input_prefix = [] 
+        output_prefix = []
+        input_ = [] 
+        output_ = [] 
         
-        if jj in constant_list:  
-            pp, _ = MetrixPrefix(jj, mod2)
-            factor = factor*pp
-            ovar_new.remove(g2 + jj)
-            
+        prefix_ = ['Y','Z','E','P','T','G','M','k','h','da','d','c','mi','mc','n','p','f','a','z','yo']
 
-    m1, m2, m3 = UnitMatch(ivar_new, ovar_new)
-    
-    if m1 == False:
-        print(ivar_new)
-        print(ovar_new)
-        raise ValueError('These Units dont match')
-    
-    if m2 == 2:
-        ivar_new, ovar_new = rebalance(ivar_new, ovar_new, m3)
-        
-    print(ivar_new)
-    print(ovar_new)
-    for i,j in zip(ivar_new, ovar_new):
-        factor = factor * allocator(i,j,value)
-
-    return value * factor
-
-def rebalance(ivar, ovar, m):
-    
-    v1 = m[0][0] + m[1][0] - m[2][0] - m[3][0]
-    v2 = m[0][1] + m[1][1] - m[2][1] - m[3][1]
-    v3 = m[0][2] + m[1][2] - m[2][2] - m[3][2]
-    v4 = m[0][3] + m[1][3] - m[2][3] - m[3][3]
-    v5 = m[0][4] + m[1][4] - m[2][4] - m[3][4]
-    v6 = m[0][5] + m[1][5] - m[2][5] - m[3][5]
-    
-    if v1 > 0:
-        for i in range(int(abs(v1)/2)):
-            ovar.extend(['m','/m'])
-    else:
-        for i in range(int(abs(v1)/2)):
-            ivar.extend(['m','/m'])
-            
-    if v2 > 0:
-        for i in range(int(abs(v2)/2)):
-            ovar.extend(['g','/g'])
-    else:
-        for i in range(int(abs(v2)/2)):
-            ivar.extend(['g','/g'])
-            
-    if v3 > 0:
-        for i in range(int(abs(v3)/2)):
-            ovar.extend(['K','/K'])
-    else:
-        for i in range(int(abs(v3)/2)):
-            ivar.extend(['K','/K'])
-            
-    if v4 > 0:
-        for i in range(int(abs(v4)/2)):
-            ovar.extend(['s','/s'])
-    else:
-        for i in range(int(abs(v4)/2)):
-            ivar.extend(['s','/s'])
-            
-    if v5 > 0:
-        for i in range(int(abs(v5)/2)):
-            ovar.extend(['A','/A'])
-    else:
-        for i in range(int(abs(v5)/2)):
-            ivar.extend(['A','/A'])
-            
-    if v6 > 0:
-        for i in range(int(abs(v6)/2)):
-            ovar.extend(['','/'])
-    else:
-        for i in range(int(abs(v6)/2)):
-            ivar.extend(['','/'])
-             
-    return ivar, ovar
-
-def Simplify(var):
-    if var.count('/') == 1:
-        mod = True
-        var = var.replace('/', '')
-    elif var.count('/') > 1:
-        raise ValueError("Bad Input, too many /")
-    else:
-        mod = False
-    
-    
-    power_list = ['W', 'hp', 'bhp', 'ehp', 'shp']
-    power_base = ['kg.m**2./s**3', 'Holdhp.kg.m**2./s**3', 'Holdbhp.kg.m**2./s**3', 'Holdehp.kg.m**2./s**3', 'Holdshp.kg.m**2./s**3'] 
-    energy_list = ['J', 'cal', 'cal15', 'cal20', 'BTU', 'erg']
-    energy_base = ['kg.m**2./s**2', 'Holdcal.kg.m**2./s**2', 'Holdcal15.kg.m**2./s**2', 'Holdcal20.kg.m**2./s**2', 'HoldBTU.kg.m**2./s**2', 'Holderg.kg.m**2./s**2'] 
-    electric_list = ['V', 'ohm', 'F','C','H','Wh']
-    electric_base = ['kg.m**2./s**3./A', 'kg.m**2./s**3./A**2','/kg./m**2.s**4.A**2','A.s','kg.m**2./s**2.A**2','W.hour']
-    pressure_list = ['Pa', 'psi', 'psf', 'bar', 'atm', 'at', 'Torr', 'mmHg','cmHg','inHg','ftHg','ksi','ksf'] #can add water ft and mm
-    pressure_base = ['kg.m./s**2./m**2','slug.ft./s**2./in**2','slug.ft./s**2./ft**2','Gg.m./s**2./m**2','','','','','','','','kslug.ft./s**2./in**2','kslug.ft./s**2./ft**2'] 
-    force_list = ['N', 'kip', 'lbf', 'ozf', 'kgf'] 
-    force_base = ['kg.m./s**2', 'kslug.ft./s**2','slug.ft./s**2','Holdozf.slug.ft./s**2','Holdkgf.kg.m./s**2']
-    other_list = ['knot', 'acre', 'barn', 'ha', 'angstorm']
-    other_base = ['nmile./hour', 'Holdacre.m**2', 'Holdbarn.m**2', 'Holdha.m**2', 'nm.dm']
-
-    unit_list = power_list + energy_list + pressure_list + force_list + electric_list
-    base_units = power_base + energy_base + pressure_base + force_base + electric_base
-
-    if var in unit_list: 
-        if mod == False:
-            return UnitSplit(base_units[unit_list.index(var)])
-        else:
-            return flip_function(UnitSplit(base_units[unit_list.index(var)]))
-    
-    else:
-        if mod == False:
-            return UnitSplit(var) 
-        else:
-            return flip_function(UnitSplit(var))
-    
-def flip_function(var):
-    nvar = []
-    for i in var:
-        if i.count('/') == True:
-            j = i.replace('/', '')
-            nvar.append(j)
-        else:
-            j = '/' + i
-            nvar.append(j)
-    #print(nvar)
-    return nvar
-    
-def UnitSplit(nvar):
-    nvar = nvar.split('.')
-    n_var = []
-    for var in nvar:
-        k = is_exp(var)
-        if k != 1:
-            var = var.split('**')
-            for i in range(int(k)):
-                n_var.append(var[0])
-        else:
-            n_var.append(var)
-    #print(n_var)
-    return n_var
-
-def MetrixPrefix(var, inv):
-    
-    prefix_list = ['Y', 'Z', 'E', 'P', 'T', 'G', 'M', 'k', 'h', 'da', 'd', 'c', 'mi', 'mc', 'n', 'p', 'f', 'a','z','yo'] 
-    prefix_names = ['Yotta', 'Zetta', 'Exa', 'Peta', 'Terra', 'Giga', 'Mega', 'kilo', 'hecto', 'daca', 'deci', 'centi', 'mili', 'micro', 'nano', 'pico', 'femto', 'atto','zepto','yocto']
-    prefix_value = [1e24, 1e21, 1e18, 1e15, 1e12, 1e9, 1e6, 1e3, 1e2, 1e1,1e-1,1e-2,1e-3,1e-6,1e-9, 1e-12, 1e-15, 1e-18, 1e-21, 1e-24]
-
-    std_list = ['Holdkgf','Holdozf','Holdcal','Holdcal15','Holdcal20','HoldBTU','Holderg','Holdhp', 'Holdbhp', 'Holdehp', 'Holdshp', 'Holdacre', 'Holdbarn', 'Holdha']
-    std_value = [9.80665, 0.0625, 4.184,4.1855,4.182,1054.35,1e-7,735.49875,745.69987, 746, 9812.5, 4046.87261, 1e-28, 1e4]
-
-    if len(var) > 1:
-        if var[0] == 'd':
-            if var[1] == 'a':
-                var = 'da'
-            elif var[1] == 'e':
-                var = var
-            else: 
-                var = 'd'
-        elif var[0] == 'm':
-            if var[1] == 'i' and len(var) > 2:
-                if var[2] != 'n':
-                    var = 'mi'
-            elif var[1] == 'c':
-                var = 'mc'
-            else: 
-                var = 'mi'
-        elif var[0] == 'y':
-            if var[1] == 'o':
-                var = 'yo'
-        elif var[0] == 'f':
-            if var[1] == 't':
-                var = 'ft'
+        for i in _input:
+            j = i
+            if "/" in i: j=i.replace("/","")
+            if j in prefix_:
+                input_prefix.append(i)
             else:
-                var = 'f'
-        elif len(var) > 3 and var[0] == 'H' and var[1] == 'o' and var[2] == 'l' and var[3] == 'd':
-            var = var 
-        else: 
-            var = var[0]
+                input_.append(i)
 
-    if var in prefix_list: 
-        param = prefix_value[prefix_list.index(var)]
-        hold = 1
-    elif var in std_list:
-        param = std_value[std_list.index(var)]
-        hold = 0
-    else: 
+        for i in _output:
+            j = i
+            if "/" in i: j=i.replace("/","")
+            if j in prefix_:
+                output_prefix.append(i)
+            else:
+                output_.append(i)
+
+        input_, output_ = self.remove_redundants(input_, output_)
+        _input = self.logical_sort(input_)
+        _output = self.logical_sort(output_)
+
+        if len(_output) != len(_input):
+            #print(input_unit)
+            #print(output_unit)
+            #print(_input)
+            #print(_output)
+            print("Attempting to swap messy units")
+            if len(_input)>len(_output):
+                _input, _ratio = self.LastCall(_input)
+            else:
+                _output, _ratio = self.LastCall(_output)
+            _input, _output = self.remove_redundants(_input,_output)
+            if len(_output) != len(_input):
+                raise ValueError("Input and Output units are not equivalent")
+            ratio = ratio * _ratio
+            _input = self.logical_sort(_input)
+            _output = self.logical_sort(_output)
+        
+        if not self._assert(_input, _output):
+            raise ValueError("Input and Output units are not equivalent")
+        
+        for i,j in zip(_input, _output):
+            k=i; l=j; kk = False; ll = False
+            if "/" in i: k = i.replace("/",""); kk = True
+            if "/" in j: l = j.replace("/",""); ll = True
+            hold = BaseConverter(1,k,l)
+            if kk == True and ll == True:
+                param = 1 / hold.ratio
+            else:
+                param = hold.ratio
+            ratio = ratio * param
+        for i in input_prefix:
+            k=i; kk = False; 
+            if "/" in i: k = i.replace("/",""); kk = True
+            if kk == True:
+                ratio = ratio/self._handler(k)
+            else:
+                ratio = ratio*self._handler(k)
+        
+        for i in output_prefix:
+            k=i; kk = False; 
+            if "/" in i: k = i.replace("/",""); kk = True
+            if kk == True:
+                ratio = ratio*self._handler(k)
+            else:
+                ratio = ratio/self._handler(k)
+            
+
+        self.ratio = ratio
+        self.converted_value = self.value * ratio
+    
+    def simplify(self, list_to_simplify:list):
+        prefix = ['Y','Z','E','P','T','G','M','k','h','da','d','c','mi','mc','n','p','f','a','z','yo']
+        select = {"N":"kg.m./s./s", "Hz":"/s","Wb":"m.m.kg./s./s./A",
+                  "T":"kg./s./s./A", "W":"kg.m.m./s./s./s","Pa":"kg./m./s./s",
+                  "J":"m.m.k.g./s./s", "C":"A.s", "F":"A.A.s.s.s.s.m.m./kg",
+                  "S":"s.s.s.A.A./kg./m./m","Gy":"m.m./s./s","H":"m.m.kg./s./s./A./A",
+                  "V":"m.m.kg./s./s./s./A","Ohm":"m.m.kg./s./s./s./A./A",
+                  "lx":"cd.sr./m./m","lm":"cd.sr", "Bq":"/s",
+                  "bar":"a1.Pa", "atm":"a2.Pa","mH2O":"a3.Pa","ftH2O":"a4.psi",
+                   "mmHg":"a5.Pa", "inHg":"a6.psi",
+                   "psi":"lbi./in./s./s", "lbf":"a11.lb.ft./s./s","lbi":"a17.a11.lb","psf":"lbf./ft./ft",
+                   "gallon":"a7.in.in.in", "quart":"a8.in.in.in","pint":"a9.in.in.in","floz":"a10.in.in.in",
+                   "kip":"a12.lbf","L":"a13.m.m.m", "Liter":"a13.m.m.m",
+                   "tbsp":"a14.floz", "tsp":"a15.tbsp",
+                   "mph":"mile./hr", "kph":"km./hr",
+                   "MPa":"M.Pa", "kPa":"k.Pa", "GPa":"G.Pa", "kN":"k.N","kJ":"k.J",
+                   "mm":"mi.m","cm":"c.m","km":"k.m","kg":"k.g",
+                   "BTU":"e1.J","IT":"e2.J", "BTUc":"e3.J", "BTUt":"e4.J", "BTUcal":"e5.J",
+                   "hp":"e6.W", "ccf":"M.J", "cal":"c1.J", "calt":"c2.J", "cal4":"c3.J", "cal15":"c4.J", "cal20":"c5.J"
+                    , "calmean":"c6.J", "calit":"c7.J", "toneTNT":"e6.G.J", "TNT":"e6.G.J./ton", "eV":"e7.J"}
+        conv = {"a1":1.0e5, "a2":101325,"a3":9806.4,"a4":0.4335,"a5":133.32,"a6":0.4911,
+                "a16":277.42, "a7":69.355,"a8":34.677,"a9":8.6694,"a10":1.7339,"a11":32.174049,
+                "a12":1000,"a13":0.001, "a14":0.5, "a15":1/3, "a17":12,
+                "e1":1054.8, "e2":1055.06,"e3":1054.68,"e4":1054.35,"e5":1059.67,"e6":4.184,"e7":1.602176634e-19,
+                "c1":4.1868, "c2":4.184, "c3":4.204, "c4":4.1855, "c5":4.182, "c6":4.190, "c7":4.1868}
+        
+        increments = []
+        for i in list_to_simplify:
+            if "**" in i:
+                j = i.split("**")
+                if int(j[1]) > 10: raise ValueError("Exponents are too large. Stopping here for security.")
+                for k in range(int(j[1])):
+                    increments.append(j[0])
+                list_to_simplify.pop(list_to_simplify.index(i))
+        list_to_simplify = list_to_simplify + increments
+        
+        check = 0
+        while check < 5:
+            hold_list = [] 
+            
+            for i in list_to_simplify:
+                j = i
+                hold = False
+                if "/" in i: 
+                    j = i.replace("/","")
+                    hold = True
+                if j in select:
+                    if hold == True:
+                        var = select[j]
+                        var = var.replace(".", "./")
+                        hold_list.append("/"+var)
+                    else:
+                        hold_list.append(select[j])
+                else:
+                    hold_list.append(i)
+            
+            for i in hold_list:
+                var = i.split(".")
+                hold_list.pop(hold_list.index(i))
+                for j in var:
+                    hold_list.append(j)
+            list_to_simplify = hold_list
+            check += 1
+            #list_to_simplify = hold_list
+            
+        hold_list = []
         param = 1
-        hold = 0
-
-    if inv == True:
-        param = 1 / param 
-
-    if hold == 1: return param, var 
-    return param, ''
-
-def UnitMatch(ivar, ovar):
-    
-    #if not ivar.count('.') == 0:
-    #    ivar = ivar.split('.')
-    #else:
-    #    ivar = ivar.split()
-    #    
-    #if not ovar.count('.') == 0:
-    #    ovar = ovar.split('.')
-    #else:
-    #    ovar = ovar.split()
-        
-    
-    #ToDo
-    cat1 = ['m', 'in', 'ft', 'mile', 'nmile', 'yd'] 
-    cat2 = ['g', 'tone', 'ton', 'ukton', 'oz', 'lb', 'stone', 'slug'] 
-    cat3 = ['K','R','degC','degF',] 
-    cat4 = ['s', 'min', 'hr', 'day', 'week', 'month', 'year']
-    cat5 = ['A', 'el']
-    cat6 = []
-    cat7 = ['Holdkgf','Holdozf','Holdcal','Holdcal15','Holdcal20','HoldBTU','Holderg','Holdhp', 'Holdbhp', 'Holdehp', 'Holdshp', 'Holdacre', 'Holdbarn', 'Holdha']
-
-
-    ivar_num = [0,0,0,0,0,0]
-    ivar_den = [0,0,0,0,0,0]
-    ovar_num = [0,0,0,0,0,0]
-    ovar_den = [0,0,0,0,0,0] 
-
-    for i in ivar:
-        if i.count('/') == 0: 
-            if i in cat1:
-                ivar_num[0] = ivar_num[0] + 1
-            elif i in cat2:
-                ivar_num[1] = ivar_num[1] + 1
-            elif i in cat3:
-                ivar_num[2] = ivar_num[2] + 1
-            elif i in cat4:
-                ivar_num[3] = ivar_num[3] + 1
-            elif i in cat5:
-                ivar_num[4] = ivar_num[4] + 1
-            elif i in cat6:
-                ivar_num[5] = ivar_num[5] + 1
-        else:    
-            i = i.replace('/', '') 
-            if i in cat1:
-                ivar_den[0] = ivar_den[0] + 1
-            elif i in cat2:
-                ivar_den[1] = ivar_den[1] + 1
-            elif i in cat3:
-                ivar_den[2] = ivar_den[2] + 1
-            elif i in cat4:
-                ivar_den[3] = ivar_den[3] + 1
-            elif i in cat5:
-                ivar_den[4] = ivar_den[4] + 1
-            elif i in cat6:
-                ivar_den[5] = ivar_den[5] + 1
-                
-    for i in ovar:
-        if i.count('/') == 1:
-            ii = i.replace('/', '')    
-            if ii in cat1:
-                ovar_den[0] = ovar_den[0] + 1
-            elif ii in cat2:
-                ovar_den[1] = ovar_den[1] + 1
-            elif ii in cat3:
-                ovar_den[2] = ovar_den[2] + 1
-            elif ii in cat4:
-                ovar_den[3] = ovar_den[3] + 1
-            elif ii in cat5:
-                ovar_den[4] = ovar_den[4] + 1
-            elif ii in cat6:
-                ovar_den[5] = ovar_den[5] + 1
-                
-        elif (i.count('/') == 0):
-            ii = i
-            if ii in cat1:
-                ovar_num[0] = ovar_num[0] + 1
-            elif ii in cat2:
-                ovar_num[1] = ovar_num[1] + 1
-            elif ii in cat3:
-                ovar_num[2] = ovar_num[2] + 1
-            elif ii in cat4:
-                ovar_num[3] = ovar_num[3] + 1
-            elif ii in cat5:
-                ovar_num[4] = ovar_num[4] + 1
-            elif ii in cat6:
-                ovar_num[5] = ovar_num[5] + 1   
-                 
-    
-    if ivar_den == ovar_den and ivar_num == ovar_num:
-        return True, 1, []
-    
-    in_num = [0,0,0,0,0,0]; out_num =[0,0,0,0,0,0]; 
-
-    for i in range(6):
-        in_num[i] = ivar_num[i] - ivar_den[i]
-        out_num[i] = ovar_num[i] - ovar_den[i]
-        
-    if (out_num == in_num):
-        return True, 2, [ivar_num, ivar_den, ovar_num, ovar_den]
-    
-    return False, 0, []
-
-def is_under(var):
-    if var.count('/') == 1:
-        return True
-    if var.count('/') > 1:
-        raise ValueError('Bad Input')
-    else:
-        return False
-
-def is_exp(var):
-    if var.count('**') >= 1:
-        exp_find = var.split('**')
-        k = exp_find[1]
-        return float(k)
-    else:
-        return 1
-
-def GetParam(input_, output, fun, mod, lev, value):
-    if fun == 'length':
-        conv_rate = UnityType().Length(input_, output)
-    elif fun == 'mass':
-        conv_rate = UnityType().Mass(input_, output)
-    elif fun == 'temperature':
-        conv_rate = UnityType(value).Temperature(input_, output)
-    elif fun == 'time':
-        conv_rate = UnityType().Time(ivar = input_, ovar = output)
-    elif fun == 'charge':
-        conv_rate = UnityType().Chemestry(input_, output)
-    elif fun == 'chemestry':
-        conv_rate = UnityType().Chemestry(input_, output)
-    else: 
-        raise ValueError('This class is not listed')
-
-    if mod == 1:
-        conv_rate = 1 / conv_rate
-
-    param = (conv_rate)**lev
-
-    return param
-
-def _category(var, mod, k):
-    if mod == 1:
-        if k == 1:
-            var = var.replace('/', '')
-        else:
-            var = var.replace('/', '')
-            v_hold = var.split('**')
-            var = v_hold[0]
-    elif k != 1:
-        v_hold = var.split('**')
-        var = v_hold[0]
-
-    cat1 = ['m', 'in', 'ft', 'mile', 'nmile', 'yd'] 
-    cat2 = ['g', 'tone', 'ton', 'ukton', 'oz', 'lb', 'stone', 'slug'] 
-    cat3 = ['K','R','degC','degF',] 
-    cat4 = ['s', 'min', 'hr', 'day', 'week', 'month', 'year']
-    cat5 = ['A', 'el']
-    cat6 = []
-    cat7 = ['Holdkgf','Holdozf','Holdcal','Holdcal15','Holdcal20','HoldBTU','Holderg','Holdhp', 'Holdbhp', 'Holdehp', 'Holdshp', 'Holdacre', 'Holdbarn', 'Holdha']
-
-    if var in cat1:
-        return 'length', var
-    elif var in cat2:
-        return 'mass', var
-    elif var in cat3:
-        return 'temperature', var
-    elif var in cat4:
-        return 'time', var
-    elif var in cat5:
-        return 'charge', var
-    elif var in cat6:
-        return 'chemestry', var
-    elif var in cat7:
-        return '', var
-    else:
-        #print(var)
-        raise ValueError('Invalid Unit')
-
-def UnitCheck(v1, v2):
-    if v1 == v2:
-        return True
-    else:
-        return False
-    
-def allocator(invar, outvar, value):
-    if invar == outvar:
-        return 1.0
-    
-    k = is_exp(invar)
-
-    if is_under(invar) == True:
-        invar = invar.replace('/', '')
-        mod = True
-    else:
-        mod = False
-    
-    if is_under(outvar) == True:
-        outvar = outvar.replace('/', '')
-        mod2 = False
-    else:
-        mod2 = True 
-        
-    par1, v1 = MetrixPrefix(invar, mod)
-    par2, v2 = MetrixPrefix(outvar, mod2)
-
-    
-    invar = invar.replace(v1, '')
-    outvar = outvar.replace(v2, '')
-    
-    input_type, n_input = _category(invar, mod, k)
-    output_type, n_output = _category(outvar, mod, k)
-    UCheck = UnitCheck(input_type, output_type) 
-
-    if UCheck == True:
-        param = GetParam(input_=n_input, output = n_output, fun = input_type, mod=mod, lev = k, value=value)
-        return param * par1 * par2
-    else:
-        return False
-
-class UnityType:
-    def __init__(self, value):
-        self.value = value 
-        
-    def Length(self, ivar, ovar):
-        if(ivar == "m"):
-            meter = 1
-            inches = 39.3701
-            foot = 3.28084
-            mile = 0.00621371
-            yard = 1.09361
-            nauticmile = 0.000539957
-            
-        elif(ivar == "in"):
-            meter = 0.0254
-            inches = 1
-            foot = 0.083333
-            mile = 1.5783e-5
-            yard = 0.0277778
-            nauticmile = 1.3715e-5
-            
-        elif(ivar == "ft"):
-            meter = 0.3048
-            inches = 12
-            foot = 1
-            mile = 0.000189394
-            yard = 1/3
-            nauticmile = 0.000164579
-            
-        elif(ivar == "yd"):
-            meter = 0.9144
-            inches = 36
-            foot = 3
-            mile = 0.000568182
-            yard = 1
-            nauticmile = 0.000493737
-            
-        elif(ivar == "mile"):
-            meter = 1609.34
-            inches = 63360
-            foot = 5280
-            mile = 1
-            yard = 1760
-            nauticmile = 0.868976   
-            
-        elif(ivar == "nmile"):
-            meter = 1852
-            inches = 72913.4
-            foot = 6076.12
-            mile = 1.15078
-            yard = 2025.37
-            nauticmile = 1
-            
-        else:
-            raise ValueError("input unit not listed")
-        
-        if(ovar == "m"): param = meter
-        elif(ovar == 'in'): param = inches
-        elif(ovar == 'ft'): param = foot 
-        elif(ovar == 'mile'): param = mile 
-        elif(ovar == 'yd'): param = yard
-        elif(ovar == 'nmile'):param = nauticmile
-        else: raise ValueError("output unit not listed") 
-        
-        return param
-    
-    def Mass(self, ivar, ovar):
-        if (ivar == 'g'):
-            g = 1
-            slug = 6.8522e-5
-            stone = 0.000157473
-            tone = 1e-6
-            lb = 0.00220462
-            oz = 0.035274
-            ton = 1.1023e-6
-            ukton = 9.8421e-7
-            
-        elif (ivar == 'slug'):
-            g = 14593.9
-            slug = 1
-            stone = 2.29815
-            tone = 0.01459639
-            lb = 32.174
-            oz = 514.785
-            ton = 0.016087
-            ukton = 0.0143634
-            
-        elif (ivar == 'stone'):
-            g = 6350.29
-            slug = 0.435133
-            stone = 1
-            tone = 0.00635029
-            lb = 0.0625
-            oz = 224
-            ton = 0.007
-            ukton = 2.7902e-5
-
-        elif (ivar == 'tone'):
-            g = 1e6
-            slug = 68.5218
-            stone = 157.473
-            tone = 1
-            lb = 2204.62
-            oz = 35274
-            ton = 1.10231
-            ukton = 0.984207
-          
-        elif (ivar == 'lb'):
-            g = 453.592
-            slug = 0.031081
-            stone = 0.0714286
-            tone = 0.000453592
-            lb = 1
-            oz = 16
-            ton = 0.0005
-            ukton = 0.000446429
-            
-        elif (ivar == 'oz'):
-            g = 28.3495
-            slug = 0.00194256
-            stone = 0.00446429
-            tone = 2.835e-5
-            lb = 0.0625
-            oz = 1
-            ton = 3.125e-5
-            ukton = 2.7902e-5
-            
-        elif (ivar == 'ton'):
-            g = 907185
-            slug = 62.1619
-            stone = 142.857
-            tone = 0.907185
-            lb = 2000
-            oz = 32000
-            ton = 1
-            ukton = 0.892857
-            
-        elif (ivar == 'ukton'):
-            g = 1.016e6
-            slug = 69.6213
-            stone = 160
-            tone = 1.01605
-            lb = 2240
-            oz = 35840
-            ton = 1.12
-            ukton = 1
-            
-
-        if(ovar == "g"): param = g
-        elif(ovar == 'tone'): param = tone
-        elif(ovar == 'lb'): param = lb 
-        elif(ovar == 'oz'): param = oz 
-        elif(ovar == 'ton'): param = ton
-        elif(ovar == 'ukton'):param = ukton
-        elif(ovar == 'slug'): param = slug
-        elif(ovar == 'stone'): param = stone
-        else: raise ValueError("output unit not listed")
-
-        return param 
-        
-    def Time(self, ivar, ovar):
-        if ivar == 's':
-            second = 1
-            minute = 1 / 60
-            hour = minute / 60
-            day = hour / 24 
-            week = day / 7
-            month = day / 30 
-            year = 1 / 3.171e-8
-        
-        elif ivar == 'min':
-            second = 60
-            minute = 1 
-            hour = minute / 60
-            day = hour / 24 
-            week = day / 7
-            month = day / 30 
-            year = 1 / 525600
-        
-        elif ivar == 'hr':
-            second = 60 * 60 
-            minute = 60
-            hour = 1 
-            day = 1 / 24
-            week = day / 7
-            month = day / 30
-            year =  1 / 8760
-        
-        elif ivar == 'day':
-            second = 60 * 60 * 24
-            minute = 60 * 24
-            hour = 24
-            day = 1
-            week = day / 7
-            month = day / 30 
-            year = 1 / 365
-    
-        elif ivar == 'week':
-            second = 60 * 60 * 24 * 7
-            minute = 60 * 24 * 7
-            hour = 24 * 7 
-            day = 7
-            week = day / 7
-            month = day / 30
-            year = 52
-        
-        elif ivar == 'month':
-            second = 60 * 60 * 24 * 30
-            minute = second / 60
-            hour = minute / 60
-            day = hour / 24
-            week = day / 7
-            month = day / 30
-            year = 12
-
-        elif ivar == 'year':
-            second = 60 * 60 * 24 * 30 * 365 
-            minute = second / 60
-            hour = minute / 60
-            day = hour / 24
-            week = day / 7
-            month = day / 30
-            year = 1
-
-         
-
-        if ovar == 's': param = second
-        elif ovar == 'min': param = minute
-        elif ovar == 'hr': param = hour 
-        elif ovar == 'day': param = day
-        elif ovar == 'week': param = week  
-        elif ovar == 'month': param = month
-        elif ovar == 'year': param = year 
-
-        return param 
-    
-    def Temperature(self, ivar, ovar):
-        if(ivar == "degC"):
-            if(ovar == "K"):
-                temp = self.value + 273.15
-            elif(ovar == "degF"):
-                temp = self.value * (9 / 5) + 32
-            elif(ovar == 'R'):
-                temp = (self.value * 9 / 5 + 32) - 459.67
-            else: raise ValueError("temperature output not listed")
-        
-        elif(ivar == "K"):
-            if(ovar == "degC"):
-                temp = self.value - 273.15
-            elif(ovar == "degF"):
-                temp = (self.value - 273.15) * 9 / 5 + 32
-            elif(ovar == 'R'):
-                temp = (self.value * 9 / 5)
-            else: raise ValueError("temperature output not listed")
-        
-        elif(ivar == "degF"):
-            if(ovar == "degC"):
-                temp = (self.value - 32) * 5  / 9
-            elif(ovar == "K"):
-                temp = (self.value - 32) * 5  / 9 + 273.15
-            elif(ovar == 'R'):
-                temp = (self.value - 459.67)
-            else: raise ValueError("temperature output not listed")
-
-        elif(ivar == "R"):
-            if(ovar == "degC"):
-                temp = (self.value * 5 / 9 ) + 273.15
-            elif(ovar == 'degF'):
-                temp = self.value + 459.67
-            elif(ovar == 'K'):
-                temp = self.value * 5 / 9
+        for i in list_to_simplify:              
+            j = i
+            inverse = False
+            if "/" in i: 
+                j = i.replace("/","")
+                inverse = True
+            if j in conv and inverse==False:
+                param = param*conv[j]
+            elif j in conv and inverse==True:
+                param = param/conv[j]
             else:
-                raise ValueError("temperature output not listed")
+                hold_list.append(i)
 
-        else: raise ValueError("temperature input unit not listed")
-        
-        return temp 
+        list_to_simplify=hold_list
+
+        return list_to_simplify, float(param)
+
+    def _handler(self,prefix:str):
+        prefix_list = {'Y':1.0e24,'Z':1.0e21,'E':1.0e18,'P':1.0e15,'T':1.0e12,'G':1.0e9,'M':1.0e6,'k':1.0e3,'h':1.0e2,'da':1.0e1,
+                       'd':1.0e-1,'c':1.0e-2,'mi':1.0e-3,'mc':1.0e-6,'n':1.0e-9,'p':1.0e-12,'f':1.0e-15,'a':1.0e-18,'z':1.0e-21,'yo':1.0e-24,
+                       'Holdkgf':9.80665,'Holdozf':0.0625,'Holdcal':4.184,'Holdcal15':4.1855,'Holdcal20':4.182,'HoldBTU':1054.35,'Holderg':1e-7,'Holdhp':735.49875, 
+                       'Holdbhp':745.69987,'Holdehp':746,'Holdshp':9812.5,'Holdacre':4046.87261, 'Holdbarn':1e-28, 'Holdha':1e4}
+        prefix_names = ['Yotta', 'Zetta', 'Exa', 'Peta', 'Terra', 'Giga', 'Mega', 'kilo', 'hecto', 'daca', 'deci', 'centi', 'mili', 'micro', 'nano', 'pico', 'femto', 'atto','zepto','yocto']
+
+        param=prefix_list[prefix]
+
+        return param
+
+    def _assert(self,input, output) -> bool:
+        return True
     
-    def Charge(self, ivar, ovar):
-        if(ivar == 'A'):
-            A = 1
-            el = 6.241e18
+    def remove_redundants(self,in_list:list, out_list:list):
+        in_hold = []; out_hold = []
 
-        elif(ivar == 'el'):
-            A = (1/6.241e18)
-            el = 1
+        for i in in_list:
+            if "/" in i:
+                j = i.replace("/","")
+                if j in in_list:
+                    in_hold.append(i)
+                    in_hold.append(j)
+                    in_list.pop(in_list.index(i))
+                    in_list.pop(in_list.index(j))
+        for i in out_list:
+            if "/" in i:
+                j = i.replace("/","")
+                if j in out_list:
+                    out_hold.append(i)
+                    out_hold.append(j)
+                    out_list.pop(out_list.index(i))
+                    out_list.pop(out_list.index(j))  
+
+        if len(in_list) == len(out_list):            
+            return in_list, out_list
+        elif len(in_list) > len(out_list):
+            diff = abs(len(in_list) - len(out_list))
+            if diff%2:  raise ValueError("Input and Output units are not equivalent")
+            c = 0
+            while c < diff:
+                try:
+                    out_list.append(out_hold[c])
+                    c += 1 
+                except:
+                    c += 1           
+            return in_list, out_list
+        elif len(in_list) < len(out_list):
+            diff = abs(len(in_list) - len(out_list))
+            if diff%2:  raise ValueError("Input and Output units are not equivalent")
+            c = 0
+            while c < diff:                
+                try:
+                    in_list.append(in_hold[c])
+                    c += 1 
+                except:
+                    c += 1 
+            return in_list, out_list
+        raise ValueError("Input and Output units are not equivalent")
+
+    def logical_sort(self,list_to_sort:list) -> list:
+        list_lenght = [];list_mass=[]; list_time = []; list_temp = [] ;list_charge = []; list_chem = [] 
+        l = ["m","in","ft","yd","mile","nmile"]
+        m = ["g","slug","stone","tone","lb","oz","ton","ukton"]
+        t = ['s',"min","hr","day","week","month","year"] 
+        temp = ["degC", 'degF','K',"R"] 
+        c = ["A","el"] 
+        chem = ["not coded"] 
+        for i in list_to_sort:
+            j = i
+            if "/" in i: j = i.replace("/","")
             
-        else: raise ValueError("Charge Unit Not Listed")
+            if j in l: list_lenght.append(i)
+            if j in m: list_mass.append(i)
+            if j in t: list_time.append(i)
+            if j in temp: list_temp.append(i)
+            if j in c: list_charge.append(i)
+            if j in chem: list_chem.append(i)
 
-        if ovar == 'A': return A
-        elif ovar == 'el': return el
-        else: raise ValueError('Charge unit not listed')
-        
+        list_ = []
+        list_lenght.sort()
+        list_mass.sort()
+        list_temp.sort()
+        list_time.sort()
+        list_charge.sort()
+        list_chem.sort()
+        if len(list_lenght) > 0: 
+            for i in list_lenght: 
+                list_.append(i)
+        if len(list_mass) > 0: 
+            for i in list_mass: 
+                list_.append(i)
+        if len(list_time) > 0: 
+            for i in list_time: 
+                list_.append(i)
+        if len(list_temp) > 0: 
+            for i in list_temp: 
+                list_.append(i)
+        if len(list_charge) > 0: 
+            for i in list_charge: 
+                list_.append(i)
+        if len(list_chem) > 0: 
+            for i in list_chem: 
+                list_.append(i)
 
-    def Chemestry(self):
-        return
+        return list_
+
+    def LastCall(self, _input:list):
+        ratio = 1
+        for i in _input:
+            if "/" in i:
+                tp = self.get_type(i.replace("/", ""))
+                print(f"testing {i}")
+                for j in _input:
+                    if "/" not in j:
+                        print(f"testing match {j}")
+                        op = self.get_type(j)
+                        if not i.replace("/","") == j:
+                            if op == tp:
+                                print(f"found {i} and {j}")
+                                print("Swaping variables")
+                                ratio = ratio * BaseConverter(1, i.replace("/",""), j).ratio
+                                _input.pop(_input.index(j))
+                                _input.append(i.replace("/",""))
+                                print("Success! ")
+                                return _input, ratio
+        print("Failed to find swaps, redirecting and shutting down")
+        return _input, ratio
+    
+    def get_type(self, var):
+        l = ["m","in","ft","yd","mile","nmile"]
+        m = ["g","slug","stone","tone","lb","oz","ton","ukton"]
+        t = ['s',"min","hr","day","week","month","year"] 
+        temp = ["degC", 'degF','K',"R"] 
+        c = ["A","el"] 
+        chem = [] 
+        if var in l: return "lenght"
+        if var in m: return "mass"
+        if var in t: return "time"
+        if var in temp: return "temp"
+        if var in c: return "charge"
+        if var in chem: return "chem"
     
 class NumberType:
     def __init__(self, Value, outform = "sci" ):
@@ -804,11 +352,12 @@ class NumberType:
         raise ValueError("{self.Value:.6f}")
 
 class BaseConverter:
-    def __init__(self, value:float, in_unit:str, out_unit:str, select_key="none"):
+    def __init__(self, value:float, in_unit:str, out_unit:str, select_key:str="none", temp_control:bool=True):
         self.in_value = value
         self.in_var = in_unit
         self.out_var = out_unit
-        select={"lenght":0, "mass":1, "time":2, "temp":3, "charge":4, "chem":5}
+        self.temp_control = temp_control
+        select={"lenght":0, "mass":1, "time":2, "temp":3, "charge":4, "chem":5,"temp_variance":6}
         if select_key == "none":
             select_key = self.get_type()
         compute_key = select[select_key]
@@ -824,6 +373,8 @@ class BaseConverter:
             self.converted_value = self.Charge()
         elif compute_key == 5:
             self.converted_value = self.Chemestry()
+        elif compute_key == 6:
+            self.converted_value = self.Temperature_variance()
 
     def Mass(self):
         select={"g":0,"slug":1,"stone":2,"tone":3,"lb":4,"oz":5,"ton":6,"ukton":7}
@@ -874,9 +425,9 @@ class BaseConverter:
             if(self.out_var == "K"):
                 temp = self.in_value + 273.15
             elif(self.out_var == "degF"):
-                self.out_var = self.in_value * (9 / 5) + 32
+                temp = self.in_value * (9 / 5) + 32
             elif(self.out_var == 'R'):
-                self.out_var = (self.in_value * 9 / 5 + 32) - 459.67
+                temp = (self.in_value * 9 / 5 + 32) - 459.67
             else: raise ValueError("temperature output not listed")
         
         elif(self.in_var == "K"):
@@ -911,6 +462,17 @@ class BaseConverter:
         
         return temp
 
+    def Temperature_variance(self):
+        select={"degC":0,"K":1,"degF":2,"R":3}
+        ratio_table=[[1,     1, 1.8, 1.8],
+                     [1,     1, 1.8, 1.8],
+                     [0.5556, 0.5556, 1,   1],
+                     [0.5556, 0.556, 1,   1]]
+        i=select[self.in_var]
+        j=select[self.out_var]
+        self.ratio = ratio_table[i][j]
+        return self.in_value * ratio_table[i][j]
+
     def Charge(self):
         select={"A":0, "el":1}
         ratio_table=[[1,6.241e18],[1/6.241e18,1]]
@@ -932,10 +494,13 @@ class BaseConverter:
         if self.in_var in l: return "lenght"
         if self.in_var in m: return "mass"
         if self.in_var in t: return "time"
-        if self.in_var in temp: return "temp"
+        if self.in_var in temp: 
+            if self.temp_control == False:
+                return "temp"
+            else: 
+                return "temp_variance"
         if self.in_var in c: return "charge"
         if self.in_var in chem: return "chem"
-
 
 class material: 
     def __init__(self, K = -1, E = -1, lame = -1, G = -1, Poisson = -1):
@@ -1068,3 +633,117 @@ class material:
         elif (self.var == "lame,G"):
             return self.lame / 2.0 / (self.lame + self.G)
         else: raise TypeError("Wrong Input Parameters")
+
+def tests():
+    test1 = create_test_case(1,"m","m", 1, "meter to meter")
+    test2 = create_test_case(1, "k.g","g", 1000, "kg to g")
+    test3 = create_test_case(1, "MPa", "psi", 145.038, "MPa to psi")
+    test4 = create_test_case(1, "G.g", "g", 1e9, "Giga gram to gram")
+    test5 = create_test_case(20, "degC", "degF", 68, "Celsius to Fahre")
+    test6 = create_test_case(20, "degC", "K", 293.15, "Celsius to Kelvin")
+    test7 = create_test_case(10, "m.m./s", "ft.ft./min", 6458.35,"m2/s to ft2/min")
+    test8 = create_test_case(1, 'psi', 'N./mm**2',  6.895e-3, "psi to n/mm2")
+
+    var1 = 'BTU./lb'
+    var2 = 'kJ./kg'
+    coef = 2.326
+    test9 = create_test_case(1, var1, var2, coef, "btu/lb to kj/kg")
+
+    var1 = 'BTU./lb'
+    var2 = 'k.cal./kg' 
+    coef = 0.5559
+    test10 = create_test_case(1, var1, var2, coef, "btu/lb to kcal/kg")
+
+    var1 = "degC"
+    var2 = "degF"
+    coef = 68
+    testt = create_test_case(20,var1,var2,coef,"simple temperature")
+
+    var1 = 'degC./W'
+    var2 = 'degF.hr./BTU'
+    coef = 0.5275
+    test11 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'm./m./degC' 
+    var2 = 'in./in./degF'
+    coef = 0.5556
+    test12 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'BTU'
+    var2 = 'k.cal'
+    coef = 0.252164
+    test13 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = './degC'
+    var2 = './degF'
+    coef = 0.5556
+    test14 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = './degF'
+    var2 = './degC'
+    coef = 1.8
+    test15 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = './K'
+    var2 = './degF'
+    coef = 0.5556
+    test16 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = './R'
+    var2 = './K'
+    coef = 1.8
+    test17 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'W./m./K'
+    var2 = 'cal./s./cm./degC'
+    coef = 0.00239
+    test18 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'W./m./K'
+    var2 = 'BTU./hr./ft./degF'
+    coef = 0.578
+    test19 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'BTU./ft**2./hr./degF'
+    var2 = 'k.cal./m**2./hr./degC'
+    coef = 4.882
+    test20 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+    var1 = 'W./m./K'
+    var2 = 'BTU.in./hr./ft./ft./degF'
+    coef = 6.94
+    test21 = create_test_case(1, var1, var2, coef, f"{var1} ---> {var2}")
+
+
+    tests_ = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,test11, test12, test13,test14, test15,
+              test16, test17, test18, test19, test20, test21,testt]
+    j=1
+    for i in tests_:
+        perform_test(i, str(j))
+        j += 1
+
+    print("Completed")
+    return 
+
+def create_test_case(value:float, in_unit:str, out_unit:str, result:float, name:str) -> list:
+    return [value, in_unit, out_unit, result, name]
+
+def perform_test(list_:list, n:str) -> bool:
+    print(f"Starting test number {n}")
+    print(f"{list_[1]} ----> {list_[2]}")
+    test = GeneralConverter(list_[0],list_[1],list_[2])
+    if list_[3] > 0: 
+        g = 2
+    else: 
+        g = 5
+    if round(test.converted_value,g) == round(list_[3],g):
+        print("Test "+ n + ":  -------------> Pass" )
+        return True
+    else:
+        print("Test "+ n + ":  -------------> Failed" )
+        print(str(round(test.converted_value, 5)) + " != " + str(round(list_[3],5)))
+        return False
+
+t = tests() 
+
+#perform_test(create_test_case(1, "in.in./g", "m", 1, f"11"), "exception")

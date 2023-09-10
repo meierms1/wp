@@ -10,7 +10,7 @@
 # Usage: from material import material; variable_name = material(K = num1, G = num2); variable_name.display
 
 import numpy as np
-
+run_tests = False
 class GeneralConverter():
     def __init__(self, value, input_unit, output_unit):
 
@@ -744,6 +744,7 @@ def perform_test(list_:list, n:str) -> bool:
         print(str(round(test.converted_value, 5)) + " != " + str(round(list_[3],5)))
         return False
 
-t = tests() 
+if (run_tests):
+    t = tests() 
 
 #perform_test(create_test_case(1, "in.in./g", "m", 1, f"11"), "exception")

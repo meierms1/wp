@@ -1,10 +1,156 @@
-{% extends "/base-auth.html" %}
+{% extends "base.html" %}
 
-{% block title %} Finance {% endblock %} 
+{% block title %} Finance {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<h1> This content can currently only be accessed by admin user. </h1>
+<main>
+    <section class="section-header bg-gradient-gray text-white">
+        <div class="container z-2">
+            <h2 class="h1 mb-3">Stock lookup</h2>
+            <!-- Contact Card -->
+            <div class="card border-0 p-2 p-md-3 p-lg-5 text-black ">
+                <div class="card-body pt-0">
+
+                    <form method="POST" name="stock_form">
+                        <div class="mb-4">
+                            <label for="name">Stock Ticker</label>
+                            <div class="input-group">
+                                <input type="ticket" class="form-control" placeholder="Ex: AAPL" id="ticker_name"
+                                    name="ticker_name" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label>Period</label>
+                            <div class="input-group">
+                                <div clas="row">
+                                    <input type="checkbox" value="1d" name="period"> 1 Day</input>
+                                    <input type="checkbox" value="5d" name="period"> 5 Days</input>
+                                    <input type="checkbox" value="1mo" name="period"> 1 Month</input>
+                                    <input type="checkbox" value="6mo" name="period"> 6 Months</input>
+                                    <input type="checkbox" value="1y" name="period"> 1 Year</input>
+                                    <input type="checkbox" value="ytd" name="period"> YTD</input>
+                                    <input type="checkbox" value="5y" name="period"> 5 Years</input>
+                                    <input type="checkbox" value="10y" name="period"> 10 Years</input>
+                                    <input type="checkbox" value="max" name="period" checked> Max</input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label>OR</label>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email">Specific Period</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" placeholder="Start Date" id="start_date"
+                                    name="start_date">
+                                <input type="date" class="form-control" placeholder="End Date" id="end_date"
+                                    name="end_date">
+                            </div>
+                        </div>
+                        <!--
+                        <div>
+                            <label>Options</label>
+                            <div class="input-group">
+                                <div clas="row">
+                                    <input type="checkbox" value="sma"> SMA</input>
+                                    <input type="checkbox" value="ema"> EMA</input>
+                                    <input type="checkbox" value="roc"> ROC</input>
+                                    <input type="checkbox" value="rsi"> RSI</input>
+                                    <input type="checkbox" value="macd"> MACD</input>
+                                    <input type="checkbox" value="sp500"> SP500</input>
+                                    <input type="checkbox" value="ibov"> IBOV</input>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                        <!-- End of Form -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-secondary" name="get_data">Get Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    {% if not hide_block %}
+    <section class="section-sm bg-gradient-gray text-black">
+
+        <div class="container z-2">
+            <div id="lineChart2"></div>
+        </div>
+    </section>
+    <section class="section-sm bg-gradient-gray text-black">
+        <div class="container z-2">
+            <div class="card border-0 p-2 p-md-3 p-lg-5 text-black ">
+                <div class="card-body pt-0">
+                    <div class="row mb-2">
+                        <div class="col-5">
+                            <h5>Company Name: {{stock_info[0]}}</h5>
+                            <h5>Company Industry: {{stock_info[1]}}</h5>
+                            <h5>Company Sector: {{stock_info[2]}}</h5>
+                        </div>
+                        <div class="col-6 text-right">
+                            <h6>52 week low: ${{stock_info[3]}}</h6>
+                            <h6>52 week high: ${{stock_info[4]}}</h6>
+                            <h6>Divident Yield: {{stock_info[5]|round(3)}}%</h6>
+                        </div>
+                    </div>
+                    <h4>Description:</h4>
+                    <p class="justify-content-evenly">{{stock_info[6]}}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</main>
+
+
+
 {% endblock content%}
+{% block javascripts %}
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+    // Use Jinja2 to pass Python data to JavaScript
+    var labels = {{ labels | tojson | safe }};
+    var closingPrices = {{ values | tojson | safe }};
+
+    // Create the data trace
+    var trace = {
+        x: labels,
+        y: closingPrices,
+        type: 'line'
+    };
+
+    // Create the data array
+    var data = [trace];
+
+    // Layout options (if needed)
+    var layout = {
+        title: 'Stock history'
+    };
+
+    // Create the line chart
+    Plotly.newPlot('lineChart2', data, layout, { scrollZoom: true });
+</script>
+<script>
+    // JavaScript to allow only one checkbox to be selected
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            checkbox.checked = true;
+        });
+    });
+</script>
+
+{% endblock javascripts %}

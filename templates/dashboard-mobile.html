@@ -13,7 +13,7 @@
             <div class="card text-black ">
                 <div class="card-body pt-0">
                     <h3>My stocks</h3>
-                    <div id="pieChart" style="width: 250px; height: 250px; "></div>
+                    <div id="pieChart" style="width: 350px; height: 350px; "></div>
                     {%if total_capital == 1%}
                     <p class="text-center">Total invested capital is: $0</p>
                     {% else %}
@@ -26,7 +26,7 @@
             <div class="card text-black ">
                 <div class="card-body pt-0">
                     <h3> Gains/Losses</h3>
-                    <div id="RelativePrice" style="width: 250px; height: 250px;"></div>
+                    <div id="RelativePrice" style="width: 350px; height: 350px;"></div>
                     <p class="text-center">Total Gain/Loss: ${{total_change}}</p>
                     <p class="text-center"> ({{ (100 * total_change / total_capital) | round(2)}}%)</p>
                 </div>

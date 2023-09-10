@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %} Finance {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<main>
+    <section class="section-header bg-primary text-white">
+        <div class="container">
+            <h1>Summary</h1>
+            <div class="row mb-4 justify-content-around">
+                <div class="card text-black col-6">
+                    <div class="card-body pt-0">
+                        <h3>My stocks</h3>
+                        <div  id="pieChart" style="width: 400px; height: 400px; "></div>
+                        {%if total_capital == 1%}
+                        <p class="text-center">Total invested capital is: $0</p>
+                        {% else %}
+                        <p class="text-center">Total invested capital is: ${{total_capital}}</p>
+                        {%endif%}
+                    </div>
+                </div>
+
+                <div class="card text-black col-6">
+                    <div class="card-body pt-0">
+                        <h3> Gains/Losses</h3>
+                        <div  id="RelativePrice" style="width: 400px; height: 400px;"></div>
+                        <p class="text-center">Total Gain/Loss: ${{total_change}}</p>
+                        <p class="text-center"> ({{ (100 * total_change / total_capital) | round(2)}}%)</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section-md bg-primary text-white">
+        <div class="container z-2">
+            <h2 class="h1 mb-3">Actions</h2>
+            <!-- Contact Card -->
+            <div class="card border-0 p-2 p-md-3 p-lg-5 text-black ">
+                <div class="card-body pt-0">
+
+                    <form method="post" name="form1">
+                        <div class="mb-4">
+                            <label for="name">Stock Transaction</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" placeholder="Ex: AAPL" id="ticker_name"
+                                    name="ticker_name" required>
+                                <input type="number" step="0.01" class="form-control" placeholder="Price" id="ticker_price"
+                                    name="ticker_price" required>
+                                <input type="number" class="form-control" placeholder="Amount" id="ticker_amount"
+                                    name="ticker_amount" required>
+                                <input type="date" class="form-control" placeholder="Date" id="action_date"
+                                    name="action_date" required>
+                            </div>
+                            <div class="mb-4 col-12">
+                                <div class="row justify-content-around">
+                                    <button type="submit" class="btn btn-secondary col-5" name="add_buy">Add Stock
+                                        Buy</button>
+                                    <button type="submit" class="btn btn-secondary col-5" name="add_sell">Add Stock
+                                        Sell</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form method="post" name="form1">
+                        <label>Remove Entry</label>
+                        <div class="input-group mb-2">
+                            <input type="number" class="form-control" placeholder="ID" id="remove_from_db"
+                                name="remove_from_db" required>
+                        </div>
+                        <div class="mb-1">
+                            <div class="row justify-content-around">
+                                <button type="submit" class="btn btn-secondary col-5" name="remove_transaction">Remove
+                                    Transaction</button>
+                            </div>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+    </section>
+    <section class="section-hero bg-primary text-white">
+        <div class="container">
+
+            <table class="table text-white">
+                <tr>
+                    <th scope="col" id="id_log">ID</th>
+                    <th scope="col" id="value_log">Ticker</th>
+                    <th scope="col" id="price_log">Price</th>
+                    <th scope="col" id="date_log">Date</th>
+                    <th scope="col" id="amount_log">Amount</th>
+                    <th scope="col" id="type_log">Type</th>
+
+                </tr>
+                {% for row in data_table %}
+                <tr>
+                    {% for cell in row %}
+                    <th scope="row">{{cell}}</th>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+
+            </table>
+
+        </div>
+    </section>
+</main>
+
+{% endblock content%}
+
+
+{% block javascripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Sample data for the pie chart
+    var pieData = [{
+        labels: {{tickers_list|tojson|safe}},
+        values: {{sum_price|tojson|safe}},
+        type: 'pie',
+        
+    }];
+    // Create the pie chart
+    console.log(pieData);
+    Plotly.newPlot('pieChart', pieData);
+</script>
+<script>
+var local_ = {{local_changes|tojson|safe}}
+var col = local_.map(function (value) {return value < 0 ? 'red' : 'green';});
+var data = [
+  {
+    type: 'bar',
+    x: {{tickers_list|tojson|safe}},
+    y: local_,
+    marker: { color : col}
+  }
+]
+
+Plotly.newPlot('RelativePrice', data);
+</script>
+{% endblock javascripts %}

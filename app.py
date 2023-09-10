@@ -162,10 +162,12 @@ def finance():
 
         info_data=get_stock_info(ticker)
 
+        if (user_on_mobile()): return render_template("finance-mobile.html",  labels=label, values=price, stock_info = info_data, hide_block=False)
         return render_template("finance.html", labels=label, values=price, stock_info = info_data, hide_block=False)
     label = ["1", "2"]
     price = [1,1]
     info_data=["-","-","-","-","-","-","-"]
+    if (user_on_mobile()): return render_template("finance-mobile.html", labels=label, values=price, stock_info = info_data, hide_block=True)
     return render_template("finance.html", labels=label, values=price, stock_info = info_data, hide_block=True)
 
 @app.route("/projects/")
@@ -261,7 +263,10 @@ def dashboard():
     data_config=[]
     names = [] 
     for i in data:
-        data_config.append([i.id,i.ticker, np.abs(i.price), i.date, np.abs(i.amount), i.type])
+        if (user_on_mobile()):
+            data_config.append([i.id,i.ticker, np.abs(i.price), np.abs(i.amount), i.type])
+        else:
+            data_config.append([i.id,i.ticker, np.abs(i.price), i.date, np.abs(i.amount), i.type])
         if i.ticker not in names:
             names.append(i.ticker)
 
@@ -313,6 +318,7 @@ def dashboard():
     
     if total_change is None: total_change=0
     if total_capital is None or total_capital==0: total_capital=1
+    if (user_on_mobile()): return render_template('/dashboard-mobile.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
     return render_template('/dashboard.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
 
 

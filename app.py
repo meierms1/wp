@@ -291,6 +291,7 @@ def dashboard():
         avg_prepare3 = []
         remeinder = np.abs(a_sell)
         print(remeinder)
+        print(a_sell)
         k = 0
         while remeinder > 0:
             avg_prepare2[k] = max(avg_prepare2[k] - remeinder,0)
@@ -308,7 +309,8 @@ def dashboard():
  
         current_price = get_current_price(i)
         current_cap = (a_buy - a_sell) * price_avg  
-        current_market = (a_buy - a_sell) * current_price      
+        current_market = (a_buy - a_sell) * current_price
+        print(current_price)      
 
         sum_price.append(value)
         local_changes.append(current_market - current_cap)

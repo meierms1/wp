@@ -112,6 +112,16 @@ def user_on_mobile() -> bool:
         return True
     return False
 
+@app.route("/alamo/")
+@app.route("/alamo")
+def alamo():
+    return redirect("https://github.com/solidsgroup/alamo/tree/flame")
+
+@app.route("/classification")
+@app.route("/classification/")
+def classification():
+    return redirect("https://github.com/meierms1/Supervised-Dimension-Reduction-For-Optical-Vapor-Sensing.git")
+
 @app.route("/", methods=["GET","POST"])
 def home():
     if request.method == "POST":

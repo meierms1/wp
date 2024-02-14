@@ -53,6 +53,7 @@ class Dashinfo(db.Model, UserMixin):
     type = db.Column(db.String(10), nullable=False)
     user = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     amount = db.Column(db.Integer)
+    total = db.Column(db.Float)
 
 
 
@@ -233,8 +234,9 @@ def dashboard():
             date = request.form.get("action_date")
             date = datetime.datetime.strptime(date, '%Y-%m-%d')
             amount = int(request.form.get("ticker_amount"))
+            total = amount * price
             user = c_user
-            new_transaction = Dashinfo(ticker = ticker, price = price,date = date,type = "BUY", amount = amount,user = user)
+            new_transaction = Dashinfo(ticker = ticker, price = price,date = date,type = "BUY", amount = amount,user = user, total=total)
             db.session.add(new_transaction)
             db.session.commit()           
         elif "add_sell" in request.form:
@@ -288,7 +290,7 @@ def dashboard():
         p_sell = db.session.query(func.sum(Dashinfo.price)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="SELL").scalar()
         a_buy = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="BUY").scalar()
         a_sell = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="SELL").scalar()
-
+        
         if p_buy is None: p_buy = 0; 
         if p_sell is None: p_sell = 0; 
         if a_buy is None: a_buy = 0; 
@@ -302,19 +304,11 @@ def dashboard():
         remeinder = np.abs(a_sell)
         print(remeinder)
         print(a_sell)
-        k = 0
-        while remeinder > 0:
-            avg_prepare2[k] = max(avg_prepare2[k] - remeinder,0)
-            remeinder = remeinder - avg_prepare2[k]  
-            k += 1
-        print(avg_prepare2)
-        for l1,l2 in zip(avg_prepare, avg_prepare2):
-            avg_prepare3.append(l1*l2)
 
-        try:   
-            price_avg = np.mean(avg_prepare3)/(a_buy + a_sell)    
-        except:
-            price_avg = 0
+        total_buy = sum([i*j for i,j in zip(avg_prepare, avg_prepare2)])
+
+        price_avg = total_buy / a_buy
+
         print(f"{i} avg price {price_avg}")  
  
         current_price = get_current_price(i)
@@ -333,7 +327,6 @@ def dashboard():
     if (user_on_mobile()): return render_template('/dashboard-mobile.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
     return render_template('/dashboard.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
 
-
 @app.route("/register/", methods=["GET", "POST"])
 def signup():
     form = RegisterForm()
@@ -341,7 +334,6 @@ def signup():
         new_user = User(username=form.username.data, password=form.password.data, email=form.email.data)
         db.session.add(new_user)
         db.session.commit()
-
         return redirect("/sign-in/")
     return render_template('/register.html', form=form)
 
@@ -350,6 +342,5 @@ def signup():
 def logout():
     logout_user()
     return redirect("/about/")
-#saving
 if __name__ == "__main__":
     app.run(debug=True) #False, port=5000, host="0.0.0.0")

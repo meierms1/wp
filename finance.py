@@ -18,7 +18,11 @@ def get_stock_info(stock):
     df_ = yf.Ticker(stock)
     print(np.mean(df_.dividends))
     print(df_.info["longName"])
-    company_info = [df_.info["longName"], df_.info["industry"], df_.info["sector"], df_.info["fiftyTwoWeekLow"], df_.info["fiftyTwoWeekHigh"], df_.info['trailingAnnualDividendYield']*100, df_.info["longBusinessSummary"]]
+    if 'trailingAnnualDividendYield' in df_.info.keys():
+        v = df_.info['trailingAnnualDividendYield']*100
+    else:
+        v = 0.0
+    company_info = [df_.info["longName"], df_.info["industry"], df_.info["sector"], df_.info["fiftyTwoWeekLow"], df_.info["fiftyTwoWeekHigh"], v, df_.info["longBusinessSummary"]]
     return company_info 
     
 def get_current_price(stock):

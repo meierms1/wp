@@ -97,7 +97,7 @@ def tests():
     
     print("Completed")
     print(f"{passed} tests Pass and {failed} tests Failed")
-    return 
+    return failed
 
 def create_test_case(value:float, in_unit:str, out_unit:str, result:float, name:str) -> list:
     return [value, in_unit, out_unit, result, name]
@@ -118,4 +118,4 @@ def perform_unit_test(list_:list, n:str) -> bool:
         print(str(round(test.converted_value, 5)) + " != " + str(round(list_[3],5)))
         return False
 
-tests()
+exit(tests())

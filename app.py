@@ -399,7 +399,7 @@ def quiz_submit():
         session['quiz_score'] += 1
     session['quiz_feedback'] = {
         'correct': correct,
-        'explanation': question['explanation'] if not correct else '',
+        'explanation': question['explanation_long'] if not correct else '',
         'correct_answer': question['correct_answer'] if not correct else '',
         'question_text': question['question_text']
     }

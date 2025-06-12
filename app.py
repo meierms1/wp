@@ -38,7 +38,7 @@ login_manager.login_view = "login"
 
 # Load quiz questions from JSON file
 try:
-    with open('FIRE2.json', 'r') as f:
+    with open('nFIRE.json', 'r') as f:
         questions = json.load(f)
 except FileNotFoundError:
     questions = []

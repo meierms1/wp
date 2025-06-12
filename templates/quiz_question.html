@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Question {{ q_num }}{% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<main>
+    <section class="section-header bg-secondary text-white">
+        <div class="container">
+            <div class="justify-content-between align-items-center">
+                <div class="col-auto text-center text-md-left">
+                    <h1>Question {{ q_num }} of {{ total }}</h1>
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-8 mb-5 mb-lg-0">
+                            <p>{{ question.question_text }}</p>
+                            <form method="POST" action="{{ url_for('quiz_submit') }}">
+                                {% if question.question_type == 'multiple_choice' %}
+                                    {% for option in question.options %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="answer" value="{{ option }}" id="{{ option }}" required>
+                                            <label class="form-check-label" for="{{ option }}">{{ option }}</label>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="answer" value="True" id="True" required>
+                                        <label class="form-check-label" for="True">True</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="answer" value="False" id="False" required>
+                                        <label class="form-check-label" for="False">False</label>
+                                    </div>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary mt-3">Submit Answer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container mb-5">
+        <!-- Empty container to add vertical space -->
+    </div>
+    {% include "/footer.html" %}
+</main>
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}

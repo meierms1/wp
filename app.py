@@ -1,17 +1,19 @@
 import numpy as np
 import pandas as pd
 import requests as r
+import json
+import random
 import xlsxwriter as x
 import math, datetime, json
 from calculator import material,  BaseConverter, GeneralConverter
 from finance import get_stock_data, get_stock_info, get_current_price
 from apitk import IEX_CLOUD_API_TOKEN
 
-from flask import Flask, render_template, request, redirect, flash, url_for, abort
+from flask import Flask, render_template, request, redirect, flash, url_for, abort, session
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError 
 from flask_mail import Mail, Message
 from sqlalchemy.sql import func
@@ -33,6 +35,14 @@ mail = Mail(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+# Load quiz questions from JSON file
+try:
+    with open('FIRE2.json', 'r') as f:
+        questions = json.load(f)
+except FileNotFoundError:
+    questions = []
+    print("Error: questions.json not found")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -76,7 +86,9 @@ class LoginForm(FlaskForm):
     email = StringField( render_kw={"placeholder":"email"})
     submit = SubmitField("Register")
 
-
+class QuizForm(FlaskForm):
+    num_questions = IntegerField('Number of Questions', validators=[InputRequired()], render_kw={'placeholder': 'Enter number (1-100)'})
+    submit = SubmitField('Start Quiz')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -342,5 +354,85 @@ def signup():
 def logout():
     logout_user()
     return redirect("/about/")
+
+# Quiz Routes
+@app.route('/quiz/', methods=['GET', 'POST'])
+def quiz():
+    form = QuizForm()
+    if form.validate_on_submit():
+        n = form.num_questions.data
+        if n > 100:
+            flash('Please select a number of questions between 1 and 100.', 'error')
+            return render_template('firequiz.html', form=form)
+        if n < 1 or n > len(questions):
+            flash(f'Please select between 1 and 100 questions.', 'error')
+            return render_template('firequiz.html', form=form)
+        session['quiz_questions'] = random.sample(range(len(questions)), n)
+        session['quiz_current'] = 0
+        session['quiz_score'] = 0
+        return redirect(url_for('quiz_question'))
+    return render_template('firequiz.html', form=form)
+
+@app.route('/quiz_question')
+def quiz_question():
+    if 'quiz_questions' not in session or session['quiz_current'] >= len(session['quiz_questions']):
+        return redirect(url_for('quiz_result'))
+    q_index = session['quiz_questions'][session['quiz_current']]
+    question = questions[q_index]
+    return render_template('quiz_question.html', question=question,
+                          q_num=session['quiz_current'] + 1,
+                          total=len(session['quiz_questions']))
+
+@app.route('/quiz_submit', methods=['POST'])
+def quiz_submit():
+    if 'quiz_questions' not in session:
+        flash('Quiz session expired.', 'error')
+        return redirect(url_for('quiz'))
+    answer = request.form.get('answer')
+    if not answer:
+        flash('Please select an answer.', 'error')
+        return redirect(url_for('quiz_question'))
+    q_index = session['quiz_questions'][session['quiz_current']]
+    question = questions[q_index]
+    correct = answer == question['correct_answer']
+    if correct:
+        session['quiz_score'] += 1
+    session['quiz_feedback'] = {
+        'correct': correct,
+        'explanation': question['explanation'] if not correct else '',
+        'correct_answer': question['correct_answer'] if not correct else '',
+        'question_text': question['question_text']
+    }
+    return redirect(url_for('quiz_feedback'))
+
+@app.route('/quiz_feedback')
+def quiz_feedback():
+    if 'quiz_feedback' not in session:
+        flash('No feedback available.', 'error')
+        return redirect(url_for('quiz'))
+    feedback = session['quiz_feedback']
+    return render_template('quiz_feedback.html', feedback=feedback)
+
+@app.route('/quiz_next', methods=['POST'])
+def quiz_next():
+    if 'quiz_questions' not in session:
+        flash('Quiz session expired.', 'error')
+        return redirect(url_for('quiz'))
+    session['quiz_current'] += 1
+    return redirect(url_for('quiz_question') if session['quiz_current'] < len(session['quiz_questions']) else url_for('quiz_result'))
+
+@app.route('/quiz_result')
+def quiz_result():
+    if 'quiz_score' not in session:
+        flash('No quiz results available.', 'error')
+        return redirect(url_for('quiz'))
+    score = session['quiz_score']
+    total = len(session['quiz_questions'])
+    session.pop('quiz_questions', None)
+    session.pop('quiz_current', None)
+    session.pop('quiz_score', None)
+    session.pop('quiz_feedback', None)
+    return render_template('quiz_result.html', score=score, total=total)
+
 if __name__ == "__main__":
     app.run(debug=True) #False, port=5000, host="0.0.0.0")

@@ -38,7 +38,7 @@ login_manager.login_view = "login"
 
 # Load quiz questions from JSON file
 try:
-    with open('FIREQ.json', 'r') as f:
+    with open('FIRE2.json', 'r') as f:
         questions = json.load(f)
 except FileNotFoundError:
     questions = []

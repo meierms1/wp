@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import json
 import random
 import datetime
@@ -9,6 +7,7 @@ from finance import get_stock_data, get_stock_info, get_current_price
 from flask import Flask, render_template, request, redirect, flash, url_for, abort, session
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_caching import Cache
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError 
@@ -18,7 +17,12 @@ app=Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SECRET_KEY'] = "secret"
+# Configure Flask-Caching for performance optimization
+app.config['CACHE_TYPE'] = 'simple'  # Use simple in-memory cache
+app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 5 minutes cache timeout
+
 db = SQLAlchemy(app)
+cache = Cache(app)
 app.app_context().push()
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -32,6 +36,27 @@ mail = Mail(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+# Cached wrapper functions for expensive stock API calls
+@cache.memoize(timeout=300)  # Cache for 5 minutes
+def cached_get_current_price(ticker):
+    """Cached version of get_current_price to reduce API calls"""
+    return get_current_price(ticker)
+
+@cache.memoize(timeout=600)  # Cache for 10 minutes (stock data changes less frequently)
+def cached_get_stock_data(ticker, *args):
+    """Cached version of get_stock_data to reduce API calls"""
+    if len(args) == 1:
+        return get_stock_data(ticker, args[0])
+    elif len(args) == 2:
+        return get_stock_data(ticker, args[0], args[1])
+    else:
+        return get_stock_data(ticker)
+
+@cache.memoize(timeout=3600)  # Cache for 1 hour (company info rarely changes)
+def cached_get_stock_info(ticker):
+    """Cached version of get_stock_info to reduce API calls"""
+    return get_stock_info(ticker)
 
 # Load quiz questions from JSON file
 try:
@@ -166,21 +191,18 @@ def finance():
         period = request.form.get("period")
         start = request.form.get("start_date")
         end = request.form.get("end_date")
-        print(period)
-        print(request.form)
         if period != "":
             period = request.form.get("period")
-            label, price = get_stock_data(ticker, period)
+            label, price = cached_get_stock_data(ticker, period)
 
         elif start != "":
             start = request.form.get("start_date")
             end = request.form.get("end_date")
-            label, price = get_stock_data(ticker, start, end)
+            label, price = cached_get_stock_data(ticker, start, end)
         else:
-            print("HERE")
-            label, price = get_stock_data(ticker)       
+            label, price = cached_get_stock_data(ticker)       
 
-        info_data=get_stock_info(ticker)
+        info_data = cached_get_stock_info(ticker)
 
         if (user_on_mobile()): return render_template("finance-mobile.html",  labels=label, values=price, stock_info = info_data, hide_block=False)
         return render_template("finance.html", labels=label, values=price, stock_info = info_data, hide_block=False)
@@ -224,7 +246,6 @@ def unittool():
             try:
                 convert = GeneralConverter(input_value, input_unit, output_unit)
                 output_value = convert.converted_value
-                print(output_value)
                 return render_template("tools.html", success_convert=True, value=str(output_value))
             except:
                 return render_template("tools.html", success_convert=True, value="Incompatible units")
@@ -235,6 +256,8 @@ def unittool():
 @app.route("/dashboard/", methods=["GET", "POST"])
 @login_required
 def dashboard():
+    import numpy as np  # Only load when dashboard is accessed
+    
     c_user = current_user.id
     if request.method == "POST":        
         if "add_buy" in request.form:
@@ -247,7 +270,9 @@ def dashboard():
             user = c_user
             new_transaction = Dashinfo(ticker = ticker, price = price,date = date,type = "BUY", amount = amount,user = user, total=total)
             db.session.add(new_transaction)
-            db.session.commit()           
+            db.session.commit()
+            # Clear cache for this ticker to ensure fresh data
+            cache.delete_memoized(cached_get_current_price, ticker)           
         elif "add_sell" in request.form:
             ticker = request.form.get("ticker_name")
             price = float(request.form.get("ticker_price"))
@@ -268,6 +293,8 @@ def dashboard():
                 new_transaction = Dashinfo(ticker = ticker, price = price*(-1),date = date,type = "SELL", amount = amount*(-1), user = user)
                 db.session.add(new_transaction)
                 db.session.commit()
+                # Clear cache for this ticker to ensure fresh data
+                cache.delete_memoized(cached_get_current_price, ticker)
 
         elif "remove_transaction" in request.form:
             _id = request.form.get("remove_from_db")
@@ -285,45 +312,62 @@ def dashboard():
     names = [] 
     for i in data:
         if (user_on_mobile()):
-            data_config.append([i.id,i.ticker, np.abs(i.price), np.abs(i.amount), i.type])
+            data_config.append([i.id,i.ticker, abs(i.price), abs(i.amount), i.type])
         else:
-            data_config.append([i.id,i.ticker, np.abs(i.price), i.date, np.abs(i.amount), i.type])
+            data_config.append([i.id,i.ticker, abs(i.price), i.date, abs(i.amount), i.type])
         if i.ticker not in names:
             names.append(i.ticker)
 
+    # Optimize database queries - get all aggregated data in single queries per ticker
     sum_price = []
     local_changes = [] 
-    for i in names:
-        data = Dashinfo.query.filter(Dashinfo.user==c_user, Dashinfo.ticker==i).all()
-        p_buy = db.session.query(func.sum(Dashinfo.price)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="BUY").scalar()
-        p_sell = db.session.query(func.sum(Dashinfo.price)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="SELL").scalar()
-        a_buy = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="BUY").scalar()
-        a_sell = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==i, Dashinfo.type=="SELL").scalar()
+    
+    # Pre-calculate aggregated data for all tickers to avoid N+1 query problem
+    buy_aggregates = db.session.query(
+        Dashinfo.ticker,
+        func.sum(Dashinfo.price).label('total_price'),
+        func.sum(Dashinfo.amount).label('total_amount')
+    ).filter(
+        Dashinfo.user==c_user, 
+        Dashinfo.type=="BUY"
+    ).group_by(Dashinfo.ticker).all()
+    
+    sell_aggregates = db.session.query(
+        Dashinfo.ticker,
+        func.sum(Dashinfo.price).label('total_price'),
+        func.sum(Dashinfo.amount).label('total_amount')
+    ).filter(
+        Dashinfo.user==c_user, 
+        Dashinfo.type=="SELL"
+    ).group_by(Dashinfo.ticker).all()
+    
+    # Convert to dictionaries for O(1) lookup
+    buy_data = {row.ticker: {'price': row.total_price or 0, 'amount': row.total_amount or 0} for row in buy_aggregates}
+    sell_data = {row.ticker: {'price': row.total_price or 0, 'amount': row.total_amount or 0} for row in sell_aggregates}
+    
+    for ticker in names:
+        # Get aggregated data from pre-calculated dictionaries
+        p_buy = buy_data.get(ticker, {}).get('price', 0)
+        p_sell = abs(sell_data.get(ticker, {}).get('price', 0))  # Convert back from negative
+        a_buy = buy_data.get(ticker, {}).get('amount', 0)
+        a_sell = abs(sell_data.get(ticker, {}).get('amount', 0))  # Convert back from negative
         
-        if p_buy is None: p_buy = 0; 
-        if p_sell is None: p_sell = 0; 
-        if a_buy is None: a_buy = 0; 
-        if a_sell is None: a_sell = 0;       
         value = (p_buy*a_buy - p_sell*a_sell)
-        print(f"{i} price {value}")
 
-        avg_prepare = [j.price  for j in data if j.type == "BUY"]
-        avg_prepare2 = [j.amount  for j in data if j.type == "BUY"]
-        avg_prepare3 = []
-        remeinder = np.abs(a_sell)
-        print(remeinder)
-        print(a_sell)
+        # Get individual transactions for average calculation (only for this ticker)
+        ticker_data = [transaction for transaction in data if transaction.ticker == ticker]
+        avg_prepare = [j.price for j in ticker_data if j.type == "BUY"]
+        avg_prepare2 = [j.amount for j in ticker_data if j.type == "BUY"]
 
-        total_buy = sum([i*j for i,j in zip(avg_prepare, avg_prepare2)])
-
-        price_avg = total_buy / a_buy
-
-        print(f"{i} avg price {price_avg}")  
+        if a_buy > 0:
+            total_buy = sum([price*amount for price, amount in zip(avg_prepare, avg_prepare2)])
+            price_avg = total_buy / a_buy
+        else:
+            price_avg = 0
  
-        current_price = get_current_price(i)
+        current_price = cached_get_current_price(ticker)
         current_cap = (a_buy - a_sell) * price_avg  
-        current_market = (a_buy - a_sell) * current_price
-        print(current_price)      
+        current_market = (a_buy - a_sell) * current_price      
 
         sum_price.append(value)
         local_changes.append(current_market - current_cap)

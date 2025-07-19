@@ -12,7 +12,6 @@
   gtag('config', 'G-3GN2SGXDQ4');
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <!-- Primary Meta Tags -->
 <title>
     Meier - {% block title %}{% endblock %}
@@ -20,11 +19,13 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- Fontawesome -->
-<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<!-- Preload critical CSS for faster rendering -->
+<link rel="preload" href="/static/assets/css/pixel.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/static/assets/css/pixel.css"></noscript>
 
-<!-- Pixel CSS -->
-<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+<!-- Fontawesome with media optimization -->
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"></noscript>
 
 <!-- Specific Page JS goes HERE  -->    
 {% block stylesheets %}{% endblock stylesheets %}

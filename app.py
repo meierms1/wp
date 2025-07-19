@@ -1,13 +1,10 @@
 import numpy as np
 import pandas as pd
-import requests as r
 import json
 import random
-import xlsxwriter as x
-import math, datetime, json
+import datetime
 from calculator import material,  BaseConverter, GeneralConverter
 from finance import get_stock_data, get_stock_info, get_current_price
-from apitk import IEX_CLOUD_API_TOKEN
 
 from flask import Flask, render_template, request, redirect, flash, url_for, abort, session
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user

@@ -1,31 +1,40 @@
 # Core Flask framework and extensions
-Flask==2.2.5
-Flask-Login==0.6.2
-Flask-SQLAlchemy==3.0.2
-Flask-WTF==1.0.1
-Flask-Mail==0.9.1
-Flask-Caching==2.0.2
+Flask==3.0.3
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+Flask-Mail==0.10.0
+Flask-Caching==2.3.0
 
 # Forms and validation
-WTForms==3.0.0
+WTForms==3.1.2
 
 # Database and ORM
-SQLAlchemy>=1.4.29
+SQLAlchemy>=2.0.0
 
 # Web server for production
-Werkzeug==2.2.3
-Jinja2==3.1.2
+Werkzeug==3.0.4
+Jinja2==3.1.4
 
 # Data science and financial data
-numpy==1.24.4
-pandas==2.0.3
-yfinance==0.2.65
+numpy==1.26.4
+pandas==2.2.2
+yfinance==0.2.28
 
 # Dependencies for yfinance
 appdirs>=1.4.4
 
-# HTTP requests (if needed for external APIs)
-urllib3==1.26.5
+# HTTP requests (updated for compatibility)
+urllib3>=2.0.0,<3.0.0
+requests>=2.32.0
 
-# Production WSGI server (optional but recommended)
-gunicorn==20.1.0
+# Production WSGI server (updated)
+gunicorn==22.0.0
+
+# Additional dependencies that might be needed
+python-dotenv>=1.0.0
+cryptography>=42.0.0
+
+# Security updates
+Pillow>=10.0.0
+certifi>=2024.2.2

@@ -1,8 +1,23 @@
 import json
 import random
 import datetime
-from calculator import material,  BaseConverter, GeneralConverter
-from finance import get_stock_data, get_stock_info, get_current_price
+import os
+from calculator import material, BaseConverter, GeneralConverter
+
+# Import finance functions with error handling
+try:
+    from finance import get_stock_data, get_stock_info, get_current_price
+    FINANCE_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Finance module import failed: {e}")
+    FINANCE_AVAILABLE = False
+    # Create dummy functions to prevent crashes
+    def get_stock_data(*args, **kwargs):
+        return [], []
+    def get_stock_info(*args, **kwargs):
+        return {}
+    def get_current_price(*args, **kwargs):
+        return 0.0
 
 from flask import Flask, render_template, request, redirect, flash, url_for, abort, session
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
@@ -13,26 +28,34 @@ from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError 
 from flask_mail import Mail, Message
 from sqlalchemy.sql import func
-app=Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
-app.config['SECRET_KEY'] = "secret"
+# Initialize Flask app
+app = Flask(__name__)
+
+# Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///database2.db')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', "secret-change-this-in-production")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event system
+
 # Configure Flask-Caching for performance optimization
 app.config['CACHE_TYPE'] = 'simple'  # Use simple in-memory cache
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 5 minutes cache timeout
 
+# Initialize extensions
 db = SQLAlchemy(app)
 cache = Cache(app)
-app.app_context().push()
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'm85830874@gmail.com'
-app.config['MAIL_PASSWORD'] = 'wplpnspxnnnlgvwh'
+
+# Email configuration
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 465))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'False').lower() == 'true'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'True').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'm85830874@gmail.com')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'wplpnspxnnnlgvwh')
 mail = Mail(app)
 
 
+# Login manager setup
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -64,28 +87,38 @@ try:
         questions = json.load(f)
 except FileNotFoundError:
     questions = []
-    print("Error: questions.json not found")
+    print("Warning: FIRE2.json not found, using empty questions list")
+
+# Database Models
+class User(db.Model, UserMixin):
+    __tablename__ = 'user'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
+    password = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(50), nullable=True)  # Increased length for emails
+    
+    # Relationship with proper back_populates
+    transactions = db.relationship('Dashinfo', back_populates='user_ref', cascade='all, delete-orphan')
+
+class Dashinfo(db.Model):
+    __tablename__ = 'dashinfo'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(10), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    type = db.Column(db.String(10), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    amount = db.Column(db.Integer)
+    total = db.Column(db.Float)
+    
+    # Relationship with proper back_populates
+    user_ref = db.relationship('User', back_populates='transactions')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
-
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False, unique = True)
-    password = db.Column(db.String(20), nullable = False)
-    email = db.Column(db.String(20), nullable = True)
-    transactions=db.relationship('Dashinfo', backref="user_id", uselist=True,lazy="select")
-
-class Dashinfo(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    ticker = db.Column(db.String(10), nullable=False, unique=False)
-    price = db.Column(db.Float, nullable=False, unique=False)
-    date = db.Column(db.DateTime, nullable=False, unique=False)
-    type = db.Column(db.String(10), nullable=False)
-    user = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    amount = db.Column(db.Integer)
-    total = db.Column(db.Float)
+    return db.session.get(User, int(user_id))  # Updated for SQLAlchemy 2.x
 
 
 
@@ -528,5 +561,23 @@ def quiz_result():
     session.pop('quiz_feedback', None)
     return render_template('quiz_result.html', score=score, total=total)
 
+# Initialize database tables
+def init_db():
+    """Initialize database tables"""
+    try:
+        with app.app_context():
+            db.create_all()
+            print("Database tables created successfully")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+
 if __name__ == "__main__":
-    app.run(debug=True) #False, port=5000, host="0.0.0.0")
+    # Initialize database
+    init_db()
+    
+    # Use environment variables for production configuration
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    port = int(os.getenv('PORT', 5000))
+    host = os.getenv('HOST', '0.0.0.0')
+    
+    app.run(debug=debug_mode, port=port, host=host)

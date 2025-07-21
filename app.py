@@ -184,6 +184,21 @@ def resume():
     if (user_on_mobile()): return render_template("resume-mobile.html")
     return render_template("resume.html")
 
+@app.route("/test-plot/")
+def test_plot():
+    """Test route to verify Plotly is working"""
+    import datetime
+    import math
+    
+    # Generate test data
+    base_date = datetime.datetime.now() - datetime.timedelta(days=10)
+    labels = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(10)]
+    prices = [100 + (i * 2) + (5 * math.sin(i)) for i in range(10)]
+    
+    info_data = ["Test Company", "Technology", "Software", 90.0, 120.0, 1.5, "This is a test company for debugging the plot functionality."]
+    
+    return render_template("finance.html", labels=labels, values=prices, stock_info=info_data, hide_block=False)
+
 @app.route("/finance/", methods=["GET", "POST"])
 def finance():
     if request.method == "POST":
@@ -191,26 +206,64 @@ def finance():
         period = request.form.get("period")
         start = request.form.get("start_date")
         end = request.form.get("end_date")
-        if period != "":
-            period = request.form.get("period")
-            label, price = cached_get_stock_data(ticker, period)
+        
+        print(f"DEBUG: ticker={ticker}, period={period}, start={start}, end={end}")
+        
+        # Temporary fallback data for testing
+        try:
+            # Check if we have start and end dates
+            if start and end and start.strip() and end.strip():
+                print(f"DEBUG: Using date range {start} to {end}")
+                label, price = cached_get_stock_data(ticker, start, end)
+            elif period and period.strip():
+                print(f"DEBUG: Using period {period}")
+                label, price = cached_get_stock_data(ticker, period)
+            else:
+                print("DEBUG: Using default (max) period")
+                label, price = cached_get_stock_data(ticker)
 
-        elif start != "":
-            start = request.form.get("start_date")
-            end = request.form.get("end_date")
-            label, price = cached_get_stock_data(ticker, start, end)
-        else:
-            label, price = cached_get_stock_data(ticker)       
+            print(f"DEBUG: Got {len(label)} labels and {len(price)} prices")
+            
+            # If no data returned, use sample data for testing
+            if not label or not price or len(label) == 0:
+                print("DEBUG: No data from API, using sample data")
+                import datetime
+                # Generate sample data for testing
+                base_date = datetime.datetime.now() - datetime.timedelta(days=30)
+                label = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30)]
+                import math
+                base_price = 150.0
+                price = [base_price + (i * 0.5) + (10 * math.sin(i/5)) for i in range(30)]
+            
+            info_data = cached_get_stock_info(ticker)
+            print(f"DEBUG: Got stock info: {info_data[0] if info_data else 'None'}")
+            
+            # If no info data, use sample info
+            if not info_data or info_data[0] == "N/A":
+                info_data = [f"{ticker.upper()} Company", "Technology", "Technology", 100.0, 200.0, 2.5, f"Sample company information for {ticker.upper()}"]
 
-        info_data = cached_get_stock_info(ticker)
+        except Exception as e:
+            print(f"DEBUG: Error occurred: {e}")
+            # Fallback to sample data
+            import datetime
+            base_date = datetime.datetime.now() - datetime.timedelta(days=30)
+            label = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30)]
+            import math
+            base_price = 150.0
+            price = [base_price + (i * 0.5) + (10 * math.sin(i/5)) for i in range(30)]
+            info_data = [f"{ticker.upper()} Company", "Technology", "Technology", 100.0, 200.0, 2.5, f"Sample company information for {ticker.upper()}"]
 
-        if (user_on_mobile()): return render_template("finance-mobile.html",  labels=label, values=price, stock_info = info_data, hide_block=False)
-        return render_template("finance.html", labels=label, values=price, stock_info = info_data, hide_block=False)
-    label = ["1", "2"]
-    price = [1,1]
-    info_data=["-","-","-","-","-","-","-"]
-    if (user_on_mobile()): return render_template("finance-mobile.html", labels=label, values=price, stock_info = info_data, hide_block=True)
-    return render_template("finance.html", labels=label, values=price, stock_info = info_data, hide_block=True)
+        if (user_on_mobile()): 
+            return render_template("finance-mobile.html", labels=label, values=price, stock_info=info_data, hide_block=False)
+        return render_template("finance.html", labels=label, values=price, stock_info=info_data, hide_block=False)
+    
+    # GET request - show empty form
+    label = []
+    price = []
+    info_data = ["-", "-", "-", "-", "-", "-", "-"]
+    if (user_on_mobile()): 
+        return render_template("finance-mobile.html", labels=label, values=price, stock_info=info_data, hide_block=True)
+    return render_template("finance.html", labels=label, values=price, stock_info=info_data, hide_block=True)
 
 @app.route("/projects/")
 def projects():

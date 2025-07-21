@@ -81,7 +81,7 @@
     <section class="section-sm bg-gradient-gray text-black">
 
         <div class="container z-2">
-            <div id="lineChart2"></div>
+            <div id="lineChart2" style="min-height: 400px;"></div>
         </div>
     </section>
     <section class="section-sm bg-gradient-gray text-black">
@@ -114,31 +114,109 @@
 {% endblock content%}
 {% block javascripts %}
 
-<script defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+{% if not hide_block %}
 <script>
-    // Use Jinja2 to pass Python data to JavaScript
-    var labels = {{ labels | tojson | safe }};
-    var closingPrices = {{ values | tojson | safe }};
+    // Wait for DOM and Plotly to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Plotly is loaded
+        if (typeof Plotly === 'undefined') {
+            console.error('Plotly is not loaded');
+            document.getElementById('lineChart2').innerHTML = '<p class="text-center text-danger">Chart library failed to load.</p>';
+            return;
+        }
+        
+        console.log('Initializing Plotly chart...');
+        
+        try {
+            var labels = {{ labels | tojson | safe }};
+            var closingPrices = {{ values | tojson | safe }};
+            
+            console.log('Labels:', labels);
+            console.log('Closing Prices:', closingPrices);
+            console.log('Labels length:', labels ? labels.length : 'undefined');
+            console.log('Prices length:', closingPrices ? closingPrices.length : 'undefined');
+            
+            // Check if data exists and is valid
+            if (!labels || !closingPrices || labels.length === 0 || closingPrices.length === 0) {
+                console.log('No data available for plotting');
+                document.getElementById('lineChart2').innerHTML = '<p class="text-center">No stock data available. Please enter a valid ticker symbol and try again.</p>';
+                return;
+            }
+            
+            // Verify the chart container exists
+            var chartDiv = document.getElementById('lineChart2');
+            if (!chartDiv) {
+                console.error('Chart container not found');
+                return;
+            }
+            
+            console.log('Chart container found, creating chart...');
+            
+            // Create the data trace
+            var trace = {
+                x: labels,
+                y: closingPrices,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Stock Price',
+                line: {
+                    color: '#007bff',
+                    width: 2
+                }
+            };
 
-    // Create the data trace
-    var trace = {
-        x: labels,
-        y: closingPrices,
-        type: 'line'
-    };
+            // Create the data array
+            var data = [trace];
 
-    // Create the data array
-    var data = [trace];
+            // Layout options
+            var layout = {
+                title: {
+                    text: 'Stock Price History',
+                    font: { size: 18 }
+                },
+                xaxis: {
+                    title: 'Date',
+                    type: 'date'
+                },
+                yaxis: {
+                    title: 'Price ($)'
+                },
+                margin: {
+                    l: 50,
+                    r: 50,
+                    t: 50,
+                    b: 50
+                },
+                showlegend: true,
+                autosize: true
+            };
 
-    // Layout options (if needed)
-    var layout = {
-        title: 'Stock history'
-    };
-
-    // Create the line chart
-    Plotly.newPlot('lineChart2', data, layout, { scrollZoom: true });
+            // Create the line chart
+            Plotly.newPlot('stockChart', data, layout, { 
+                scrollZoom: true,
+                displayModeBar: true,
+                responsive: true
+            }).then(function() {
+                console.log('Chart created successfully');
+            }).catch(function(error) {
+                console.error('Error creating Plotly chart:', error);
+                document.getElementById('stockChart').innerHTML = '<p class="text-center text-danger">Failed to create chart.</p>';
+            });
+            
+        } catch (error) {
+            console.error('Error in chart initialization:', error);
+            document.getElementById('stockChart').innerHTML = '<p class="text-center text-danger">Error loading chart data: ' + error.message + '</p>';
+        }
+    });
 </script>
+{% else %}
+<script>
+    // No data to display
+    console.log('Finance page loaded without data (hide_block = true)');
+</script>
+{% endif %}
 <script>
     // JavaScript to allow only one checkbox to be selected
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');

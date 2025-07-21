@@ -194,7 +194,7 @@
             };
 
             // Create the line chart
-            Plotly.newPlot('stockChart', data, layout, { 
+            Plotly.newPlot('lineChart2', data, layout, { 
                 scrollZoom: true,
                 displayModeBar: true,
                 responsive: true
@@ -202,12 +202,12 @@
                 console.log('Chart created successfully');
             }).catch(function(error) {
                 console.error('Error creating Plotly chart:', error);
-                document.getElementById('stockChart').innerHTML = '<p class="text-center text-danger">Failed to create chart.</p>';
+                document.getElementById('lineChart2').innerHTML = '<p class="text-center text-danger">Failed to create chart.</p>';
             });
             
         } catch (error) {
             console.error('Error in chart initialization:', error);
-            document.getElementById('stockChart').innerHTML = '<p class="text-center text-danger">Error loading chart data: ' + error.message + '</p>';
+            document.getElementById('lineChart2').innerHTML = '<p class="text-center text-danger">Error loading chart data: ' + error.message + '</p>';
         }
     });
 </script>

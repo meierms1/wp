@@ -13,8 +13,8 @@ WTForms==3.1.2
 SQLAlchemy>=2.0.0
 
 # Web server for production
-Werkzeug==3.0.4
-Jinja2==3.1.4
+Werkzeug==3.0.6
+Jinja2==3.1.6
 
 # Data science and financial data
 numpy==1.26.4
@@ -29,7 +29,7 @@ urllib3>=2.0.0,<3.0.0
 requests>=2.32.0
 
 # Production WSGI server (updated)
-gunicorn==22.0.0
+gunicorn==23.0.0
 
 # Additional dependencies that might be needed
 python-dotenv>=1.0.0

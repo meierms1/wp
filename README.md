@@ -2,8 +2,9 @@
 
 A comprehensive Flask-based portfolio website showcasing professional experience, research projects, and interactive tools for financial analysis and engineering calculations.
 
-![Portfolio Website](https://img.shields.io/badge/Flask-2.2.5-blue)
+![Portfolio Website](https://img.shields.io/badge/Flask-3.0.3-blue)
 ![Python](https://img.shields.io/badge/Python-3.8+-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## 🌟 Overview
@@ -32,7 +33,8 @@ Visit the live website: [Your Website URL]
 
 ### Technical Features
 - **Performance Optimized**: Flask-Caching for API calls and database queries
-- **Database Integration**: SQLAlchemy with SQLite for user management
+- **Database Integration**: SQLAlchemy 2.x with PostgreSQL for production, SQLite for local development
+- **Cloud Ready**: Production deployment with persistent PostgreSQL database
 - **Security**: CSRF protection with Flask-WTF
 - **Lazy Loading**: Optimized import loading for better performance
 - **Mobile Detection**: Automatic mobile/desktop template routing
@@ -45,8 +47,8 @@ Visit the live website: [Your Website URL]
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Framework**: Flask 2.2.5
-- **Database**: SQLAlchemy with SQLite
+- **Framework**: Flask 3.0.3
+- **Database**: SQLAlchemy 2.x with PostgreSQL (production) / SQLite (development)
 - **Authentication**: Flask-Login
 - **Forms**: Flask-WTF with WTForms
 - **Email**: Flask-Mail
@@ -62,6 +64,7 @@ Visit the live website: [Your Website URL]
 ### Data & APIs
 - **Financial Data**: Yahoo Finance (yfinance)
 - **Data Processing**: NumPy, Pandas
+- **Database**: PostgreSQL with psycopg2-binary driver
 - **Calculations**: Custom engineering calculators
 
 ### Development Tools
@@ -78,7 +81,8 @@ wp/
 ├── calculator.py          # Engineering material property calculators
 ├── apitk.py              # API tokens and configuration
 ├── requirements.txt       # Python dependencies
-├── database2.db          # SQLite database
+├── database2.db          # SQLite database (local development)
+├── wsgi.py               # Production WSGI entry point
 ├── README.md             # Project documentation
 ├── 
 ├── templates/            # HTML templates
@@ -103,8 +107,7 @@ wp/
 │   └── resume.pdf       # Downloadable resume
 ├── 
 ├── instance/            # Instance-specific files
-│   └── database.db      # Development database
-└── 
+│   └── database.db      # Local development database
 └── __pycache__/         # Python cache files
 ```
 
@@ -140,14 +143,19 @@ wp/
    export FLASK_ENV=development  # For development
    ```
 
-5. **Initialize database**
+5. **Initialize database (Local Development)**
    ```bash
-   python -c "from app import db; db.create_all()"
+   python -c "from app import app, db; app.app_context().push(); db.create_all()"
    ```
 
 6. **Run the application**
    ```bash
+   python app.py
+   # OR for development with Flask CLI:
+   export FLASK_APP=app.py
+   export FLASK_ENV=development
    flask run
+   ```
    ```
 
 7. **Access the website**
@@ -155,52 +163,89 @@ wp/
 
 ### Production Deployment
 
-For production deployment, consider:
+For production deployment with PostgreSQL:
 
-1. **Use a production WSGI server**
+1. **Database Setup**
+   - Set up PostgreSQL database (recommended: Neon, Railway, or Google Cloud SQL)
+   - Obtain database connection string
+
+2. **Environment Variables**
+   ```bash
+   export DATABASE_URL=postgresql://username:password@host:port/database
+   export SECRET_KEY=your-secure-secret-key
+   export FLASK_ENV=production
+   ```
+
+3. **Deploy with WSGI server**
    ```bash
    pip install gunicorn
-   gunicorn app:app
+   gunicorn wsgi:app
    ```
 
-2. **Set production environment variables**
-   ```bash
-   export FLASK_ENV=production
-   export SECRET_KEY=your-secret-key
-   ```
-
-3. **Configure database for production**
-   - Use PostgreSQL or MySQL instead of SQLite
-   - Update `SQLALCHEMY_DATABASE_URI` in app.py
+4. **Cloud Deployment (Zeet.co, Heroku, Google Cloud)**
+   - Set `DATABASE_URL` environment variable in your deployment platform
+   - Application automatically handles PostgreSQL connection and table creation
+   - No additional configuration needed - fully cloud-ready!
 
 ## 📊 Database Schema
 
-### User Model
-- `id`: Primary key
-- `username`: Unique username
-- `password`: Hashed password
+The application uses **PostgreSQL** for production and **SQLite** for local development, with automatic switching based on the `DATABASE_URL` environment variable.
 
-### Dashinfo Model
-- `id`: Primary key
-- `user_id`: Foreign key to User
-- `stock_name`: Stock ticker symbol
-- `stock_shares`: Number of shares
-- `stock_price`: Price per share
+### User Model
+- `id`: Primary key (Integer)
+- `username`: Unique username (String, 20 chars)
+- `password`: Password (String, 20 chars)
+- `email`: Email address (String, 50 chars)
+
+### Dashinfo Model (Transaction Records)
+- `id`: Primary key (Integer)
+- `ticker`: Stock ticker symbol (String, 10 chars)
+- `price`: Stock price at time of transaction (Float)
+- `date`: Transaction date (DateTime)
+- `type`: Transaction type - "BUY" or "SELL" (String, 10 chars)
+- `user`: Foreign key to User.id (Integer)
+- `amount`: Number of shares (Integer)
+- `total`: Total transaction value (Float)
+
+### Database Features
+- **Automatic Migration**: Tables created automatically on first run
+- **Foreign Key Relationships**: Proper user-transaction relationships
+- **Data Persistence**: All user data persists across deployments
+- **Query Optimization**: Aggregated queries for performance
+- **Error Handling**: Robust database error handling with rollbacks
 
 ## 🔑 Configuration
 
 ### Environment Variables
-- `SECRET_KEY`: Flask secret key for sessions
-- `MAIL_USERNAME`: Email username for contact form
-- `MAIL_PASSWORD`: Email password
-- `SQLALCHEMY_DATABASE_URI`: Database connection string
+- `DATABASE_URL`: PostgreSQL connection string (automatically handles SQLite fallback for local development)
+- `SECRET_KEY`: Flask secret key for sessions and security
+- `MAIL_USERNAME`: Email username for contact form functionality
+- `MAIL_PASSWORD`: Email password for SMTP authentication
+- `FLASK_ENV`: Environment setting (development/production)
+- `FLASK_DEBUG`: Debug mode setting (True/False)
+- `PORT`: Server port (default: 5000)
+- `HOST`: Server host (default: 0.0.0.0 for production)
+
+### Database Configuration
+- **Production**: PostgreSQL with full ACID compliance and concurrent user support
+- **Development**: SQLite for easy local development
+- **Automatic Switching**: Based on `DATABASE_URL` environment variable
+- **Connection Handling**: Automatic postgres:// to postgresql:// URL conversion for SQLAlchemy 2.x compatibility
 
 ### Caching Configuration
-- API calls cached for 5-10 minutes
-- Database queries optimized with aggregation
+- API calls cached for 5-10 minutes to reduce external API load
+- Database queries optimized with aggregation to prevent N+1 queries
+- Static assets cached for optimal performance
 - Static assets cached for performance
 
 ## 🎯 Key Features Explained
+
+### PostgreSQL Database Integration
+- **Cloud-Ready**: Seamless integration with cloud PostgreSQL providers (Neon, Railway, Google Cloud SQL)
+- **Data Persistence**: All user registrations and transactions persist across deployments
+- **Scalability**: Supports multiple concurrent users with proper connection pooling
+- **Modern SQLAlchemy**: Uses SQLAlchemy 2.x for optimal performance and security
+- **Automatic Setup**: Database tables created automatically on first deployment
 
 ### Stock Analysis Tool
 - Real-time stock data via Yahoo Finance API
@@ -208,6 +253,7 @@ For production deployment, consider:
 - Multiple time period selection (1D to Max)
 - Company information display
 - Dividend yield calculations
+- Cached API calls for improved performance
 
 ### Engineering Calculators
 - Material property calculations
@@ -235,7 +281,41 @@ For production deployment, consider:
 - Input validation and sanitization
 - SQL injection prevention via SQLAlchemy ORM
 
-## 🚀 Performance Features
+## � Database Migration & Deployment Guide
+
+### From SQLite to PostgreSQL
+The application has been upgraded from SQLite to PostgreSQL for production deployments while maintaining SQLite compatibility for local development.
+
+#### Why PostgreSQL?
+- **Data Persistence**: Cloud platforms often use ephemeral storage; PostgreSQL provides permanent data storage
+- **Concurrent Users**: Better support for multiple simultaneous users
+- **Scalability**: Professional-grade database with advanced features
+- **Backup & Recovery**: Automated backups and point-in-time recovery
+
+#### Deployment Steps
+1. **Choose a PostgreSQL Provider**:
+   - **Neon** (recommended): Free tier with automatic scaling
+   - **Railway**: Simple deployment with built-in PostgreSQL
+   - **Google Cloud SQL**: Enterprise-grade with advanced features
+   - **Heroku Postgres**: Easy integration with Heroku deployments
+
+2. **Set Environment Variable**:
+   ```bash
+   DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+   ```
+
+3. **Deploy**: The application automatically:
+   - Detects PostgreSQL connection
+   - Creates all necessary tables
+   - Handles user registration and data persistence
+
+#### Local Development
+For local development, simply run without `DATABASE_URL` and the app uses SQLite:
+```bash
+python app.py  # Uses SQLite automatically
+```
+
+## �🚀 Performance Features
 
 - **Caching Strategy**: Flask-Caching for API calls and database queries
 - **Lazy Loading**: Heavy libraries loaded only when needed
@@ -271,7 +351,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - University of Colorado for research support
 - Department of Energy for funding hydrogen research
 - Office of Naval Research for propellant simulation support
+- **Neon Database** for providing excellent PostgreSQL cloud hosting
+- **Flask Community** for the amazing framework and extensions
 - Open-source community for excellent libraries and frameworks
+- **PostgreSQL Global Development Group** for the robust database system
 
 ## 📞 Support
 

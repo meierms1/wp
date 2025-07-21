@@ -115,29 +115,127 @@
 
 
 {% block javascripts %}
-<script defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script>
-    // Sample data for the pie chart
-    var pieData = [{
-        labels: {{ tickers_list | tojson | safe}},
-        values: {{ sum_price | tojson | safe }},
-    type: 'pie',
-        
-    }];
-    // Create the pie chart
-    console.log(pieData);
-    Plotly.newPlot('pieChart', pieData);
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+<!-- Inject data from Flask into the page -->
+<script id="chart-data" type="application/json">
+{
+    "tickers": {{ tickers_list|tojson|safe }},
+    "values": {{ sum_price|tojson|safe }},
+    "changes": {{ local_changes|tojson|safe }}
+}
 </script>
+
 <script>
-    var local_ = {{ local_changes | tojson | safe}}
-    var col = local_.map(function (value) { return value < 0 ? 'red' : 'green'; });
-    var data = [
-        {
-            type: 'bar',
-            x: {{ tickers_list| tojson | safe}},
-            y: local_,
-            marker: { color: col }
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        // Get data from the JSON script tag
+        const dataElement = document.getElementById('chart-data');
+        const chartData = JSON.parse(dataElement.textContent);
+        
+        const tickersList = chartData.tickers || [];
+        const sumPrice = chartData.values || [];
+        const localChanges = chartData.changes || [];
+        
+        // Debug logging
+        console.log('Tickers List:', tickersList);
+        console.log('Sum Price:', sumPrice);
+        console.log('Local Changes:', localChanges);
+        
+        // Check if we have valid data
+        if (tickersList.length === 0) {
+            console.warn('No ticker data available');
+            document.getElementById('pieChart').innerHTML = '<div style="text-align: center; padding: 50px;">No stock data available</div>';
+            document.getElementById('RelativePrice').innerHTML = '<div style="text-align: center; padding: 50px;">No gain/loss data available</div>';
+            return;
+        }
+        
+        // Create Pie Chart for stock allocation
+        const pieData = [{
+            labels: tickersList,
+            values: sumPrice,
+            type: 'pie',
+            textinfo: 'label+percent',
+            textposition: 'auto',
+            hovertemplate: '<b>%{label}</b><br>Value: $%{value}<br>Percentage: %{percent}<extra></extra>',
+            marker: {
+                colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F']
+            }
         }];
-    Plotly.newPlot('RelativePrice', data);
+        
+        const pieLayout = {
+            title: {
+                text: 'Portfolio Allocation',
+                font: { size: 16 }
+            },
+            showlegend: true,
+            margin: { t: 50, b: 20, l: 20, r: 20 },
+            height: 400,
+            width: 400
+        };
+        
+        const pieConfig = {
+            responsive: true,
+            displayModeBar: false
+        };
+        
+        console.log('Creating pie chart...');
+        Plotly.newPlot('pieChart', pieData, pieLayout, pieConfig);
+        
+        // Create Bar Chart for gains/losses
+        const colors = localChanges.map(value => value >= 0 ? '#2ECC71' : '#E74C3C');
+        
+        const barData = [{
+            x: tickersList,
+            y: localChanges,
+            type: 'bar',
+            marker: {
+                color: colors,
+                line: {
+                    color: '#34495E',
+                    width: 1
+                }
+            },
+            text: localChanges.map(val => '$' + val.toFixed(2)),
+            textposition: 'auto',
+            hovertemplate: '<b>%{x}</b><br>Change: $%{y:.2f}<extra></extra>'
+        }];
+        
+        const barLayout = {
+            title: {
+                text: 'Gains & Losses by Stock',
+                font: { size: 16 }
+            },
+            xaxis: {
+                title: 'Stocks',
+                tickangle: -45
+            },
+            yaxis: {
+                title: 'Change ($)',
+                zeroline: true,
+                zerolinewidth: 2,
+                zerolinecolor: '#34495E'
+            },
+            margin: { t: 50, b: 80, l: 60, r: 20 },
+            height: 400,
+            width: 400
+        };
+        
+        const barConfig = {
+            responsive: true,
+            displayModeBar: false
+        };
+        
+        console.log('Creating bar chart...');
+        Plotly.newPlot('RelativePrice', barData, barLayout, barConfig);
+        
+        console.log('Both charts created successfully');
+        
+    } catch (error) {
+        console.error('Error creating charts:', error);
+        document.getElementById('pieChart').innerHTML = '<div style="text-align: center; padding: 50px; color: red;">Error loading chart data</div>';
+        document.getElementById('RelativePrice').innerHTML = '<div style="text-align: center; padding: 50px; color: red;">Error loading chart data</div>';
+    }
+});
 </script>
 {% endblock javascripts %}

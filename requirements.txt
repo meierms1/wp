@@ -19,7 +19,7 @@ Jinja2==3.1.4
 # Data science and financial data
 numpy==1.26.4
 pandas==2.2.2
-yfinance==0.2.28
+yfinance==0.2.65
 
 # Dependencies for yfinance
 appdirs>=1.4.4

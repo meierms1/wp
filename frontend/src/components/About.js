@@ -13,7 +13,10 @@ import {
 const About = () => {
   const skills = [
     { name: 'Python', level: 95, icon: CodeBracketIcon },
-    { name: 'JavaScript', level: 90, icon: CodeBracketIcon },
+    { name: 'C++', level: 85, icon: CodeBracketIcon },
+    { name: 'SQL', level: 80, icon: CodeBracketIcon },
+    { name: 'Git', level: 95, icon: CpuChipIcon },
+    { name: 'Tableu', level: 80, icon: ChartBarIcon },
     { name: 'React', level: 88, icon: GlobeAltIcon },
     { name: 'Flask', level: 92, icon: CodeBracketIcon },
     { name: 'Data Science', level: 85, icon: ChartBarIcon },
@@ -78,24 +81,27 @@ const About = () => {
               <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
                 <div className="flex items-center mb-6">
                   <UserIcon className="w-8 h-8 text-blue-400 mr-4" />
-                  <h2 className="text-3xl font-bold text-white">My Story</h2>
+                  <h2 className="text-3xl font-bold text-white">Summary</h2>
                 </div>
                 <div className="space-y-4 text-gray-300 leading-relaxed">
                   <p>
-                    Welcome to my digital space! I'm a software developer who found my passion at the 
-                    intersection of technology and finance. My journey began with curiosity about how 
-                    markets work and evolved into building tools that help people make better financial decisions.
+                   Welcome to my digital space! I specialize in computational modeling, data science,                  
+                   and Finite Element Analysis, with hands-on experience in C++, Python, and SQL. 
+                   My journey has taken me from leading large teams in the food industry to developing
+                    open-source engineering software now used at universities and national labs. 
+                    I hold a Doctor of Engineering from the University of Colorado, and my work blends 
+                    deep technical expertise with creative problem-solving.
                   </p>
                   <p>
-                    What started as a hobby project to track my own investments has grown into a 
-                    comprehensive platform featuring portfolio management, market analysis, and 
-                    educational tools. I believe technology should democratize access to financial 
-                    literacy and investment opportunities.
+                    Whether it's building scalable data pipelines, applying machine learning to real-world challenges, 
+                    or optimizing production systems, I thrive in cross-functional environments and enjoy collaborating 
+                    with people from all backgrounds. My career includes roles as a postdoctoral researcher, financial advisor, 
+                    and production supervisor, always with a focus on efficiency and innovation.
                   </p>
                   <p>
-                    When I'm not coding, you'll find me analyzing market trends, reading about emerging 
-                    technologies, or experimenting with new frameworks. I'm particularly excited about 
-                    the potential of AI and machine learning in financial modeling.
+                    Fluent in English, Portuguese, and Spanish, I bring a global perspective to every project. Outside of work, 
+                    you'll find me hiking desert trails, skiing mountain slopes, or exploring new places with friends. 
+                    This webpage is built with Flask and serves as a showcase for my technical and creative work.
                   </p>
                 </div>
               </div>
@@ -110,22 +116,22 @@ const About = () => {
                   <div className="border-l-4 border-blue-400 pl-6">
                     <h3 className="text-xl font-semibold text-white mb-2">Software Development</h3>
                     <p className="text-gray-300">
-                      Full-stack development with expertise in Python, JavaScript, and modern web frameworks. 
-                      Specialized in building scalable financial applications and data visualization tools.
+                      Full-stack development with expertise in Python, C++, and modern frameworks. 
+                      Specialized in building scalable software applications and data visualization tools.
                     </p>
                   </div>
                   <div className="border-l-4 border-purple-400 pl-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">Financial Technology</h3>
+                    <h3 className="text-xl font-semibold text-white mb-2">Computer-aided Engineering (CAE)</h3>
                     <p className="text-gray-300">
-                      Deep understanding of financial markets, portfolio theory, and quantitative analysis. 
-                      Experience with market data APIs and algorithmic trading concepts.
+                      Deep understanding of mathematical modeling for CAE, including all three discretization schemes (finite difference, finite element, and finite volume),
+                      and both explicity and implicity implementations. Particularly, I specialize in evolving interface tracked through phase-field modeling.
                     </p>
                   </div>
                   <div className="border-l-4 border-pink-400 pl-6">
                     <h3 className="text-xl font-semibold text-white mb-2">Data Science</h3>
                     <p className="text-gray-300">
                       Proficient in data analysis, machine learning, and statistical modeling. 
-                      Applied these skills to financial forecasting and risk assessment.
+                      Applied these skills to forecasting and classification problems.
                     </p>
                   </div>
                 </div>

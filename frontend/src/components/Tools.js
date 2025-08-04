@@ -158,7 +158,7 @@ const Tools = () => {
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent mb-6">
-              Financial Tools
+              Tools
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Enhance your financial knowledge with our calculator and quiz tools.

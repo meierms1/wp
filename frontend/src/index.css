@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans antialiased;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-secondary-300 text-base font-medium rounded-lg text-secondary-700 bg-white hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 transition-all duration-200 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-accent-600 hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  .card {
+    @apply bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 transition-all duration-300 hover:shadow-2xl hover:transform hover:scale-105;
+  }
+  
+  .card-dark {
+    @apply bg-secondary-800/90 backdrop-blur-lg rounded-2xl shadow-xl border border-secondary-700/20 transition-all duration-300 hover:shadow-2xl hover:transform hover:scale-105;
+  }
+  
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .input-field {
+    @apply block w-full px-4 py-3 border border-secondary-300 rounded-lg shadow-sm placeholder-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200;
+  }
+  
+  .nav-link {
+    @apply text-white/90 hover:text-white font-medium transition-all duration-200 hover:transform hover:scale-105;
+  }
+  
+  .hero-title {
+    @apply text-4xl md:text-6xl lg:text-7xl font-bold font-display text-white mb-6;
+  }
+  
+  .hero-subtitle {
+    @apply text-lg md:text-xl lg:text-2xl text-white/80 mb-8 max-w-3xl;
+  }
+  
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold font-display text-center mb-4;
+  }
+  
+  .section-subtitle {
+    @apply text-lg md:text-xl text-secondary-600 text-center mb-12 max-w-3xl mx-auto;
+  }
+}

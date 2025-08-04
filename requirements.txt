@@ -39,6 +39,10 @@ cryptography>=42.0.0
 psycopg2-binary>=2.9.0  # PostgreSQL support
 pymysql>=1.0.0         # MySQL support (alternative)
 
+# Security and authentication
+bcrypt>=4.0.0           # Password hashing
+flask-cors>=4.0.0       # Cross-origin resource sharing for React
+
 # Security updates
 Pillow>=10.0.0
 certifi>=2024.2.2

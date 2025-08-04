@@ -109,10 +109,10 @@ const Quiz = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Financial Knowledge Quiz
+              Fire Investigation Quiz
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              Test your understanding of financial concepts and investment strategies
+              Test your knowledge of NFPA 1033 and NFPA 921.
             </p>
           </div>
 

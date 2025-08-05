@@ -17,12 +17,15 @@ const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
   const [quizStarted, setQuizStarted] = useState(false);
+  const [numQuestions, setNumQuestions] = useState(10);
+  const [totalAvailable, setTotalAvailable] = useState(0);
 
   useEffect(() => {
-    fetchQuestions();
+    // Load initial info about available questions
+    fetchQuestionInfo();
   }, []);
 
   useEffect(() => {
@@ -35,10 +38,22 @@ const Quiz = () => {
     return () => clearTimeout(timer);
   }, [timeLeft, quizStarted, score]);
 
-  const fetchQuestions = async () => {
+  const fetchQuestionInfo = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/quiz/questions');
+      const response = await axios.get('/api/quiz/questions?count=1');
+      setTotalAvailable(response.data.total_available);
+    } catch (error) {
+      console.error('Error fetching question info:', error);
+      toast.error('Failed to load quiz information');
+    }
+  };
+
+  const fetchQuestions = async (count = 10) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/quiz/questions?count=${count}`);
       setQuestions(response.data.questions);
+      setTotalAvailable(response.data.total_available);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -56,11 +71,12 @@ const Quiz = () => {
 
   const handleSubmitQuiz = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/quiz/submit', {
-        answers
+      const response = await axios.post('/api/quiz/submit', {
+        answers,
+        questions
       });
-      setScore(response.data.score);
-      toast.success(`Quiz completed! Score: ${response.data.score}%`);
+      setScore(response.data.percentage);
+      toast.success(`Quiz completed! Score: ${response.data.percentage}%`);
     } catch (error) {
       console.error('Error submitting quiz:', error);
       toast.error('Failed to submit quiz');
@@ -68,6 +84,7 @@ const Quiz = () => {
   };
 
   const startQuiz = () => {
+    fetchQuestions(numQuestions);
     setQuizStarted(true);
     setTimeLeft(300);
   };
@@ -78,6 +95,7 @@ const Quiz = () => {
     setScore(null);
     setQuizStarted(false);
     setTimeLeft(300);
+    setQuestions([]);
   };
 
   const formatTime = (seconds) => {
@@ -128,15 +146,46 @@ const Quiz = () => {
                 Ready to test your knowledge?
               </h2>
               <div className="space-y-4 text-gray-600 dark:text-gray-300 mb-8">
-                <p>• {questions.length} multiple choice questions</p>
+                <p>• Multiple choice questions from FIRE investigation database</p>
                 <p>• 5 minutes time limit</p>
-                <p>• Covers investment basics, risk management, and financial planning</p>
+                <p>• Covers NFPA 1033 and NFPA 921 standards</p>
+                <p>• {totalAvailable} questions available in total</p>
               </div>
+              
+              {/* Number of Questions Selector */}
+              <div className="mb-8">
+                <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Select Number of Questions:
+                </label>
+                <div className="flex justify-center space-x-4">
+                  {[5, 10, 15, 20, 25].map((count) => (
+                    <button
+                      key={count}
+                      onClick={() => setNumQuestions(count)}
+                      disabled={count > totalAvailable}
+                      className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                        numQuestions === count
+                          ? 'bg-indigo-600 text-white'
+                          : count > totalAvailable
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  Selected: {numQuestions} questions
+                </p>
+              </div>
+
               <button
                 onClick={startQuiz}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                disabled={loading}
+                className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-3 px-8 rounded-lg transition-colors"
               >
-                Start Quiz
+                {loading ? 'Loading Questions...' : 'Start Quiz'}
               </button>
             </motion.div>
           ) : score !== null ? (
@@ -198,7 +247,7 @@ const Quiz = () => {
                   className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
                 >
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                    {questions[currentQuestion].question}
+                    {questions[currentQuestion].question_text}
                   </h3>
                   <div className="space-y-3">
                     {questions[currentQuestion].options.map((option, index) => (

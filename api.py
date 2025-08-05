@@ -35,7 +35,7 @@ import bcrypt
 app = Flask(__name__)
 
 # Enable CORS for React frontend
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"])
 
 # Configuration
 DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///database2.db')
@@ -368,7 +368,30 @@ def api_unit_convert():
 @app.route('/api/quiz/questions', methods=['GET'])
 def api_get_quiz_questions():
     try:
-        return jsonify({'success': True, 'questions': questions})
+        # Get the number of questions requested (default to 10)
+        num_questions = request.args.get('count', 10, type=int)
+        
+        # Ensure we don't exceed available questions
+        available_questions = len(questions)
+        if num_questions > available_questions:
+            num_questions = available_questions
+        
+        # Randomly select questions if count is specified
+        import random
+        if num_questions < available_questions:
+            selected_questions = random.sample(questions, num_questions)
+        else:
+            selected_questions = questions
+        
+        # Add sequential IDs for this quiz session
+        for i, question in enumerate(selected_questions):
+            question['id'] = i
+        
+        return jsonify({
+            'success': True, 
+            'questions': selected_questions,
+            'total_available': available_questions
+        })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
@@ -377,17 +400,20 @@ def api_submit_quiz():
     try:
         data = request.get_json()
         answers = data.get('answers', {})
+        quiz_questions = data.get('questions', [])
         
         score = 0
-        total_questions = len(questions)
+        total_questions = len(quiz_questions)
         
-        for i, question in enumerate(questions):
-            user_answer = answers.get(str(i))
+        # Compare user answers with correct answers from the submitted questions
+        for question in quiz_questions:
+            question_id = str(question.get('id'))
+            user_answer = answers.get(question_id)
             correct_answer = question.get('correct_answer')
             if user_answer == correct_answer:
                 score += 1
         
-        percentage = (score / total_questions * 100) if total_questions > 0 else 0
+        percentage = round((score / total_questions * 100), 1) if total_questions > 0 else 0
         
         return jsonify({
             'success': True,

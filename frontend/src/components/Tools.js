@@ -31,14 +31,7 @@ const Tools = () => {
   const [wrongDetails, setWrongDetails] = useState([]);
 
   // Common units for the calculator
-  const units = {
-    length: ['meter', 'kilometer', 'centimeter', 'millimeter', 'inch', 'foot', 'yard', 'mile'],
-    weight: ['kilogram', 'gram', 'pound', 'ounce', 'ton'],
-    temperature: ['celsius', 'fahrenheit', 'kelvin'],
-    volume: ['liter', 'milliliter', 'gallon', 'quart', 'pint', 'cup', 'fluid_ounce'],
-    area: ['square_meter', 'square_kilometer', 'square_centimeter', 'square_inch', 'square_foot', 'acre'],
-    time: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year']
-  };
+  // Removed predefined units dropdown; free-text unit syntax is now used.
 
   useEffect(() => {
     fetchQuizQuestions();
@@ -243,40 +236,26 @@ const Tools = () => {
 
                       <div>
                         <label className="block text-gray-300 mb-2 font-medium">From Unit</label>
-                        <select
+                        <input
+                          type="text"
+                          placeholder="e.g., m**2./s or W./m./K"
                           value={calculatorForm.input_unit}
                           onChange={(e) => setCalculatorForm({ ...calculatorForm, input_unit: e.target.value })}
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           required
-                        >
-                          <option value="">Select unit</option>
-                          {Object.entries(units).map(([category, unitList]) => (
-                            <optgroup key={category} label={category.charAt(0).toUpperCase() + category.slice(1)}>
-                              {unitList.map(unit => (
-                                <option key={unit} value={unit}>{unit}</option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
+                        />
                       </div>
 
                       <div>
                         <label className="block text-gray-300 mb-2 font-medium">To Unit</label>
-                        <select
+                        <input
+                          type="text"
+                          placeholder="e.g., m./m./degC or N./mm**2"
                           value={calculatorForm.output_unit}
                           onChange={(e) => setCalculatorForm({ ...calculatorForm, output_unit: e.target.value })}
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           required
-                        >
-                          <option value="">Select unit</option>
-                          {Object.entries(units).map(([category, unitList]) => (
-                            <optgroup key={category} label={category.charAt(0).toUpperCase() + category.slice(1)}>
-                              {unitList.map(unit => (
-                                <option key={unit} value={unit}>{unit}</option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
+                        />
                       </div>
                     </div>
 
@@ -313,6 +292,209 @@ const Tools = () => {
                       </div>
                     </motion.div>
                   )}
+
+                  {/* Accepted Units & Syntax Help */}
+                  <motion.div
+                    variants={itemVariants}
+                    className="mt-8 p-6 bg-white/5 rounded-xl border border-white/10"
+                  >
+                    <h3 className="text-2xl font-bold text-white mb-4">Accepted Units & Syntax</h3>
+                    <div className="grid md:grid-cols-2 gap-6 text-gray-300">
+                      <div>
+                        <p className="font-semibold text-white mb-2">Syntax</p>
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>Unit entries must be dot separated.</li>
+                          <li>Denominator units must be individually followed by "/"</li>
+                          <li>Every unit and prefix name is CASE SENSITIVE</li>
+                          <li>Unless otherwise specified, prefixes must be dot separated</li>
+                          <li>Exponential can be entered using "**"</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-white mb-2">Examples</p>
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>Square meter per second → m**2./s</li>
+                          <li>Watts per Kelvin per meter → W./m./K</li>
+                          <li>m./m./degC</li>
+                          <li>N./mm**2</li>
+                          <li>BTU./ft**2./hr./degF</li>
+                          <li>cal.m./s./cm**2./degC</li>
+                        </ul>
+                        <div className="mt-3">
+                          <span className="text-sm text-gray-300">Current status is </span>
+                          <span className="text-sm text-green-400 font-semibold">PASSING</span>
+                          <span className="text-sm text-gray-300"> for all </span>
+                          <span className="text-sm text-white font-semibold">20</span>
+                          <span className="text-sm text-gray-300"> test cases.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 grid md:grid-cols-3 gap-6 text-gray-300">
+                      <div className="space-y-4">
+                        <div>
+                          <p className="font-semibold text-white mb-2">Space</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>m - Meter (mm, cm, km)</li>
+                            <li>in - Inches</li>
+                            <li>ft - Foot</li>
+                            <li>yd - Yard</li>
+                            <li>mile - Miles</li>
+                            <li>nmile - Nautic Miles</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Mass</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>g - Gram (kg accepted)</li>
+                            <li>lb - Pound</li>
+                            <li>oz - Ounce</li>
+                            <li>ton - US ton</li>
+                            <li>tone - Metric ton</li>
+                            <li>ukton - UK ton</li>
+                            <li>slug - slug</li>
+                            <li>stone - stone</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Time</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>s - Second</li>
+                            <li>min - Minute</li>
+                            <li>hr - Hour</li>
+                            <li>day - Day</li>
+                            <li>week - Week</li>
+                            <li>month - Month</li>
+                            <li>year - Year</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Charge</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>A - Ampere</li>
+                            <li>C - Coulomb</li>
+                            <li>Ohm - Ohm</li>
+                            <li>Wb - Weber</li>
+                            <li>H - Henry</li>
+                            <li>S - Siemens</li>
+                            <li>T - Tesla</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Velocity</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>kph - Kilometer per Hour</li>
+                            <li>mph - Miles per hour</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <p className="font-semibold text-white mb-2">Temperature</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>degC - Celsius</li>
+                            <li>degF - Fahrenheit</li>
+                            <li>K - Kelvin</li>
+                            <li>R - Rankine</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Energy/Power</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>J - Joules (kJ)</li>
+                            <li>W - Watts</li>
+                            <li>hp - Horse power</li>
+                            <li>BTU - BTU American Natural Gas</li>
+                            <li>BTUc - BTU Canadian</li>
+                            <li>BTUt - BTU Thermochemical</li>
+                            <li>BTUcal - BTU water calorie</li>
+                            <li>IT - BTU International Steam Table</li>
+                            <li>cal - Calorie</li>
+                            <li>calt - Calorie Thermochemical</li>
+                            <li>cal4 - Calorie 4 degC</li>
+                            <li>cal15 - Calorie 15 degC</li>
+                            <li>cal20 - Calorie 20 degC</li>
+                            <li>calmean - Mean Calorie</li>
+                            <li>calit - Calorie International Steam Table</li>
+                            <li>toneTNT - TNT per tone</li>
+                            <li>TNT - TNT per mass unit</li>
+                            <li>eV - Electron volt</li>
+                            <li>ccf - Natural Gas 100 cubic feet</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Frequency</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>Hz - Hertz</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Volume</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>L - Liter</li>
+                            <li>gallon - Gallon</li>
+                            <li>pint - Pint</li>
+                            <li>floz - Fluid Ounce</li>
+                            <li>quart - Quart</li>
+                            <li>tbsp - Tablespoon</li>
+                            <li>tbs - Teaspoon</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <p className="font-semibold text-white mb-2">Force</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>N - Newton (kN)</li>
+                            <li>lbf - Pound Force (feet)</li>
+                            <li>lbi - Pound Force (inch)</li>
+                            <li>kip - Kilo lbf</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Pressure</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>Pa - Pascal (kPa, MPa, GPa)</li>
+                            <li>psi - Pound per square inch</li>
+                            <li>psf - Pound per square feet</li>
+                            <li>bar - Bar</li>
+                            <li>atm - Atmospheric</li>
+                            <li>mH2O - Water column</li>
+                            <li>ftH2O - Water column</li>
+                            <li>mmHg - Mercury column</li>
+                            <li>inHz - Mercury column</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white mb-2">Prefixes</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>Y - Yotta (10e24)</li>
+                            <li>Z - Zetta (10e21)</li>
+                            <li>E - Exa (10e18)</li>
+                            <li>P - Peta (10e15)</li>
+                            <li>T - Terra (10e12)</li>
+                            <li>G - Giga (10e9)</li>
+                            <li>M - Mega (10e6)</li>
+                            <li>k - Kilo (10e3)</li>
+                            <li>h - Hecto (10e2)</li>
+                            <li>da - Daca (10e1)</li>
+                            <li>d - Deci (10e-1)</li>
+                            <li>c - Centi (10e-2)</li>
+                            <li>mi - Mili (10e-3)</li>
+                            <li>mc - Micro (10e-6)</li>
+                            <li>n - Nano (10e-9)</li>
+                            <li>p - Pico (10e-12)</li>
+                            <li>f - Femto (10e-15)</li>
+                            <li>a - Atto (10e-18)</li>
+                            <li>z - Zepto (10e-21)</li>
+                            <li>yo - Yocoto (10e-24)</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             )}

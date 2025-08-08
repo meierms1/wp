@@ -709,6 +709,32 @@ def api_submit_quiz():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+# New: Unit converter API endpoint
+@app.route('/api/calculator/convert', methods=['POST'])
+def api_calculator_convert():
+    try:
+        data = request.get_json() or {}
+        input_value = data.get('input_value')
+        input_unit = (data.get('input_unit') or '').strip()
+        output_unit = (data.get('output_unit') or '').strip()
+
+        if input_value is None or not input_unit or not output_unit:
+            return jsonify({'success': False, 'message': 'input_value, input_unit and output_unit are required'}), 400
+        try:
+            value = float(input_value)
+        except (TypeError, ValueError):
+            return jsonify({'success': False, 'message': 'input_value must be a number'}), 400
+
+        # Basic safety limits
+        if len(input_unit) > 64 or len(output_unit) > 64:
+            return jsonify({'success': False, 'message': 'Unit strings are too long'}), 400
+
+        converter = GeneralConverter(value, input_unit, output_unit)
+        result = converter.converted_value
+        return jsonify({'success': True, 'result': result})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+
 # Initialize database tables
 def init_db():
     """Initialize database tables"""

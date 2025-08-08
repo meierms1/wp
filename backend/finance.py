@@ -28,12 +28,13 @@ def get_stock_data(stock, period="max", start=None, end=None):
             print(f"Warning: No data found for ticker {stock}")
             return [], []
         
-        # Fix: Access the values properly
+        # Build labels and prices safely (pandas Series of floats)
         df["Date"] = df.index.strftime('%Y-%m-%d')
-        labels = df["Date"].values.tolist()
-        prices = df["Close"].values.tolist()
-
-        prices = [i[0] for i in prices]
+        df["CloseP"] = df.Close
+        labels = df["Date"].tolist()
+        print("here")
+        print(df["Close"])
+        prices = df["CloseP"].astype(float).tolist()
         
         return labels, prices
     
@@ -53,7 +54,12 @@ def get_stock_info(stock):
     """
     try:
         ticker = yf.Ticker(stock)
-        info = ticker.info
+        info = {}
+        # Prefer get_info() on newer yfinance, fallback to .info
+        try:
+            info = ticker.get_info()
+        except Exception:
+            info = getattr(ticker, 'info', {}) or {}
         
         if not info:
             print(f"Warning: No information found for ticker {stock}")
@@ -61,16 +67,20 @@ def get_stock_info(stock):
         
         # Get dividend yield safely
         dividend_yield = 0.0
-        if 'trailingAnnualDividendYield' in info and info['trailingAnnualDividendYield']:
-            dividend_yield = info['trailingAnnualDividendYield'] * 100
+        dy = info.get('trailingAnnualDividendYield') or info.get('dividendYield')
+        if dy is not None:
+            try:
+                dividend_yield = float(dy) * (100.0 if dy <= 1 else 1.0)
+            except Exception:
+                dividend_yield = 0.0
         
         # Build company info with safe defaults
         company_info = [
-            info.get("longName", f"{stock.upper()} Company"),
+            info.get("longName") or info.get("shortName") or f"{stock.upper()} Company",
             info.get("industry", "N/A"),
             info.get("sector", "N/A"),
-            info.get("fiftyTwoWeekLow", 0.0),
-            info.get("fiftyTwoWeekHigh", 0.0),
+            float(info.get("fiftyTwoWeekLow", 0.0) or 0.0),
+            float(info.get("fiftyTwoWeekHigh", 0.0) or 0.0),
             dividend_yield,
             info.get("longBusinessSummary", f"No description available for {stock.upper()}")
         ]

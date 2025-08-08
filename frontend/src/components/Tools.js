@@ -19,7 +19,14 @@ const Tools = () => {
     input_unit: '',
     output_unit: ''
   });
+  const [materialForm, setMaterialForm] = useState({
+    first_property_name: '',
+    first_property_value: '',
+    second_property_name: '',
+    second_property_value: ''
+  });
   const [conversionResult, setConversionResult] = useState(null);
+  const [materialResult, setMaterialResult] = useState(null);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -51,7 +58,8 @@ const Tools = () => {
 
   const handleConvert = async (e) => {
     e.preventDefault();
-    if (!calculatorForm.input_value || !calculatorForm.input_unit || !calculatorForm.output_unit) {
+    const { input_value, input_unit, output_unit } = calculatorForm;
+    if (!input_value || !input_unit || !output_unit) {
       toast.error('Please fill in all fields');
       return;
     }
@@ -67,7 +75,43 @@ const Tools = () => {
       }
     } catch (error) {
       toast.error('Conversion failed');
-      console.error('Error converting units:', error);
+      console.error('Conversion error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMaterialProperties = async (e) => {
+    e.preventDefault();
+    const { first_property_name, first_property_value, second_property_name, second_property_value } = materialForm;
+    if (!first_property_name || !second_property_name || first_property_value === '' || second_property_value === '') {
+      toast.error('Please provide both properties and values');
+      return;
+    }
+    if (first_property_name === second_property_name) {
+      toast.error('Please choose two different properties');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMaterialResult(null);
+      const payload = {
+        first_property_name,
+        first_property_value: Number(first_property_value),
+        second_property_name,
+        second_property_value: Number(second_property_value)
+      };
+      const response = await axios.post('/api/calculator/material-properties', payload);
+      if (response.data.success) {
+        setMaterialResult(response.data.properties);
+        toast.success('Material properties computed!');
+      } else {
+        toast.error(response.data.message || 'Computation failed');
+      }
+    } catch (error) {
+      toast.error('Computation failed');
+      console.error('Error computing material properties:', error);
     } finally {
       setLoading(false);
     }
@@ -182,6 +226,7 @@ const Tools = () => {
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
               {[
                 { id: 'calculator', label: 'Unit Calculator', icon: CalculatorIcon },
+                { id: 'materialproperties', label: 'Material Properties', icon: CalculatorIcon },
                 { id: 'quiz', label: 'FIRE Quiz', icon: AcademicCapIcon }
               ].map((tab) => (
                 <motion.button
@@ -495,6 +540,139 @@ const Tools = () => {
                       </div>
                     </div>
                   </motion.div>
+                </motion.div>
+              </motion.div>
+            )}
+
+            {/* Marterial Properties */}
+            {activeTab === 'materialproperties' && (
+              <motion.div
+                key="materialproperties"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="max-w-4xl mx-auto"
+              >
+                <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+                  <div className="flex items-center mb-6">
+                    <CalculatorIcon className="w-8 h-8 text-purple-400 mr-4" />
+                    <h2 className="text-3xl font-bold text-white">Material Properties</h2>
+                  </div>
+
+                  <form onSubmit={handleMaterialProperties} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">First Property Value</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <input
+                            type="number"
+                            step="any"
+                            placeholder="Enter value"
+                            value={materialForm.first_property_value}
+                            onChange={(e) => setMaterialForm({ ...materialForm, first_property_value: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            required
+                          />
+                          <select
+                            value={materialForm.first_property_name}
+                            onChange={(e) => setMaterialForm({ ...materialForm, first_property_name: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            required
+                          >
+                            <option value="" disabled>Select property</option>
+                            <option value="young">Young Module</option>
+                            <option value="shear">Shear Module</option>
+                            <option value="bulk">Bulk Modulus</option>
+                            <option value="lame">Lame First Parameter</option>
+                            <option value="poisson">Poisson Coeficient</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Second Property Value</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <input
+                            type="number"
+                            step="any"
+                            placeholder="Enter value"
+                            value={materialForm.second_property_value}
+                            onChange={(e) => setMaterialForm({ ...materialForm, second_property_value: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            required
+                          />
+                          <select
+                            value={materialForm.second_property_name}
+                            onChange={(e) => setMaterialForm({ ...materialForm, second_property_name: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            required
+                          >
+                            <option value="" disabled>Select property</option>
+                            <option value="young">Young Module</option>
+                            <option value="shear">Shear Module</option>
+                            <option value="bulk">Bulk Modulus</option>
+                            <option value="lame">Lame First Parameter</option>
+                            <option value="poisson">Poisson Coeficient</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? (
+                        <ArrowPathIcon className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <>
+                          <CalculatorIcon className="w-6 h-6 mr-2" />
+                          Compute
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+
+                  {materialResult && (
+                    <div className="mt-8 text-black">
+                      <div className="overflow-x-auto">
+                        <table className="table-auto w-full text-left bg-white/90 rounded-lg">
+                          <thead>
+                            <tr>
+                              <th className="px-4 py-2">Property Name</th>
+                              <th className="px-4 py-2">Property Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td className="px-4 py-2">Young Modulus (E)</td>
+                              <td className="px-4 py-2">{materialResult.E}</td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2">Shear Modulus (G)</td>
+                              <td className="px-4 py-2">{materialResult.G}</td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2">Bulk Modulus (K)</td>
+                              <td className="px-4 py-2">{materialResult.K}</td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2">Lame First Parameter (λ)</td>
+                              <td className="px-4 py-2">{materialResult.lame}</td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2">Poisson Coefficient (ν)</td>
+                              <td className="px-4 py-2">{materialResult.Poisson}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               </motion.div>
             )}

@@ -55,9 +55,11 @@ app = Flask(
     instance_path=INSTANCE_DIR,
     instance_relative_config=True,
 )
-# Allow loading templates from backend templates folder
+# Allow loading templates from backend and root templates folders
+ROOT_TEMPLATES_DIR = os.path.join(PROJECT_ROOT, 'templates')
 app.jinja_loader = ChoiceLoader([
-    FileSystemLoader(BACKEND_TEMPLATES_DIR)
+    FileSystemLoader(BACKEND_TEMPLATES_DIR),
+    FileSystemLoader(ROOT_TEMPLATES_DIR),
 ])
 
 # Enable CORS for API routes (development)
@@ -732,6 +734,128 @@ def api_calculator_convert():
         converter = GeneralConverter(value, input_unit, output_unit)
         result = converter.converted_value
         return jsonify({'success': True, 'result': result})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+
+# New: Finance stock data API endpoint for React frontend
+@app.route('/api/finance/stock-data', methods=['POST'])
+def api_finance_stock_data():
+    try:
+        data = request.get_json(silent=True) or {}
+        ticker = (data.get('ticker_name') or data.get('ticker') or '').strip().upper()
+        if not ticker:
+            return jsonify({'success': False, 'message': 'ticker_name is required'}), 400
+
+        # period can be a string or list (frontend currently sends ['1y'])
+        period = data.get('period')
+        if isinstance(period, list) and period:
+            period = period[0]
+        elif not isinstance(period, str):
+            period = None
+
+        start = data.get('start_date') or data.get('start')
+        end = data.get('end_date') or data.get('end')
+
+        # Fetch time series data
+        if start and end:
+            labels, prices = cached_get_stock_data(ticker, start, end)
+        elif period:
+            labels, prices = cached_get_stock_data(ticker, period)
+        else:
+            labels, prices = cached_get_stock_data(ticker)
+
+        if not labels or not prices:
+            return jsonify({'success': False, 'message': f'No stock data found for {ticker}'}), 404
+
+        # Fetch company info and map to an object
+        info = cached_get_stock_info(ticker)
+        info_obj = {}
+        if isinstance(info, dict):
+            # Normalize keys we care about
+            info_obj = {
+                'longName': info.get('longName') or info.get('shortName') or ticker,
+                'industry': info.get('industry', 'N/A'),
+                'sector': info.get('sector', 'N/A'),
+                'fiftyTwoWeekLow': info.get('fiftyTwoWeekLow', 0.0) or 0.0,
+                'fiftyTwoWeekHigh': info.get('fiftyTwoWeekHigh', 0.0) or 0.0,
+                'dividendYield': info.get('dividendYield') or info.get('trailingAnnualDividendYield') or 0.0,
+                'longBusinessSummary': info.get('longBusinessSummary', '')
+            }
+        elif isinstance(info, (list, tuple)) and len(info) >= 7:
+            # Map from our backend.finance get_stock_info list format
+            info_obj = {
+                'longName': info[0] or ticker,
+                'industry': info[1],
+                'sector': info[2],
+                'fiftyTwoWeekLow': info[3],
+                'fiftyTwoWeekHigh': info[4],
+                'dividendYield': info[5],
+                'longBusinessSummary': info[6],
+            }
+        else:
+            info_obj = {
+                'longName': ticker,
+                'industry': 'N/A',
+                'sector': 'N/A',
+                'fiftyTwoWeekLow': 0.0,
+                'fiftyTwoWeekHigh': 0.0,
+                'dividendYield': 0.0,
+                'longBusinessSummary': ''
+            }
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'ticker': ticker,
+                'labels': labels,
+                'values': prices,
+                'stock_info': info_obj,
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# New: Material properties API endpoint
+@app.route('/api/calculator/material-properties', methods=['POST'])
+def api_material_properties():
+    try:
+        data = request.get_json(silent=True) or {}
+        # Expect names: young|shear|bulk|lame|poisson
+        name_map = {
+            'young': 'E',
+            'shear': 'G',
+            'bulk': 'K',
+            'lame': 'lame',
+            'poisson': 'Poisson',
+        }
+        first_name = (data.get('first_property_name') or '').strip().lower()
+        second_name = (data.get('second_property_name') or '').strip().lower()
+        try:
+            first_value = float(data.get('first_property_value'))
+            second_value = float(data.get('second_property_value'))
+        except (TypeError, ValueError):
+            return jsonify({'success': False, 'message': 'Property values must be numbers'}), 400
+
+        if first_name not in name_map or second_name not in name_map:
+            return jsonify({'success': False, 'message': 'Invalid property name'}), 400
+        if first_name == second_name:
+            return jsonify({'success': False, 'message': 'Please select two different properties'}), 400
+
+        # Initialize all properties with -1
+        kwargs = { 'K': -1, 'E': -1, 'lame': -1, 'G': -1, 'Poisson': -1 }
+        kwargs[name_map[first_name]] = first_value
+        kwargs[name_map[second_name]] = second_value
+
+        # Compute using backend.calculator.material
+        mat = material(**kwargs)
+        result = {
+            'E': float(mat.E),
+            'G': float(mat.G),
+            'K': float(mat.K),
+            'lame': float(mat.lame),
+            'Poisson': float(mat.Poisson),
+        }
+        return jsonify({'success': True, 'properties': result})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 400
 

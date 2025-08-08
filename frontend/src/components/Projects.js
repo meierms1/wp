@@ -53,7 +53,7 @@ const Projects = () => {
           type: "video",
           src: `${process.env.PUBLIC_URL}/static/gcolors3.webm`,
           caption: "Mesoscale 3D simulations of composite solid propellant regression"
-        },
+        },{},{},
         {
           type: "gif",
           src: `${process.env.PUBLIC_URL}/static/vm-crop.gif`,
@@ -63,7 +63,7 @@ const Projects = () => {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/maximum2.png`,
           caption: "Maximum stress spots"
-        },
+        },{},
         {
           type: "gif",
           src: `${process.env.PUBLIC_URL}/static/rodandtube_temp.gif`,
@@ -124,7 +124,7 @@ const Projects = () => {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/kittle.jpeg`,
           caption: "Morpho Didius Butterfly wing structure"
-        },
+        },{},{},
         {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/PCA7.webp`,

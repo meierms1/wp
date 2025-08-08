@@ -128,6 +128,8 @@ const Home = () => {
               that bridges engineering and technology.
             </p>
 
+            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/projects" className="btn-primary">
                 View My Work
@@ -144,7 +146,7 @@ const Home = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           >
             <motion.div
               animate={{ y: [0, 10, 0] }}

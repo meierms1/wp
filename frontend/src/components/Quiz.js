@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import {
-  CheckCircleIcon,
-  XCircleIcon,
-  QuestionMarkCircleIcon,
-  ClockIcon,
-  TrophyIcon
-} from '@heroicons/react/24/outline';
+import { QuestionMarkCircleIcon, ClockIcon, TrophyIcon } from '@heroicons/react/24/outline';
 
 const Quiz = () => {
-  const { isAuthenticated } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -28,6 +20,21 @@ const Quiz = () => {
     fetchQuestionInfo();
   }, []);
 
+  // Define handleSubmitQuiz early and memoize it, so it can be safely used in effects
+  const handleSubmitQuiz = useCallback(async () => {
+    try {
+      const response = await axios.post('/api/quiz/submit', {
+        answers,
+        questions
+      });
+      setScore(response.data.percentage);
+      toast.success(`Quiz completed! Score: ${response.data.percentage}%`);
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+      toast.error('Failed to submit quiz');
+    }
+  }, [answers, questions]);
+
   useEffect(() => {
     let timer;
     if (quizStarted && timeLeft > 0 && score === null) {
@@ -36,11 +43,23 @@ const Quiz = () => {
       handleSubmitQuiz();
     }
     return () => clearTimeout(timer);
-  }, [timeLeft, quizStarted, score]);
+  }, [timeLeft, quizStarted, score, handleSubmitQuiz]);
+
+  // Debug effect to monitor questions state changes
+  useEffect(() => {
+    console.log('Questions state changed:', {
+      questionsLength: questions.length,
+      questions: questions.slice(0, 1), // Just log first question to avoid too much output
+      loading,
+      quizStarted
+    });
+  }, [questions, loading, quizStarted]);
 
   const fetchQuestionInfo = async () => {
     try {
+      console.log('Fetching question info...');
       const response = await axios.get('/api/quiz/questions?count=1');
+      console.log('Question info response:', response.data);
       setTotalAvailable(response.data.total_available);
     } catch (error) {
       console.error('Error fetching question info:', error);
@@ -49,14 +68,30 @@ const Quiz = () => {
   };
 
   const fetchQuestions = async (count = 10) => {
+    console.log(`Starting fetchQuestions with count: ${count}`);
     setLoading(true);
     try {
+      console.log(`Fetching ${count} questions...`);
       const response = await axios.get(`/api/quiz/questions?count=${count}`);
-      setQuestions(response.data.questions);
-      setTotalAvailable(response.data.total_available);
+      console.log('Full API response:', response);
+      console.log('Response data:', response.data);
+      console.log('Questions array:', response.data.questions);
+      console.log('Number of questions received:', response.data.questions?.length);
+      
+      if (response.data.questions && Array.isArray(response.data.questions)) {
+        setQuestions(response.data.questions);
+        setTotalAvailable(response.data.total_available);
+        console.log('Questions state updated successfully');
+      } else {
+        console.error('Invalid response format:', response.data);
+        toast.error('Invalid response format from server');
+      }
+      
       setLoading(false);
+      console.log('Loading set to false');
     } catch (error) {
       console.error('Error fetching questions:', error);
+      console.error('Error details:', error.response?.data);
       toast.error('Failed to load quiz questions');
       setLoading(false);
     }
@@ -69,24 +104,16 @@ const Quiz = () => {
     }));
   };
 
-  const handleSubmitQuiz = async () => {
-    try {
-      const response = await axios.post('/api/quiz/submit', {
-        answers,
-        questions
-      });
-      setScore(response.data.percentage);
-      toast.success(`Quiz completed! Score: ${response.data.percentage}%`);
-    } catch (error) {
-      console.error('Error submitting quiz:', error);
-      toast.error('Failed to submit quiz');
-    }
-  };
-
   const startQuiz = () => {
-    fetchQuestions(numQuestions);
+    console.log('=== START QUIZ FUNCTION CALLED ===');
+    console.log('Starting quiz with', numQuestions, 'questions');
+    
     setQuizStarted(true);
     setTimeLeft(300);
+    
+    // Fetch the real questions
+    fetchQuestions(numQuestions);
+    console.log('Quiz started, fetchQuestions called');
   };
 
   const resetQuiz = () => {
@@ -105,6 +132,7 @@ const Quiz = () => {
   };
 
   if (loading) {
+    console.log('Rendering loading state');
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20">
         <div className="container mx-auto px-4 text-center">
@@ -114,6 +142,15 @@ const Quiz = () => {
       </div>
     );
   }
+
+  console.log('Quiz render state:', {
+    quizStarted,
+    score,
+    questionsLength: questions.length,
+    currentQuestion,
+    totalAvailable,
+    loading
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20">
@@ -233,55 +270,44 @@ const Quiz = () => {
                 <div className="mt-4 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
                     className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                    style={{ width: `${questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0}%` }}
                   ></div>
                 </div>
               </div>
 
               {/* Current Question */}
-              {questions[currentQuestion] && (
-                <motion.div
-                  key={currentQuestion}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
-                >
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                    {questions[currentQuestion].question_text}
-                  </h3>
-                  <div className="space-y-3">
-                    {questions[currentQuestion].options.map((option, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleAnswerSelect(questions[currentQuestion].id, option)}
-                        className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                          answers[questions[currentQuestion].id] === option
-                            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
-                            : 'border-gray-200 dark:border-gray-600 hover:border-indigo-300'
-                        }`}
-                      >
-                        <div className="flex items-center">
-                          <div className={`w-4 h-4 rounded-full border-2 mr-3 ${
-                            answers[questions[currentQuestion].id] === option
-                              ? 'border-indigo-600 bg-indigo-600'
-                              : 'border-gray-300 dark:border-gray-600'
-                          }`}>
-                            {answers[questions[currentQuestion].id] === option && (
-                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
-                            )}
-                          </div>
-                          <span className="text-gray-900 dark:text-white">{option}</span>
-                        </div>
-                      </button>
-                    ))}
+              {questions.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                      {questions[currentQuestion]?.question_text || "Loading question..."}
+                    </h3>
                   </div>
 
+                  {questions[currentQuestion]?.options && (
+                    <div className="space-y-3 mb-8">
+                      {questions[currentQuestion].options.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleAnswerSelect(questions[currentQuestion].id, option)}
+                          className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                            answers[questions[currentQuestion].id] === option
+                              ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                              : 'border-gray-200 dark:border-gray-600 hover:border-indigo-300'
+                          }`}
+                        >
+                          <span className="text-gray-900 dark:text-white">{option}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Navigation */}
-                  <div className="flex justify-between mt-8">
+                  <div className="flex justify-between">
                     <button
                       onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                       disabled={currentQuestion === 0}
-                      className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700"
+                      className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
                     >
                       Previous
                     </button>
@@ -301,7 +327,7 @@ const Quiz = () => {
                       </button>
                     )}
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
           )}

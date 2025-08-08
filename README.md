@@ -15,7 +15,42 @@ This portfolio website serves as a professional showcase for Dr. Maycon Meier, f
 - **Research Projects**: Detailed presentations of computational research including hydrogen-based iron reduction, rocket propellant simulations, and machine learning applications
 - **Financial Tools**: Real-time stock analysis with interactive charts and company information
 - **Engineering Calculators**: Material property calculators and unit conversion tools
-- **Responsive Design**: Mobile-friendly interface with Bootstrap framework
+- **Responsive Design**: Mobile-friendly interface
+
+## 📁 Project Structure
+
+```
+wp/
+├── app.py                 # Delegates to backend.app for running locally
+├── backend/               # Backend Flask app and modules
+│   ├── __init__.py
+│   ├── app.py             # Unified Flask application (APIs + pages)
+│   ├── wsgi.py            # Production WSGI entry point
+│   ├── calculator.py      # Engineering calculators (moved from root)
+│   ├── finance.py         # Finance helpers (moved from root)
+│   └── templates/         # (optional) backend-only templates
+├── frontend/              # React application (CRA)
+├── instance/              # Instance-specific files
+│   └── database2.db       # Local development SQLite DB
+├── templates/             # Jinja templates used by Flask pages
+├── Procfile               # gunicorn entry
+├── requirements.txt       # Python dependencies
+├── README.md
+└── FIRE2.json             # Quiz questions
+```
+
+Notes:
+- Removed legacy shims: `api.py`, `quiz_api.py`, `wsgi.py`.
+- Removed unsafe or unused files: `apitk.py`, `sp_500_stocks.csv`.
+- Root `calculator.py` and `finance.py` were removed; use `backend.calculator` and `backend.finance`.
+
+## 🔧 Setup
+
+- Backend: `python app.py` (uses backend.app)
+- Frontend: `cd frontend && npm start` (proxy to 5000)
+
+## 🗄️ Database
+- Uses SQLite at `instance/database2.db` by default; set `DATABASE_URL` for PostgreSQL.
 
 ## 🚀 Live Demo
 
@@ -71,148 +106,6 @@ Visit the live website: [Your Website URL]
 - **Server**: Werkzeug development server
 - **Version Control**: Git
 - **Deployment**: Production-ready with gunicorn
-
-## 📁 Project Structure
-
-```
-wp/
-├── app.py                 # Main Flask application
-├── finance.py             # Stock data and financial calculations
-├── calculator.py          # Engineering material property calculators
-├── apitk.py              # API tokens and configuration
-├── requirements.txt       # Python dependencies
-├── database2.db          # SQLite database (local development)
-├── wsgi.py               # Production WSGI entry point
-├── README.md             # Project documentation
-├── 
-├── templates/            # HTML templates
-│   ├── base.html         # Base template with common layout
-│   ├── about.html        # About page
-│   ├── resume.html       # Professional resume
-│   ├── projects.html     # Research projects showcase
-│   ├── finance.html      # Stock analysis tools
-│   ├── dashboard.html    # User dashboard
-│   ├── tools.html        # Engineering calculators
-│   ├── *-mobile.html     # Mobile-optimized templates
-│   └── navigation.html   # Navigation component
-├── 
-├── static/               # Static assets
-│   ├── assets/          # CSS, JS, and vendor files
-│   │   ├── css/         # Custom stylesheets
-│   │   ├── js/          # JavaScript files
-│   │   └── vendor/      # Third-party libraries
-│   ├── *.gif            # Research project animations
-│   ├── *.png            # Static images and plots
-│   ├── *.webp           # Optimized images
-│   └── resume.pdf       # Downloadable resume
-├── 
-├── instance/            # Instance-specific files
-│   └── database.db      # Local development database
-└── __pycache__/         # Python cache files
-```
-
-## 🔧 Installation & Setup
-
-### Prerequisites
-- Python 3.8 or higher
-- pip (Python package installer)
-- Git
-
-### Local Development Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/portfolio-website.git
-   cd portfolio-website
-   ```
-
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables**
-   ```bash
-   export FLASK_APP=app.py
-   export FLASK_ENV=development  # For development
-   ```
-
-5. **Initialize database (Local Development)**
-   ```bash
-   python -c "from app import app, db; app.app_context().push(); db.create_all()"
-   ```
-
-6. **Run the application**
-   ```bash
-   python app.py
-   # OR for development with Flask CLI:
-   export FLASK_APP=app.py
-   export FLASK_ENV=development
-   flask run
-   ```
-   ```
-
-7. **Access the website**
-   Open your browser and navigate to `http://localhost:5000`
-
-### Production Deployment
-
-For production deployment with PostgreSQL:
-
-1. **Database Setup**
-   - Set up PostgreSQL database (recommended: Neon, Railway, or Google Cloud SQL)
-   - Obtain database connection string
-
-2. **Environment Variables**
-   ```bash
-   export DATABASE_URL=postgresql://username:password@host:port/database
-   export SECRET_KEY=your-secure-secret-key
-   export FLASK_ENV=production
-   ```
-
-3. **Deploy with WSGI server**
-   ```bash
-   pip install gunicorn
-   gunicorn wsgi:app
-   ```
-
-4. **Cloud Deployment (Zeet.co, Heroku, Google Cloud)**
-   - Set `DATABASE_URL` environment variable in your deployment platform
-   - Application automatically handles PostgreSQL connection and table creation
-   - No additional configuration needed - fully cloud-ready!
-
-## 📊 Database Schema
-
-The application uses **PostgreSQL** for production and **SQLite** for local development, with automatic switching based on the `DATABASE_URL` environment variable.
-
-### User Model
-- `id`: Primary key (Integer)
-- `username`: Unique username (String, 20 chars)
-- `password`: Password (String, 20 chars)
-- `email`: Email address (String, 50 chars)
-
-### Dashinfo Model (Transaction Records)
-- `id`: Primary key (Integer)
-- `ticker`: Stock ticker symbol (String, 10 chars)
-- `price`: Stock price at time of transaction (Float)
-- `date`: Transaction date (DateTime)
-- `type`: Transaction type - "BUY" or "SELL" (String, 10 chars)
-- `user`: Foreign key to User.id (Integer)
-- `amount`: Number of shares (Integer)
-- `total`: Total transaction value (Float)
-
-### Database Features
-- **Automatic Migration**: Tables created automatically on first run
-- **Foreign Key Relationships**: Proper user-transaction relationships
-- **Data Persistence**: All user data persists across deployments
-- **Query Optimization**: Aggregated queries for performance
-- **Error Handling**: Robust database error handling with rollbacks
 
 ## 🔑 Configuration
 

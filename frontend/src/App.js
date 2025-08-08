@@ -42,6 +42,7 @@ function App() {
                 <Route path="/tools" element={<Tools />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/quiz" element={<Quiz />} />
               </Routes>
             </AnimatePresence>
             

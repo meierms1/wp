@@ -137,8 +137,8 @@ def get_limiter_storage():
         return "memory://"
 
 limiter = Limiter(
-    app,
     key_func=get_remote_address,
+    app=app,
     storage_uri=get_limiter_storage(),
     default_limits=["1000 per hour"],  # Global rate limit
     headers_enabled=True,  # Send rate limit info in headers

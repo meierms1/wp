@@ -10,7 +10,7 @@ COPY frontend ./frontend
 RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
       echo "Building React frontend" && \
       cd frontend && \
-      npm install && \
+      npm ci --only=production && \
       if grep -q 'react-scripts' package.json; then \
         echo "Detected CRA project"; \
         npm run build; \
@@ -37,15 +37,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Dependency install first for caching
 COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
+# Copy frontend build from stage 1
+COPY --from=frontend-build /app/frontend_output ./static/frontend
 # Copy full context (lighter because we will add a .dockerignore soon)
 COPY . .
-# Place built frontend (if any) under static/frontend
-RUN mkdir -p static/frontend && \
-    if [ -d /app/frontend_output ]; then cp -a /app/frontend_output/. static/frontend/; fi
-# Expose port
-EXPOSE 5000
+# Ensure frontend build is in the right place
+RUN if [ -d static/frontend ] && [ -f static/frontend/index.html ]; then \
+      echo "Frontend build found in static/frontend"; \
+    else \
+      echo "WARNING: Frontend build not found - creating placeholder"; \
+      mkdir -p static/frontend && \
+      echo '<!DOCTYPE html><html><body><h1>Frontend build missing</h1></body></html>' > static/frontend/index.html; \
+    fi
+# Expose port (dynamic for cloud deployment)
+EXPOSE 8080
 # Non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
-ENV FLASK_DEBUG=False PORT=5000 HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "backend.app:app", "--workers", "3", "--threads", "4", "--timeout", "120"]
+ENV FLASK_DEBUG=False HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
+# Bind to $PORT environment variable (fallback to 8080)
+CMD gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 3 --threads 4 --timeout 120

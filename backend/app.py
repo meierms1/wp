@@ -27,7 +27,7 @@ except ImportError as e:
     def get_current_price(*args, **kwargs):
         return 0.0
 
-from flask import Flask, render_template, request, redirect, flash, url_for, abort, session, jsonify
+from flask import Flask, render_template, request, redirect, flash, url_for, abort, session, jsonify, send_from_directory
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
@@ -117,10 +117,10 @@ login_manager.login_view = None  # Using custom unauthorized handler + JSON APIs
 # Provide JSON instead of redirect for unauthorized access (API friendly)
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    # If request expects JSON (API route), return 401 JSON; else fallback redirect
+    # If request expects JSON (API route), return 401 JSON; else redirect to React SPA
     if request.path.startswith('/api/') or request.is_json:
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
-    return redirect(url_for('home'))
+    return redirect('/')
 
 # Mobile user-agent detection helper (restored)
 def user_on_mobile():
@@ -248,32 +248,68 @@ def alamo():
 def classification():
     return redirect("https://github.com/meierms1/Supervised-Dimension-Reduction-For-Optical-Vapor-Sensing.git")
 
-@app.route("/", methods=["GET","POST"])
-def home():
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        message = request.form.get("message")
-        msg = Message(subject = f"Mail From Flask page, from {name} ",body = f"name = {name} \n \n email = {email} \n\n {message}",sender = 'm85830874@gmail.com',recipients = ["m85830874@gmail.com", "meierms@icloud.com"])
-        mail.send(msg)
-        return render_template("about.html", success=True)
-    return render_template("about.html")
-
+# Legacy Flask routes for backward compatibility (now serve React SPA)
 @app.route("/about/", methods=["GET","POST"])
 def about():
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        message = request.form.get("message")
-        msg = Message(subject = f"Mail From Flask page, from {name} ",body = f"name = {name} \n \n email = {email} \n\n {message}",sender = 'm85830874@gmail.com',recipients = ["m85830874@gmail.com","meierms@icloud.com"])
-        mail.send(msg)
-        return render_template("about.html", success=True)
-    return render_template("about.html")
+    # Legacy route - redirect to React SPA
+    return redirect('/#about')
 
 @app.route("/resume/")
 def resume():
-    if (user_on_mobile()): return render_template("resume-mobile.html")
-    return render_template("resume.html")
+    # Legacy route - redirect to React SPA  
+    return redirect('/#resume')
+
+@app.route("/finance/", methods=["GET", "POST"])  
+def legacy_finance():
+    # Legacy route - redirect to React SPA
+    return redirect('/#finance')
+
+@app.route("/projects/")
+def legacy_projects():
+    # Legacy route - redirect to React SPA
+    return redirect('/#projects')
+
+@app.route("/dashboard/", methods=["GET", "POST"])
+@login_required
+def legacy_dashboard():
+    # Legacy route - redirect to React SPA
+    return redirect('/#dashboard')
+
+# SPA Route - Serve React Frontend
+FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def spa(path):
+    # Allow API routes to pass through
+    if path.startswith('api/'):
+        abort(404)
+    
+    # Allow legacy routes to handle themselves (they redirect to SPA)
+    if path in ['about', 'resume', 'finance', 'projects', 'dashboard', 'calculator', 'quiz', 'test-plot']:
+        # Let the specific route handlers manage these
+        pass
+    elif path.startswith(('about/', 'resume/', 'finance/', 'projects/', 'dashboard/', 'calculator/', 'quiz/')):
+        # Let the specific route handlers manage these  
+        pass
+    else:
+        # Serve static files from React build if they exist
+        if path:
+            candidate = os.path.join(FRONTEND_BUILD_DIR, path)
+            if os.path.isfile(candidate):
+                return send_from_directory(FRONTEND_BUILD_DIR, path)
+        
+        # Fallback to index.html for SPA routing
+        index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
+        if os.path.isfile(index_path):
+            return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
+        
+        # If build is missing, show error
+        return jsonify({
+            'error': 'React build not found',
+            'expected_dir': FRONTEND_BUILD_DIR,
+            'help': 'Run "cd frontend && npm run build" and rebuild Docker image'
+        }), 500
 
 @app.route("/test-plot/")
 def test_plot():

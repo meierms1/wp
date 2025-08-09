@@ -31,7 +31,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently -k -n flask,react -c green,cyan \"FLASK_APP=../app.py FLASK_DEBUG=1 flask run --port 5000\" \"npm start\""
+    "dev": "concurrently -k -n flask,react -c green,cyan \"FLASK_APP=../app.py FLASK_DEBUG=1 flask run --port 5000\" \"npm start\"",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [
@@ -51,5 +52,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "homepage": "/"
 }

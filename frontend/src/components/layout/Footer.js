@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 import { 
   EnvelopeIcon,
   RocketLaunchIcon
@@ -16,6 +18,40 @@ import {
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      const response = await axios.post('/api/newsletter/subscribe', {
+        email: email.trim()
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setEmail(''); // Clear the input
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to subscribe. Please try again later.');
+      }
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   const quickLinks = [
     { name: 'Home', href: '/' },
@@ -111,23 +147,34 @@ const Footer = () => {
               </div>
               
               <p className="text-white/80 mb-6 leading-relaxed">
-                Passionate about computational mechanics, software development, and innovative solutions. 
+                Passionate about economy, computational mechanics, software development, and innovative solutions. 
                 Building the future through code and research.
               </p>
 
               {/* Newsletter Signup */}
               <div className="space-y-3">
                 <h4 className="text-white font-semibold">Stay Updated</h4>
-                <div className="flex">
+                <form onSubmit={handleNewsletterSubmit} className="flex">
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
                     className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-l-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    disabled={isSubscribing}
                   />
-                  <button className="px-4 py-2 bg-accent-600 hover:bg-accent-700 text-white rounded-r-lg transition-colors">
-                    <EnvelopeIcon className="w-5 h-5" />
+                  <button 
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="px-4 py-2 bg-accent-600 hover:bg-accent-700 disabled:bg-accent-700/50 text-white rounded-r-lg transition-colors flex items-center justify-center"
+                  >
+                    {isSubscribing ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    ) : (
+                      <EnvelopeIcon className="w-5 h-5" />
+                    )}
                   </button>
-                </div>
+                </form>
                 <p className="text-white/60 text-sm">Get notified about new projects and publications.</p>
               </div>
             </div>

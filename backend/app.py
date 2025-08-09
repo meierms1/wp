@@ -5,6 +5,7 @@ import json
 import random
 import datetime
 import time
+import re
 
 # Ensure project root is on sys.path for imports like 'backend.calculator', 'backend.finance'
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
@@ -32,6 +33,8 @@ from flask import Flask, request, redirect, abort, session, jsonify, send_from_d
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -121,6 +124,94 @@ app.config.update(cache_config)
 # Initialize extensions
 db = SQLAlchemy(app)
 cache = Cache(app)
+
+# Initialize rate limiter for DDoS protection
+def get_limiter_storage():
+    """Get storage backend for rate limiter (Redis in production, memory otherwise)"""
+    redis_url = os.getenv('REDIS_URL')
+    if redis_url:
+        # Use Redis for rate limiting in production
+        return redis_url
+    else:
+        # Use in-memory storage for development
+        return "memory://"
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    storage_uri=get_limiter_storage(),
+    default_limits=["1000 per hour"],  # Global rate limit
+    headers_enabled=True,  # Send rate limit info in headers
+    retry_after="http-date"  # RFC compliant retry-after header
+)
+
+# Additional DDoS protection measures
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB max request size
+
+# Track suspicious activity
+suspicious_ips = set()
+request_counts = {}
+
+# Add IP-based request limiting middleware
+@app.before_request
+def before_request_security():
+    """Additional security checks before processing requests"""
+    client_ip = get_remote_address()
+    
+    # Track request frequency per IP for anomaly detection
+    current_time = time.time()
+    request_counts[client_ip] = request_counts.get(client_ip, [])
+    # Clean old entries (keep last 60 seconds)
+    request_counts[client_ip] = [t for t in request_counts[client_ip] if current_time - t < 60]
+    request_counts[client_ip].append(current_time)
+    
+    # Flag IPs with excessive requests (more than 100 per minute)
+    if len(request_counts[client_ip]) > 100:
+        suspicious_ips.add(client_ip)
+        # Log suspicious activity
+        print(f"WARNING: Suspicious activity from IP {client_ip} - {len(request_counts[client_ip])} requests in 60s")
+    
+    # Block requests with suspicious headers that may indicate DDoS
+    user_agent = request.headers.get('User-Agent', '').lower()
+    
+    # Block known bad bot patterns (adjust as needed)
+    bad_patterns = ['masscan', 'nmap', 'sqlmap', 'nikto', 'dirb', 'dirbuster', 'gobuster']
+    if any(pattern in user_agent for pattern in bad_patterns):
+        print(f"WARNING: Blocked suspicious user agent from {client_ip}: {user_agent}")
+        abort(403)  # Forbidden
+    
+    # Limit request body size for JSON endpoints
+    if request.path.startswith('/api/') and request.content_length:
+        if request.content_length > 100 * 1024:  # 100KB limit for API requests
+            abort(413)  # Payload too large
+    
+    # Block requests with no User-Agent (common in simple DDoS attacks)
+    if not request.headers.get('User-Agent') and request.path.startswith('/api/'):
+        print(f"WARNING: Blocked request with no User-Agent from {client_ip}")
+        abort(400)  # Bad Request
+
+# Rate limit exceeded handler
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    """Custom handler for rate limit exceeded"""
+    client_ip = get_remote_address()
+    print(f"WARNING: Rate limit exceeded for IP {client_ip} on {request.path}")
+    return jsonify({
+        'success': False, 
+        'message': 'Rate limit exceeded. Please try again later.',
+        'retry_after': getattr(e, 'retry_after', None)
+    }), 429
+
+# Request too large handler
+@app.errorhandler(413)
+def request_too_large_handler(e):
+    """Custom handler for requests that are too large"""
+    client_ip = get_remote_address()
+    print(f"WARNING: Request too large from IP {client_ip}, size: {request.content_length} bytes")
+    return jsonify({
+        'success': False, 
+        'message': 'Request payload too large. Maximum size is 1MB.'
+    }), 413
 
 # Add security headers for production
 @app.after_request
@@ -269,6 +360,16 @@ class Dashinfo(db.Model):
     # Relationship with proper back_populates
     user_ref = db.relationship('User', back_populates='transactions', foreign_keys=[user])
 
+class Maillist(db.Model):
+    __tablename__ = 'maillist'
+    __table_args__ = {'extend_existing': True}
+    
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    subscribed_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+    source = db.Column(db.String(50), default='footer_signup')  # Track where signup came from
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))  # Updated for SQLAlchemy 2.x
@@ -373,16 +474,19 @@ FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
 
 # Handle React build static assets (CSS, JS, etc.)
 @app.route('/static/css/<path:filename>')
+@limiter.limit("200 per minute")  # Reasonable limit for CSS files
 def serve_react_css(filename):
     """Serve CSS files from React build"""
     return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'css'), filename)
 
 @app.route('/static/js/<path:filename>')
+@limiter.limit("200 per minute")  # Reasonable limit for JS files
 def serve_react_js(filename):
     """Serve JS files from React build"""
     return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'js'), filename)
 
 @app.route('/static/media/<path:filename>')
+@limiter.limit("100 per minute")  # Lower limit for media files (usually larger)
 def serve_react_media(filename):
     """Serve media files from React build"""
     # Media files are directly in static/frontend/static/ (no media subdirectory)
@@ -390,6 +494,7 @@ def serve_react_media(filename):
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
+@limiter.limit("500 per minute")  # Higher limit for main SPA routes
 def spa(path):
     """Serve React SPA with optimized routing"""
     # Allow API routes to pass through
@@ -601,6 +706,7 @@ def api_calculator_convert():
 
 # New: Finance stock data API endpoint for React frontend
 @app.route('/api/finance/stock-data', methods=['POST'])
+@limiter.limit("30 per minute")  # Limit expensive external API calls
 def api_finance_stock_data():
     try:
         data = request.get_json(silent=True) or {}
@@ -723,6 +829,7 @@ def api_material_properties():
 
 # ==================== Auth JSON API Endpoints ====================
 @app.route('/api/auth/register', methods=['POST'])
+@limiter.limit("5 per minute")  # Strict limit for registration to prevent spam
 def api_auth_register():
     data = request.get_json(silent=True) or {}
     username = (data.get('username') or '').strip()
@@ -756,6 +863,7 @@ def api_auth_register():
         return jsonify({'success': False, 'message': f'registration error: {str(e)}'}), 500
 
 @app.route('/api/auth/login', methods=['POST'])
+@limiter.limit("10 per minute")  # Strict limit for login attempts to prevent brute force
 def api_auth_login():
     data = request.get_json(silent=True) or {}
     username = (data.get('username') or '').strip()
@@ -807,9 +915,55 @@ def api_auth_me():
         return jsonify({'authenticated': False})
     return jsonify({'authenticated': True, 'user': {'id': current_user.id, 'username': current_user.username}})
 
+# ==================== Newsletter Signup API ====================
+@app.route('/api/newsletter/subscribe', methods=['POST'])
+@limiter.limit("5 per minute")  # Limit newsletter signups to prevent spam
+def api_newsletter_subscribe():
+    """Subscribe email to newsletter"""
+    try:
+        data = request.get_json(silent=True) or {}
+        email = (data.get('email') or '').strip().lower()
+        
+        if not email:
+            return jsonify({'success': False, 'message': 'Email is required'}), 400
+        
+        # Basic email validation
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, email):
+            return jsonify({'success': False, 'message': 'Please enter a valid email address'}), 400
+        
+        # Check if email already exists
+        existing_subscription = Maillist.query.filter_by(email=email).first()
+        if existing_subscription:
+            if existing_subscription.is_active:
+                return jsonify({'success': False, 'message': 'You are already subscribed to our newsletter'}), 400
+            else:
+                # Reactivate subscription
+                existing_subscription.is_active = True
+                existing_subscription.subscribed_at = datetime.datetime.utcnow()
+                db.session.commit()
+                return jsonify({'success': True, 'message': 'Welcome back! Your subscription has been reactivated.'})
+        
+        # Create new subscription
+        new_subscription = Maillist(
+            email=email,
+            source='footer_signup'
+        )
+        
+        db.session.add(new_subscription)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'Thank you for subscribing! You will receive updates about new projects and publications.'})
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Newsletter subscription error: {e}")
+        return jsonify({'success': False, 'message': 'Failed to subscribe. Please try again later.'}), 500
+
 # ==================== Transactions API (for React Dashboard) ====================
 @app.route('/api/transactions', methods=['GET'])
 @login_required
+@limiter.limit("100 per minute")  # Allow more reads for authenticated users
 def api_transactions():
     try:
         txs = Dashinfo.query.filter_by(user=current_user.id).order_by(Dashinfo.date.desc()).all()
@@ -830,6 +984,7 @@ def api_transactions():
 
 @app.route('/api/transactions', methods=['POST'])
 @login_required
+@limiter.limit("60 per hour")  # Limit transaction creation to prevent abuse
 def api_add_transaction():
     """Add a manual transaction (BUY or SELL)"""
     try:
@@ -912,6 +1067,7 @@ def api_add_transaction():
 # ==================== Portfolio API (React) ====================
 @app.route('/api/portfolio/stocks', methods=['GET'])
 @login_required
+@limiter.limit("100 per minute")  # Allow frequent portfolio checks
 def api_get_portfolio():
     try:
         transactions = Dashinfo.query.filter_by(user=current_user.id).all()
@@ -975,6 +1131,7 @@ def api_get_portfolio():
 
 @app.route('/api/portfolio/stocks', methods=['POST'])
 @login_required
+@limiter.limit("60 per hour")  # Limit adding stocks to prevent abuse
 def api_add_portfolio_stock():
     try:
         data = request.get_json(silent=True) or {}
@@ -1099,6 +1256,7 @@ def api_sell_portfolio_stock():
 # New: Delete all transactions for a ticker (dangerous – removes history)
 @app.route('/api/portfolio/stocks/<ticker>', methods=['DELETE'])
 @login_required
+@limiter.limit("10 per minute")  # Very strict limit for destructive operations
 def api_delete_ticker(ticker):
     try:
         ticker = (ticker or '').strip().upper()
@@ -1115,6 +1273,24 @@ def api_delete_ticker(ticker):
 # Initialize database tables
 _db_initialized = False
 
+# ==================== Security Monitoring Endpoint ====================
+@app.route('/api/security/status', methods=['GET'])
+@limiter.limit("10 per minute")  # Limited access to security info
+def api_security_status():
+    """Security monitoring endpoint (admin use only in production)"""
+    # In production, you might want to add admin authentication here
+    if not is_production or current_user.is_authenticated:
+        return jsonify({
+            'suspicious_ips': len(suspicious_ips),
+            'active_connections': len(request_counts),
+            'rate_limits_active': True,
+            'max_request_size': app.config.get('MAX_CONTENT_LENGTH', 0) // (1024 * 1024),  # MB
+            'environment': 'production' if is_production else 'development'
+        })
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+
+# ==================== Database Initialization ====================
 def init_db():
     """Initialize database tables (idempotent)."""
     global _db_initialized

@@ -42,6 +42,7 @@ pymysql>=1.0.0         # MySQL support (alternative)
 # Security and authentication
 bcrypt>=4.0.0           # Password hashing
 flask-cors>=4.0.0       # Cross-origin resource sharing for React
+Flask-Limiter>=3.8.0    # Rate limiting for DDoS protection
 
 # Security updates
 Pillow>=10.0.0

@@ -123,7 +123,7 @@ const Home = () => {
             </div>
             
             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Passionate about computational mechanics, software development, and innovative solutions. 
+              Passionate about economy, computational mechanics, software development, and innovative solutions. 
               I specialize in building scalable applications and conducting cutting-edge research 
               that bridges engineering and technology.
             </p>
@@ -140,13 +140,14 @@ const Home = () => {
               </Link>
             </div>
           </motion.div>
+           <div style={{ flex: 5 }}></div>
 
           {/* Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+            className="absolute bottom-4 right-1 transform -translate-x-1/2"
           >
             <motion.div
               animate={{ y: [0, 10, 0] }}
@@ -162,7 +163,7 @@ const Home = () => {
           </motion.div>
         </div>
       </motion.section>
-
+     
       {/* Features Section */}
       <section
         ref={featuresRef}
@@ -281,7 +282,7 @@ const Home = () => {
                 View Portfolio
               </Link>
               <a 
-                href="mailto:maycon@example.com" 
+                href="mailto:m85830874@gmail.com" 
                 className="btn-secondary"
               >
                 Get In Touch

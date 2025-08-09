@@ -8,13 +8,14 @@ FROM node:20-alpine AS frontend-build
 WORKDIR /app
 # Only copy frontend to leverage Docker layer caching
 COPY frontend ./frontend
-# Install and build if frontend exists
-RUN if [ -d frontend ]; then \
+# Install and build ONLY if package.json exists (prevents failures when frontend not committed)
+RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
+      echo "Building React frontend" && \
       cd frontend && \
       npm install && \
       npm run build; \
     else \
-      echo "No frontend directory present; skipping React build"; \
+      echo "Skipping React build (frontend folder or package.json missing)"; \
     fi
 
 ############################
@@ -28,10 +29,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# System deps (psycopg2, build tools for any wheels) then remove build tools after install
+# System deps (psycopg2, Pillow, etc.) then remove apt lists
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libjpeg-dev \
+    zlib1g-dev \
     curl \
   && rm -rf /var/lib/apt/lists/*
 

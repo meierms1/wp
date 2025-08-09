@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Launch both Flask backend (with auto-reload) and React (Vite) frontend.
+# Launch both Flask backend (with auto-reload) and React (CRA) frontend.
 # Assumes bash_build.sh was run (venv + deps + frontend scaffold).
 # Safe to re-run; will revive processes after crashes until script exits.
 
@@ -34,7 +34,7 @@ fi
 if [[ ! -d "$FRONTEND_DIR" ]]; then
   warn "Frontend directory missing; creating a minimal Vite React app..."
   if check node && check npm; then
-    npm create vite@latest "$FRONTEND_DIR" -- --template react >/dev/null 2>&1 || err "Failed to scaffold React"
+    npm create react-app "$FRONTEND_DIR" >/dev/null 2>&1 || err "Failed to scaffold React"
   else
     err "Node.js/npm not installed and frontend missing. Install Node.js or run bash_build.sh."; exit 1
   fi
@@ -70,9 +70,9 @@ start_react(){
     log "Installing frontend dependencies..."
     npm install || { err "npm install failed"; cd "$PROJECT_ROOT"; return 1; }
   fi
-  log "Starting React (Vite) dev server on :$REACT_PORT"
-  # Use nohup to decouple from potential flask reload exec events
-  nohup npm run dev -- --port "$REACT_PORT" >/dev/null 2>&1 &
+  log "Starting React dev server on :$REACT_PORT"
+  # Use nohup to decouple from potential flask reload exec events  
+  PORT=$REACT_PORT nohup npm start >/dev/null 2>&1 &
   FRONTEND_PID=$!
   cd "$PROJECT_ROOT"
 }

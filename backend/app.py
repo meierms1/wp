@@ -330,9 +330,14 @@ def spa(path):
         # Serve static files from React build if they exist
         if path and '.' in path:  # Likely a static asset
             candidate = os.path.join(FRONTEND_BUILD_DIR, path)
+            print(f"Looking for static file: {path}")
+            print(f"Candidate path: {candidate}")
+            print(f"File exists: {os.path.isfile(candidate)}")
             if os.path.isfile(candidate):
-                print(f"Serving static file: {path}")
+                print(f"✅ Serving static file: {path}")
                 return send_from_directory(FRONTEND_BUILD_DIR, path)
+            else:
+                print(f"❌ Static file not found: {path}")
         
         # Fallback to index.html for SPA routing
         index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')

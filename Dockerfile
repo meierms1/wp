@@ -15,7 +15,12 @@ RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
       echo "=== Building React frontend ===" && \
       cd frontend && \
       echo "Installing dependencies..." && \
-      npm ci && \
+      if [ -f package-lock.json ]; then \
+        npm ci; \
+      else \
+        echo "No package-lock.json found, using npm install..." && \
+        npm install; \
+      fi && \
       echo "Running build..." && \
       npm run build && \
       echo "=== Frontend build completed ===" && \

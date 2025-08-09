@@ -56,6 +56,23 @@ RUN echo "=== Checking frontend build ===" && \
       mkdir -p static/frontend && \
       echo '<!DOCTYPE html><html><body><h1>Frontend build missing</h1></body></html>' > static/frontend/index.html; \
     fi
+
+# Copy media files from React build to Flask static directory for proper serving
+RUN echo "=== Copying media files to Flask static directory ===" && \
+    if [ -d static/frontend/static ]; then \
+      cp static/frontend/static/*.gif static/ 2>/dev/null || echo "No .gif files to copy" && \
+      cp static/frontend/static/*.png static/ 2>/dev/null || echo "No .png files to copy" && \
+      cp static/frontend/static/*.jpg static/ 2>/dev/null || echo "No .jpg files to copy" && \
+      cp static/frontend/static/*.jpeg static/ 2>/dev/null || echo "No .jpeg files to copy" && \
+      cp static/frontend/static/*.webp static/ 2>/dev/null || echo "No .webp files to copy" && \
+      cp static/frontend/static/*.webm static/ 2>/dev/null || echo "No .webm files to copy" && \
+      cp static/frontend/static/*.mp4 static/ 2>/dev/null || echo "No .mp4 files to copy" && \
+      cp static/frontend/static/*.pdf static/ 2>/dev/null || echo "No .pdf files to copy" && \
+      echo "✅ Media files copied to static directory" && \
+      ls -la static/*.{gif,png,jpg,jpeg,webp,webm,mp4,pdf} 2>/dev/null | head -10 || echo "Media files check complete"; \
+    else \
+      echo "❌ No React static directory found, skipping media copy"; \
+    fi
 # Expose port (dynamic for cloud deployment)
 EXPOSE 8080
 # Copy startup script

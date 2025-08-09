@@ -297,7 +297,8 @@ def serve_react_js(filename):
 @app.route('/static/media/<path:filename>')
 def serve_react_media(filename):
     """Serve media files from React build"""
-    return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'media'), filename)
+    # Media files are directly in static/frontend/static/ (no media subdirectory)
+    return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static'), filename)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -311,7 +312,12 @@ def spa(path):
     if path.startswith('api/'):
         abort(404)  # API routes should be handled by @app.route('/api/...') decorators
     
-    # Serve static files from React build if they exist
+    # Allow static routes to pass through to Flask's built-in static handler
+    if path.startswith('static/'):
+        print(f"Allowing static route to pass through: {path}")
+        abort(404)  # Let Flask's static handler deal with this
+    
+    # Serve static files from React build if they exist (non-static paths)
     if path and '.' in path:  # Likely a static asset
         candidate = os.path.join(FRONTEND_BUILD_DIR, path)
         print(f"Looking for static file: {path}")

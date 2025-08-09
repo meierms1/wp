@@ -1,4 +1,4 @@
-# Multi-stage build: React (Vite) frontend + Flask backend
+# Multi-stage build: React (Vite or CRA) frontend + Flask backend
 # Final image: python:3.11-slim serving Flask via Gunicorn
 
 ############################
@@ -6,68 +6,46 @@
 ############################
 FROM node:20-alpine AS frontend-build
 WORKDIR /app
-# Only copy frontend to leverage Docker layer caching
 COPY frontend ./frontend
-# Install and build ONLY if package.json exists (prevents failures when frontend not committed)
 RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
       echo "Building React frontend" && \
       cd frontend && \
       npm install && \
-      npm run build; \
+      if grep -q 'react-scripts' package.json; then \
+        echo "Detected CRA project"; \
+        npm run build; \
+        mv build ../frontend_output; \
+      else \
+        echo "Assuming Vite or other (looking for dist)"; \
+        npm run build; \
+        if [ -d dist ]; then mv dist ../frontend_output; fi; \
+      fi; \
     else \
       echo "Skipping React build (frontend folder or package.json missing)"; \
+      mkdir -p /app/frontend_output; \
     fi
 
 ############################
 # Stage 2: Backend image   #
 ############################
 FROM python:3.11-slim AS runtime
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
-
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 WORKDIR /app
-
-# System deps (psycopg2, Pillow, etc.) then remove apt lists
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    curl \
+    build-essential libpq-dev libjpeg-dev zlib1g-dev curl \
   && rm -rf /var/lib/apt/lists/*
-
-# Copy dependency list first for caching
+# Dependency install first for caching
 COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Copy backend + static assets
-COPY backend ./backend
-COPY static ./static
-COPY templates ./templates
-
-# Copy React build output (if it was built) into static directory
-# (Flask is configured with static_folder=/static)
-COPY --from=frontend-build /app/frontend/dist ./static/frontend
-
-# Optional: copy any ancillary root files you need (e.g., FIRE2.json)
-COPY FIRE2.json* ./ || true
-
+# Copy full context (lighter because we will add a .dockerignore soon)
+COPY . .
+# Place built frontend (if any) under static/frontend
+RUN mkdir -p static/frontend && \
+    if [ -d /app/frontend_output ]; then cp -a /app/frontend_output/. static/frontend/; fi
 # Expose port
 EXPOSE 5000
-
-# Create non-root user
+# Non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
-
-# Environment defaults (override in deployment)
-ENV FLASK_DEBUG=False \
-    PORT=5000 \
-    HOST=0.0.0.0 \
-    SESSION_COOKIE_SECURE=True \
-    SESSION_COOKIE_SAMESITE=None
-
-# Gunicorn config: 3 workers (adjust for CPU), threads=4 for some concurrency
-# Bind to 0.0.0.0:5000
+ENV FLASK_DEBUG=False PORT=5000 HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "backend.app:app", "--workers", "3", "--threads", "4", "--timeout", "120"]

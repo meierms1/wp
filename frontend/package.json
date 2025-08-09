@@ -29,10 +29,15 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently -k -n flask,react -c green,cyan \"FLASK_APP=../app.py FLASK_DEBUG=1 flask run --port 5000\" \"npm start\""
   },
+  "sideEffects": [
+    "*.css",
+    "src/index.css"
+  ],
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -41,9 +46,9 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      ">0.5%",
+      "last 2 versions",
+      "not dead"
     ],
     "development": [
       "last 1 chrome version",

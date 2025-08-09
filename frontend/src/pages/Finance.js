@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Plot from 'react-plotly.js';
 import {
   ChartBarIcon,
   ClockIcon,
@@ -16,6 +15,8 @@ import {
   PlusIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
+// Lazy imports AFTER regular import block
+const PlotLite = React.lazy(() => import('../components/PlotLite'));
 
 const Finance = () => {
   const { user } = useContext(AuthContext);
@@ -346,12 +347,14 @@ const Finance = () => {
                         <p className="text-gray-300">{stockData.stock_info.longName || stockData.ticker}</p>
                       )}
                     </div>
-                    <Plot
-                      data={plotData}
-                      layout={plotLayout}
-                      config={{ displayModeBar: false, responsive: true }}
-                      style={{ width: '100%', height: '400px' }}
-                    />
+                    <Suspense fallback={<div className="h-64 flex items-center justify-center text-gray-400">Loading chart...</div>}>
+                      <PlotLite
+                        data={plotData}
+                        layout={plotLayout}
+                        config={{ displayModeBar: false, responsive: true }}
+                        style={{ width: '100%', height: '400px' }}
+                      />
+                    </Suspense>
 
                     {/* Info box */}
                     {stockData.stock_info && (

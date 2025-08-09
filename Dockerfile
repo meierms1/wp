@@ -1,5 +1,5 @@
-# Multi-stage build: React (Vite or CRA) frontend + Flask backend
-# Final image: python:3.11-slim serving Flask via Gunicorn
+# Multi-stage build: React (CRA) frontend + Flask backend
+# Final image: python:3.12-slim serving Flask via Gunicorn
 
 ############################
 # Stage 1: Frontend build  #
@@ -8,19 +8,26 @@ FROM node:20-alpine AS frontend-build
 WORKDIR /app
 # Copy frontend directory
 COPY frontend ./frontend
+# Debug: Show what we copied
+RUN echo "=== Frontend directory contents ===" && ls -la frontend/ || echo "Frontend directory missing"
 # Build React frontend
 RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
-      echo "Building React frontend" && \
+      echo "=== Building React frontend ===" && \
       cd frontend && \
+      echo "Installing dependencies..." && \
       npm ci && \
+      echo "Running build..." && \
       npm run build && \
-      echo "Frontend build completed" && \
+      echo "=== Frontend build completed ===" && \
       ls -la build/ && \
-      mv build ../frontend_output; \
+      echo "Moving build to frontend_output..." && \
+      mv build ../frontend_output && \
+      echo "=== Build moved successfully ===" && \
+      ls -la ../frontend_output/; \
     else \
-      echo "Skipping React build (frontend folder or package.json missing)"; \
+      echo "=== Skipping React build (frontend folder or package.json missing) ===" && \
       mkdir -p /app/frontend_output && \
-      echo '<!DOCTYPE html><html><head><title>No Build</title></head><body><h1>Frontend build missing</h1></body></html>' > /app/frontend_output/index.html; \
+      echo '<!DOCTYPE html><html><head><title>No Build</title></head><body><h1>Frontend build missing</h1><p>Check build logs for details</p></body></html>' > /app/frontend_output/index.html; \
     fi
 
 ############################
@@ -40,18 +47,23 @@ COPY --from=frontend-build /app/frontend_output ./static/frontend
 # Copy full context (lighter because we will add a .dockerignore soon)
 COPY . .
 # Ensure frontend build is in the right place
-RUN if [ -d static/frontend ] && [ -f static/frontend/index.html ]; then \
-      echo "Frontend build found in static/frontend"; \
+RUN echo "=== Checking frontend build ===" && \
+    if [ -d static/frontend ] && [ -f static/frontend/index.html ]; then \
+      echo "✅ Frontend build found in static/frontend" && \
+      ls -la static/frontend/ | head -10; \
     else \
-      echo "WARNING: Frontend build not found - creating placeholder"; \
+      echo "❌ WARNING: Frontend build not found - creating placeholder" && \
       mkdir -p static/frontend && \
       echo '<!DOCTYPE html><html><body><h1>Frontend build missing</h1></body></html>' > static/frontend/index.html; \
     fi
 # Expose port (dynamic for cloud deployment)
 EXPOSE 8080
+# Copy startup script
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
 # Non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 ENV FLASK_DEBUG=False HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
-# Bind to $PORT environment variable (fallback to 8080)
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 2 --threads 2 --timeout 120"]
+# Use startup script for proper port binding
+CMD ["./start.sh"]

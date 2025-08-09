@@ -310,6 +310,11 @@ FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def spa(path):
+    # Debug logging for deployment
+    print(f"SPA route called with path: '{path}'")
+    print(f"FRONTEND_BUILD_DIR: {FRONTEND_BUILD_DIR}")
+    print(f"Index file exists: {os.path.isfile(os.path.join(FRONTEND_BUILD_DIR, 'index.html'))}")
+    
     # Allow API routes to pass through (they'll be handled by their specific routes)
     if path.startswith('api/'):
         abort(404)  # API routes should be handled by @app.route('/api/...') decorators
@@ -326,18 +331,22 @@ def spa(path):
         if path and '.' in path:  # Likely a static asset
             candidate = os.path.join(FRONTEND_BUILD_DIR, path)
             if os.path.isfile(candidate):
+                print(f"Serving static file: {path}")
                 return send_from_directory(FRONTEND_BUILD_DIR, path)
         
         # Fallback to index.html for SPA routing
         index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
         if os.path.isfile(index_path):
+            print("Serving React SPA index.html")
             return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
         
         # If build is missing, show error
+        print(f"ERROR: React build not found at {FRONTEND_BUILD_DIR}")
         return jsonify({
             'error': 'React build not found',
             'expected_dir': FRONTEND_BUILD_DIR,
-            'help': 'Run "cd frontend && npm run build" and rebuild Docker image'
+            'help': 'Run "cd frontend && npm run build" and rebuild Docker image',
+            'directory_contents': os.listdir(FRONTEND_BUILD_DIR) if os.path.exists(FRONTEND_BUILD_DIR) else 'Directory does not exist'
         }), 500
 
 @app.route("/test-plot/")
@@ -1156,14 +1165,19 @@ def init_db():
             # Test database connection
             with db.engine.connect() as conn:
                 conn.execute(text('SELECT 1'))  # use sqlalchemy.text
+            
+            # Create tables if they don't exist (idempotent)
             db.create_all()
             print("Database tables created successfully")
             print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
             _db_initialized = True
     except Exception as e:
         print(f"Database initialization error: {e}")
-        print("This might be due to ephemeral storage in cloud deployment.")
-        print("Consider using a persistent database service like Neon, PlanetScale, or Railway.")
+        # Don't exit on table exists error - this is expected in some deployments
+        if "already exists" not in str(e).lower():
+            print("This might be due to ephemeral storage in cloud deployment.")
+            print("Consider using a persistent database service like Neon, PlanetScale, or Railway.")
+        _db_initialized = True  # Mark as initialized to prevent repeated attempts
 
 # Call immediately so DB is ready under any server (flask run, gunicorn, etc.)
 init_db()

@@ -6,23 +6,21 @@
 ############################
 FROM node:20-alpine AS frontend-build
 WORKDIR /app
+# Copy frontend directory
 COPY frontend ./frontend
+# Build React frontend
 RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
       echo "Building React frontend" && \
       cd frontend && \
-      npm ci --only=production && \
-      if grep -q 'react-scripts' package.json; then \
-        echo "Detected CRA project"; \
-        npm run build; \
-        mv build ../frontend_output; \
-      else \
-        echo "Assuming Vite or other (looking for dist)"; \
-        npm run build; \
-        if [ -d dist ]; then mv dist ../frontend_output; fi; \
-      fi; \
+      npm ci && \
+      npm run build && \
+      echo "Frontend build completed" && \
+      ls -la build/ && \
+      mv build ../frontend_output; \
     else \
       echo "Skipping React build (frontend folder or package.json missing)"; \
-      mkdir -p /app/frontend_output; \
+      mkdir -p /app/frontend_output && \
+      echo '<!DOCTYPE html><html><head><title>No Build</title></head><body><h1>Frontend build missing</h1></body></html>' > /app/frontend_output/index.html; \
     fi
 
 ############################
@@ -56,4 +54,4 @@ RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 ENV FLASK_DEBUG=False HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
 # Bind to $PORT environment variable (fallback to 8080)
-CMD gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 2 --threads 2 --timeout 120
+CMD ["sh", "-c", "gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 2 --threads 2 --timeout 120"]

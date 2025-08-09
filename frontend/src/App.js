@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 // Layout Components
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // Page Components
 import Home from './pages/Home';
@@ -28,6 +29,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <div className="min-h-screen bg-gradient-to-br from-primary-900 via-secondary-900 to-accent-900">
             <Navbar />
             

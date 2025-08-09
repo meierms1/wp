@@ -705,8 +705,8 @@ const Tools = () => {
                       </motion.div>
                       <h3 className="text-2xl font-bold text-white mb-4">Test Your FIRE Knowledge</h3>
                       <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Take our Financial Independence, Retire Early (FIRE) quiz to test your understanding 
-                        of key financial concepts and investment strategies.
+                        Take our NFPA 1033 and 921 Fire Investigation quiz to test your understanding 
+                        of key concepts and strategies.
                       </p>
                       <motion.button
                         whileHover={{ scale: 1.05 }}

@@ -4,6 +4,7 @@ import sys
 import json
 import random
 import datetime
+import time
 
 # Ensure project root is on sys.path for imports like 'backend.calculator', 'backend.finance'
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
@@ -429,33 +430,46 @@ def spa(path):
 def health_check():
     """Health check endpoint for monitoring and deployment verification."""
     try:
+        print("DEBUG: Health check starting...")
+        
         # Test database connection
         with db.engine.connect() as conn:
-            conn.execute(text('SELECT 1'))
+            result = conn.execute(text('SELECT 1'))
+            print("DEBUG: Basic database connection successful")
         
         # Test user table
         user_count = User.query.count()
+        print(f"DEBUG: User count query successful: {user_count}")
+        
+        # Test a sample user query if users exist
+        sample_user = None
+        if user_count > 0:
+            sample_user = User.query.first()
+            print(f"DEBUG: Sample user: {sample_user.username if sample_user else 'None'}")
         
         return jsonify({
             'status': 'healthy',
             'database': 'connected',
             'users': user_count,
+            'sample_user': sample_user.username if sample_user else None,
             'quiz_questions': len(QUESTIONS),
+            'database_url_safe': DATABASE_URL[:50] + '...' if len(DATABASE_URL) > 50 else DATABASE_URL,
             'timestamp': datetime.datetime.now().isoformat()
         }), 200
     except Exception as e:
+        print(f"DEBUG: Health check error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'status': 'unhealthy',
             'error': str(e),
+            'error_type': type(e).__name__,
             'timestamp': datetime.datetime.now().isoformat()
         }), 503
 
 @app.route('/api/debug/db-info')
 def api_debug_db_info():
-    """Debug endpoint to check database configuration (remove in production)."""
-    if not os.getenv('DEBUG_AUTH'):
-        return jsonify({'error': 'Debug mode not enabled'}), 403
-    
+    """Debug endpoint to check database configuration."""
     try:
         database_url = app.config.get('SQLALCHEMY_DATABASE_URI', 'Not set')
         # Hide password for security
@@ -468,15 +482,52 @@ def api_debug_db_info():
                     user_pass = scheme_user[1].split(':')
                     safe_url = f"{scheme_user[0]}://{user_pass[0]}:***@{parts[1]}"
         
-        user_count = User.query.count()
+        # Test database connection
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text('SELECT 1'))
+            db_status = "Connected"
+        except Exception as e:
+            db_status = f"Connection failed: {e}"
+        
+        # Get user info
+        try:
+            user_count = User.query.count()
+            users = User.query.limit(3).all()
+            user_info = [{'username': u.username, 'email': u.email, 'has_password': bool(u.password)} for u in users]
+        except Exception as e:
+            user_count = f"Query failed: {e}"
+            user_info = []
         
         return jsonify({
             'database_url': safe_url,
+            'database_status': db_status,
             'users_count': user_count,
+            'sample_users': user_info,
             'questions_loaded': len(QUESTIONS)
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e), 'error_type': type(e).__name__}), 500
+
+@app.route('/api/debug/create-test-user', methods=['POST'])
+def api_debug_create_test_user():
+    """Debug endpoint to create a test user."""
+    try:
+        test_username = f"test_{int(time.time())}"  # Unique username
+        test_password = "test123"
+        
+        user = User(username=test_username, password=test_password, email="test@example.com")
+        db.session.add(user)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Test user created: {test_username} / {test_password}',
+            'user': {'username': test_username, 'password': test_password}
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 # React Quiz API endpoints
 @app.route('/api/quiz/questions', methods=['GET'])
@@ -677,56 +728,69 @@ def api_auth_register():
     username = (data.get('username') or '').strip()
     password = data.get('password') or ''
     email = (data.get('email') or '').strip() or None
+    
+    print(f"DEBUG: Register attempt - username: {username}, password_len: {len(password)}, email: {email}")
+    
     if not username or not password:
         return jsonify({'success': False, 'message': 'username and password required'}), 400
-    if User.query.filter_by(username=username).first():
+    
+    # Check if user exists
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        print(f"DEBUG: User {username} already exists")
         return jsonify({'success': False, 'message': 'username already exists'}), 400
-    hashed = generate_password_hash(password)
-    user = User(username=username, password=hashed, email=email)
-    db.session.add(user)
-    db.session.commit()
-    login_user(user)
-    return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
+    
+    try:
+        # Store password as plaintext for debugging
+        user = User(username=username, password=password, email=email)
+        db.session.add(user)
+        db.session.commit()
+        print(f"DEBUG: User {username} created successfully")
+        
+        login_user(user)
+        print(f"DEBUG: User {username} logged in successfully")
+        return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
+    except Exception as e:
+        print(f"DEBUG: Register error: {e}")
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'registration error: {str(e)}'}), 500
 
 @app.route('/api/auth/login', methods=['POST'])
 def api_auth_login():
     data = request.get_json(silent=True) or {}
     username = (data.get('username') or '').strip()
     password = data.get('password') or ''
+    
+    print(f"DEBUG: Login attempt - username: {username}, password_len: {len(password)}")
+    
     if not username or not password:
         return jsonify({'success': False, 'message': 'username and password required'}), 400
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({'success': False, 'message': 'invalid credentials'}), 401
-
-    stored = user.password or ''
-    # Detect if stored password already hashed (Werkzeug pbkdf2 format contains both ':' and '$')
-    is_hashed = stored.startswith('pbkdf2:') or (':' in stored and '$' in stored and len(stored) > 40)
-
-    debug_auth = os.getenv('DEBUG_AUTH') == '1'
-    if debug_auth:
-        print(f"DEBUG_AUTH login attempt user={username} stored_len={len(stored)} is_hashed={is_hashed}")
-
+    
     try:
-        if is_hashed:
-            if not check_password_hash(stored, password):
-                if debug_auth:
-                    print("DEBUG_AUTH hash check failed")
-                return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+        user = User.query.filter_by(username=username).first()
+        print(f"DEBUG: User lookup result: {'Found' if user else 'Not found'}")
+        
+        if not user:
+            return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+
+        stored = user.password or ''
+        print(f"DEBUG: Stored password length: {len(stored)}")
+        
+        # Simple plaintext comparison for debugging
+        if stored == password:
+            print(f"DEBUG: Password match for {username}")
+            login_user(user)
+            return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
         else:
-            # Plaintext stored, migrate if matches
-            if stored != password:
-                if debug_auth:
-                    print("DEBUG_AUTH plaintext mismatch")
-                return jsonify({'success': False, 'message': 'invalid credentials'}), 401
-            user.password = generate_password_hash(password)
-            db.session.commit()
-            if debug_auth:
-                print("DEBUG_AUTH migrated plaintext -> hash")
+            print(f"DEBUG: Password mismatch for {username}")
+            print(f"DEBUG: Expected: '{stored}', Got: '{password}'")
+            return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+            
     except Exception as e:
-        if debug_auth:
-            print(f"DEBUG_AUTH exception during auth: {e}")
-        return jsonify({'success': False, 'message': 'authentication error'}), 500
+        print(f"DEBUG: Login exception: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'authentication error: {str(e)}'}), 500
 
     login_user(user)
     return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
@@ -932,7 +996,25 @@ def init_db():
     try:
         with app.app_context():
             # Test database connection with more detailed error handling
-            print(f"🔗 Connecting to database: {DATABASE_URL[:50]}...")
+            print(f"🔗 Connecting to database...")
+            print(f"📊 Environment variables check:")
+            print(f"   DATABASE_URL: {'✅ Set' if os.getenv('DATABASE_URL') else '❌ Not set'}")
+            print(f"   SECRET_KEY: {'✅ Set' if os.getenv('SECRET_KEY') else '❌ Not set'}")
+            print(f"   DEFAULT_USERNAME: {os.getenv('DEFAULT_USERNAME', '❌ Not set')}")
+            print(f"   DEFAULT_PASSWORD: {'✅ Set' if os.getenv('DEFAULT_PASSWORD') else '❌ Not set'}")
+            print(f"   DEFAULT_EMAIL: {os.getenv('DEFAULT_EMAIL', '❌ Not set')}")
+            print(f"   FLASK_ENV: {os.getenv('FLASK_ENV', '❌ Not set')}")
+            
+            # Show actual DATABASE_URL (masked)
+            db_url = DATABASE_URL
+            if '@' in db_url:
+                parts = db_url.split('@')
+                if '://' in parts[0]:
+                    scheme_user = parts[0].split('://')
+                    if ':' in scheme_user[1]:
+                        user_pass = scheme_user[1].split(':')
+                        db_url = f"{scheme_user[0]}://{user_pass[0]}:***@{parts[1]}"
+            print(f"   Processed DATABASE_URL: {db_url[:100]}...")
             
             with db.engine.connect() as conn:
                 # Test basic connectivity

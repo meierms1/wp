@@ -20,6 +20,15 @@ def init_production_db():
         with app.app_context():
             print("🔧 Initializing production database...")
             
+            # Check environment variables first
+            print("📊 Environment variables check:")
+            print(f"   DATABASE_URL: {'✅ Set' if os.getenv('DATABASE_URL') else '❌ Not set'}")
+            print(f"   SECRET_KEY: {'✅ Set' if os.getenv('SECRET_KEY') else '❌ Not set'}")
+            print(f"   DEFAULT_USERNAME: {os.getenv('DEFAULT_USERNAME', '❌ Not set (will use: admin)')}")
+            print(f"   DEFAULT_PASSWORD: {'✅ Set' if os.getenv('DEFAULT_PASSWORD') else '❌ Not set (will use: admin123)'}")
+            print(f"   DEFAULT_EMAIL: {os.getenv('DEFAULT_EMAIL', '❌ Not set (will use: admin@example.com)')}")
+            print(f"   FLASK_ENV: {os.getenv('FLASK_ENV', '❌ Not set')}")
+            
             # Create tables
             db.create_all()
             print("✅ Database tables created successfully")
@@ -34,10 +43,10 @@ def init_production_db():
                 default_password = os.getenv('DEFAULT_PASSWORD', 'admin123')
                 default_email = os.getenv('DEFAULT_EMAIL', 'admin@example.com')
                 
-                hashed_password = generate_password_hash(default_password)
+                # Use plaintext password for debugging
                 default_user = User(
                     username=default_username,
-                    password=hashed_password,
+                    password=default_password,
                     email=default_email
                 )
                 
@@ -46,6 +55,7 @@ def init_production_db():
                 
                 print(f"✅ Created default user: {default_username}")
                 print(f"🔑 Login with username: {default_username}")
+                print(f"🔑 Password (plaintext): {default_password}")
                 print("⚠️  IMPORTANT: Change the default password after first login!")
             else:
                 print("✅ Users already exist in database")
@@ -59,10 +69,10 @@ def init_production_db():
                     has_password = bool(user.password and user.password.strip())
                     print(f"   - Username: {user.username}, Email: {user.email or 'N/A'}, Password: {'✅' if has_password else '❌'}")
                     
-                    # Fix users without passwords
+                    # Fix users without passwords (using plaintext for debugging)
                     if not has_password:
-                        print(f"     🔧 Setting password for {user.username}")
-                        user.password = generate_password_hash(default_password)
+                        print(f"     🔧 Setting plaintext password for {user.username}")
+                        user.password = default_password
                         users_without_passwords += 1
                 
                 if len(users) > 5:
@@ -71,7 +81,7 @@ def init_production_db():
                 if users_without_passwords > 0:
                     db.session.commit()
                     print(f"   🔑 Fixed passwords for {users_without_passwords} users")
-                    print(f"   ⚠️  Default password: {default_password}")
+                    print(f"   ⚠️  Default password (plaintext): {default_password}")
                     print("   ⚠️  IMPORTANT: Change passwords after first login!")
             
             # Verify database connection and table structure

@@ -38,6 +38,8 @@ from flask_mail import Mail, Message
 from sqlalchemy.sql import func
 from flask_cors import CORS
 from jinja2 import ChoiceLoader, FileSystemLoader
+from sqlalchemy import text  # Added for raw SQL text usage
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Paths
 BACKEND_DIR = os.path.dirname(__file__)
@@ -63,7 +65,7 @@ app.jinja_loader = ChoiceLoader([
 ])
 
 # Enable CORS for API routes (development)
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]}})
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]}}, supports_credentials=True)
 
 # Configuration
 # Set up PostgreSQL database URL (with fallback to SQLite for local development)
@@ -82,6 +84,9 @@ if DATABASE_URL.startswith('sqlite:///') and '://' in DATABASE_URL:
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', "secret-change-this-in-production")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event system
+# Session / cookie settings for cross-origin React dev (adjust for production HTTPS)
+app.config.setdefault('SESSION_COOKIE_SAMESITE', 'None')
+app.config.setdefault('SESSION_COOKIE_SECURE', False)  # Set True when using HTTPS
 
 # Configure Flask-Caching for performance optimization
 app.config['CACHE_TYPE'] = 'simple'  # Use simple in-memory cache
@@ -107,6 +112,20 @@ login_manager.init_app(app)
 login_manager.login_view = "signin"  # Fixed: should match the function name
 login_manager.login_message = "Please log in to access this page."
 login_manager.login_message_category = "info"
+login_manager.login_view = None  # Using custom unauthorized handler + JSON APIs
+
+# Provide JSON instead of redirect for unauthorized access (API friendly)
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    # If request expects JSON (API route), return 401 JSON; else fallback redirect
+    if request.path.startswith('/api/') or request.is_json:
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
+    return redirect(url_for('home'))
+
+# Mobile user-agent detection helper (restored)
+def user_on_mobile():
+    ua = (request.headers.get('User-Agent') or '').lower()
+    return any(token in ua for token in ('iphone', 'android', 'ipad', 'mobile'))
 
 # Cached wrapper functions for expensive stock API calls
 @cache.memoize(timeout=300)  # Cache for 5 minutes
@@ -171,7 +190,7 @@ class User(db.Model, UserMixin):
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(255), nullable=False)  # allow hash length
     email = db.Column(db.String(50), nullable=True)  # Increased length for emails
     
     # Relationship with proper back_populates
@@ -218,38 +237,6 @@ class LoginForm(FlaskForm):
 class QuizForm(FlaskForm):
     num_questions = IntegerField('Number of Questions', validators=[InputRequired()], render_kw={'placeholder': 'Enter number (1-100)'})
     submit = SubmitField('Start Quiz')
-
-@app.route("/sign-in/", methods=["GET", "POST"])
-@app.route("/login/", methods=["GET", "POST"])  # Added alias for consistency
-def signin():
-    form = LoginForm()
-    if form.validate_on_submit():
-        try:
-            user = User.query.filter_by(username=form.username.data).first()
-            if user and user.password == form.password.data:
-                login_user(user)
-                flash('Logged in successfully!', 'success')
-                
-                # Check if user was trying to access a protected page
-                next_page = request.args.get('next')
-                if next_page:
-                    return redirect(next_page)
-                return redirect("/dashboard/")
-            else:
-                flash('Invalid username or password', 'error')
-        except Exception as e:
-            flash(f'Login error: {str(e)}', 'error')
-            print(f"Login error: {e}")
-    
-    return render_template("/sign-in.html", form=form)
-
-def user_on_mobile() -> bool:
-    user_agent = request.headers.get("User-Agent")
-    user_agent = user_agent.lower()
-    mobile = ["android", "iphone"]
-    if any(x in user_agent for x in mobile):
-        return True
-    return False
 
 @app.route("/alamo/")
 @app.route("/alamo")
@@ -555,55 +542,19 @@ def dashboard():
         if total_capital is None or total_capital==0: total_capital=1
         
         if (user_on_mobile()): 
-            return render_template('/dashboard-mobile.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
-        return render_template('/dashboard.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
+            return render_template('dashboard-mobile.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
+        return render_template('dashboard.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
     
     except Exception as e:
         flash(f"Dashboard error: {str(e)}", "error")
         print(f"Dashboard error: {e}")
         return redirect("/about/")
 
-@app.route("/register/", methods=["GET", "POST"])
-def signup():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        try:
-            # Check if user already exists
-            existing_user = User.query.filter_by(username=form.username.data).first()
-            if existing_user:
-                flash('Username already exists. Please choose a different one.', 'error')
-                return render_template('/register.html', form=form)
-            
-            # Check if email already exists
-            existing_email = User.query.filter_by(email=form.email.data).first()
-            if existing_email:
-                flash('Email already registered. Please use a different email.', 'error')
-                return render_template('/register.html', form=form)
-            
-            # Create new user
-            new_user = User(username=form.username.data, password=form.password.data, email=form.email.data)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Registration successful! Please sign in.', 'success')
-            return redirect("/sign-in/")
-            
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Registration failed: {str(e)}', 'error')
-            print(f"Registration error: {e}")
-    
-    # If form validation fails, show errors
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash(f'{field}: {error}', 'error')
-    
-    return render_template('/register.html', form=form)
-
 @app.route("/Logout/")
 @login_required
-def logout():
+def legacy_logout_redirect():
     logout_user()
-    return redirect("/about/")
+    return redirect("/")
 
 # Quiz Routes
 @app.route('/quiz/', methods=['GET', 'POST'])
@@ -876,29 +827,287 @@ def api_material_properties():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 400
 
+# ==================== Auth JSON API Endpoints ====================
+@app.route('/api/auth/register', methods=['POST'])
+def api_auth_register():
+    data = request.get_json(silent=True) or {}
+    username = (data.get('username') or '').strip()
+    password = data.get('password') or ''
+    email = (data.get('email') or '').strip() or None
+    if not username or not password:
+        return jsonify({'success': False, 'message': 'username and password required'}), 400
+    if User.query.filter_by(username=username).first():
+        return jsonify({'success': False, 'message': 'username already exists'}), 400
+    hashed = generate_password_hash(password)
+    user = User(username=username, password=hashed, email=email)
+    db.session.add(user)
+    db.session.commit()
+    login_user(user)
+    return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
+
+@app.route('/api/auth/login', methods=['POST'])
+def api_auth_login():
+    data = request.get_json(silent=True) or {}
+    username = (data.get('username') or '').strip()
+    password = data.get('password') or ''
+    if not username or not password:
+        return jsonify({'success': False, 'message': 'username and password required'}), 400
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+
+    stored = user.password or ''
+    # Detect if stored password already hashed (Werkzeug pbkdf2 format contains both ':' and '$')
+    is_hashed = stored.startswith('pbkdf2:') or (':' in stored and '$' in stored and len(stored) > 40)
+
+    debug_auth = os.getenv('DEBUG_AUTH') == '1'
+    if debug_auth:
+        print(f"DEBUG_AUTH login attempt user={username} stored_len={len(stored)} is_hashed={is_hashed}")
+
+    try:
+        if is_hashed:
+            if not check_password_hash(stored, password):
+                if debug_auth:
+                    print("DEBUG_AUTH hash check failed")
+                return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+        else:
+            # Plaintext stored, migrate if matches
+            if stored != password:
+                if debug_auth:
+                    print("DEBUG_AUTH plaintext mismatch")
+                return jsonify({'success': False, 'message': 'invalid credentials'}), 401
+            user.password = generate_password_hash(password)
+            db.session.commit()
+            if debug_auth:
+                print("DEBUG_AUTH migrated plaintext -> hash")
+    except Exception as e:
+        if debug_auth:
+            print(f"DEBUG_AUTH exception during auth: {e}")
+        return jsonify({'success': False, 'message': 'authentication error'}), 500
+
+    login_user(user)
+    return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username}})
+
+@app.route('/api/auth/logout', methods=['POST'])
+@login_required
+def api_auth_logout():
+    logout_user()
+    return jsonify({'success': True})
+
+@app.route('/api/auth/me', methods=['GET'])
+def api_auth_me():
+    if not current_user.is_authenticated:
+        return jsonify({'authenticated': False})
+    return jsonify({'authenticated': True, 'user': {'id': current_user.id, 'username': current_user.username}})
+
+# ==================== Transactions API (for React Dashboard) ====================
+@app.route('/api/transactions', methods=['GET'])
+@login_required
+def api_transactions():
+    try:
+        txs = Dashinfo.query.filter_by(user=current_user.id).order_by(Dashinfo.date.desc()).all()
+        serialized = [
+            {
+                'id': t.id,
+                'ticker': t.ticker,
+                'price': t.price,
+                'amount': t.amount,
+                'type': t.type,
+                'date': t.date.isoformat(),
+                'total': t.total
+            } for t in txs
+        ]
+        return jsonify({'success': True, 'transactions': serialized})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# ==================== Portfolio API (React) ====================
+@app.route('/api/portfolio/stocks', methods=['GET'])
+@login_required
+def api_get_portfolio():
+    try:
+        transactions = Dashinfo.query.filter_by(user=current_user.id).all()
+        portfolio = {}
+        for tx in transactions:
+            t = tx.ticker
+            if t not in portfolio:
+                portfolio[t] = {
+                    'ticker': t,
+                    'average_buy_price': 0.0,
+                    'current_price': 0.0,
+                    'shares_held': 0,
+                    'total_cost_basis': 0.0,   # renamed internal meaning (buys only)
+                    'total_current_value': 0.0,
+                    'price_change': 0.0,
+                    'percent_change': 0.0,
+                }
+            # Treat positive amount as BUY, negative as SELL (simpler, price sign ignored)
+            if tx.amount > 0:  # BUY
+                portfolio[t]['shares_held'] += tx.amount
+                portfolio[t]['total_cost_basis'] += (abs(tx.price) * tx.amount)
+            elif tx.amount < 0:  # SELL
+                portfolio[t]['shares_held'] += tx.amount  # tx.amount negative reduces holdings
+                # Simplified: do not adjust historical cost basis (no FIFO/LIFO) – unrealized P&L based on remaining shares
+
+        # Post processing calculations
+        result = []
+        for t, data in portfolio.items():
+            shares = data['shares_held']
+            if shares <= 0:
+                # Skip positions fully exited (could return zeroed entry if desired)
+                continue
+            cost_basis = data['total_cost_basis']
+            avg_buy = cost_basis / shares if shares > 0 else 0.0
+            current_price = cached_get_current_price(t)
+            current_value = current_price * shares
+            unrealized_gain = current_value - (avg_buy * shares)
+            price_change = current_price - avg_buy
+            percent_change = (price_change / avg_buy * 100) if avg_buy > 0 else 0.0
+
+            enriched = {
+                'ticker': t,
+                'average_buy_price': round(avg_buy, 6),
+                'current_price': round(current_price, 6),
+                'shares_held': shares,
+                'total_cost_basis': round(cost_basis, 2),
+                'total_current_value': round(current_value, 2),
+                'price_change': round(price_change, 6),
+                'percent_change': round(percent_change, 4),
+                # Compatibility fields for existing React Dashboard component
+                'current_value': round(current_value, 2),
+                'shares': shares,
+                'purchase_price': round(avg_buy, 6),
+                'gain_loss': round(unrealized_gain, 2),
+            }
+            result.append(enriched)
+
+        return jsonify({'success': True, 'portfolio': result})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/portfolio/stocks', methods=['POST'])
+@login_required
+def api_add_portfolio_stock():
+    try:
+        data = request.get_json(silent=True) or {}
+        ticker = (data.get('ticker') or '').strip().upper()
+        shares = data.get('shares')
+        buy_price = data.get('buy_price') or data.get('price')
+        if not ticker or shares is None or buy_price is None:
+            return jsonify({'success': False, 'message': 'ticker, shares and buy_price required'}), 400
+        try:
+            shares = float(shares)
+            buy_price = float(buy_price)
+        except ValueError:
+            return jsonify({'success': False, 'message': 'shares and buy_price must be numbers'}), 400
+        if shares <= 0 or buy_price <= 0:
+            return jsonify({'success': False, 'message': 'shares and buy_price must be positive'}), 400
+        now = datetime.datetime.utcnow()
+        tx = Dashinfo(
+            ticker=ticker,
+            price=buy_price,
+            date=now,
+            type='BUY',
+            amount=int(shares),
+            user=current_user.id,
+            total=buy_price * shares
+        )
+        db.session.add(tx)
+        db.session.commit()
+        cache.delete_memoized(cached_get_current_price, ticker)
+        return api_get_portfolio()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# New: Sell shares endpoint
+@app.route('/api/portfolio/stocks/sell', methods=['POST'])
+@login_required
+def api_sell_portfolio_stock():
+    try:
+        data = request.get_json(silent=True) or {}
+        ticker = (data.get('ticker') or '').strip().upper()
+        shares = data.get('shares')
+        sell_price = data.get('sell_price') or data.get('price')
+        if not ticker or shares is None or sell_price is None:
+            return jsonify({'success': False, 'message': 'ticker, shares and sell_price required'}), 400
+        try:
+            shares = float(shares)
+            sell_price = float(sell_price)
+        except ValueError:
+            return jsonify({'success': False, 'message': 'shares and sell_price must be numbers'}), 400
+        if shares <= 0 or sell_price <= 0:
+            return jsonify({'success': False, 'message': 'shares and sell_price must be positive'}), 400
+        # Compute current held shares
+        buy_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='BUY').scalar() or 0
+        sell_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='SELL').scalar() or 0
+        held = buy_sum + sell_sum  # sells are negative
+        if held < shares:
+            return jsonify({'success': False, 'message': 'Not enough shares to sell'}), 400
+        now = datetime.datetime.utcnow()
+        tx = Dashinfo(
+            ticker=ticker,
+            price= -sell_price,  # maintain legacy convention
+            date=now,
+            type='SELL',
+            amount= -int(shares),
+            user=current_user.id,
+            total= sell_price * shares
+        )
+        db.session.add(tx)
+        db.session.commit()
+        cache.delete_memoized(cached_get_current_price, ticker)
+        return api_get_portfolio()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# New: Delete all transactions for a ticker (dangerous – removes history)
+@app.route('/api/portfolio/stocks/<ticker>', methods=['DELETE'])
+@login_required
+def api_delete_ticker(ticker):
+    try:
+        ticker = (ticker or '').strip().upper()
+        if not ticker:
+            return jsonify({'success': False, 'message': 'ticker required'}), 400
+        Dashinfo.query.filter_by(user=current_user.id, ticker=ticker).delete()
+        db.session.commit()
+        cache.delete_memoized(cached_get_current_price, ticker)
+        return api_get_portfolio()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 # Initialize database tables
+_db_initialized = False
+
 def init_db():
-    """Initialize database tables"""
+    """Initialize database tables (idempotent)."""
+    global _db_initialized
+    if _db_initialized:
+        return
     try:
         with app.app_context():
             # Test database connection
             with db.engine.connect() as conn:
-                conn.execute(db.text('SELECT 1'))
+                conn.execute(text('SELECT 1'))  # use sqlalchemy.text
             db.create_all()
             print("Database tables created successfully")
             print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+            _db_initialized = True
     except Exception as e:
         print(f"Database initialization error: {e}")
         print("This might be due to ephemeral storage in cloud deployment.")
         print("Consider using a persistent database service like Neon, PlanetScale, or Railway.")
 
+# Call immediately so DB is ready under any server (flask run, gunicorn, etc.)
+init_db()
+
 if __name__ == "__main__":
-    # Initialize database
+    # Initialize database (idempotent)
     init_db()
-    
     # Use environment variables for production configuration
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
     port = int(os.getenv('PORT', 5000))
     host = os.getenv('HOST', '0.0.0.0')
-    
     app.run(debug=debug_mode, port=port, host=host)

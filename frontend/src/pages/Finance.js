@@ -27,8 +27,12 @@ const Finance = () => {
   const [newStock, setNewStock] = useState({
     ticker: '',
     shares: '',
-    purchase_price: ''
+    buy_price: '' // renamed from purchase_price to match backend
   });
+  // New sell form state
+  const [sellFormTicker, setSellFormTicker] = useState(null);
+  const [sellForm, setSellForm] = useState({ shares: '', sell_price: '' });
+  const [deleting, setDeleting] = useState(false);
   // New: controls for selecting period or date range
   const [rangeMode, setRangeMode] = useState('period'); // 'period' | 'range'
   const [period, setPeriod] = useState('max');
@@ -46,6 +50,8 @@ const Finance = () => {
       const response = await axios.get('/api/portfolio/stocks');
       if (response.data.success) {
         setPortfolio(response.data.portfolio || []);
+      } else if (response.data.message) {
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error fetching portfolio:', error);
@@ -93,20 +99,77 @@ const Finance = () => {
       toast.error('Please login to add stocks to portfolio');
       return;
     }
-
     try {
       setLoading(true);
-      const response = await axios.post('/api/portfolio/stocks', newStock);
+      const payload = { ticker: newStock.ticker.toUpperCase(), shares: newStock.shares, buy_price: newStock.buy_price };
+      const response = await axios.post('/api/portfolio/stocks', payload);
       if (response.data.success) {
-        toast.success('Stock added to portfolio!');
-        setNewStock({ ticker: '', shares: '', purchase_price: '' });
+        toast.success('Stock added to portfolio');
+        setNewStock({ ticker: '', shares: '', buy_price: '' });
+        setSellForm({ shares: '', sell_price: '' });
         fetchPortfolio();
+      } else if (response.data.message) {
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error adding stock:', error);
-      toast.error('Failed to add stock to portfolio');
+      toast.error(error.response?.data?.message || 'Failed to add stock');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openSellForm = (ticker) => {
+    if (sellFormTicker === ticker) {
+      setSellFormTicker(null);
+      setSellForm({ shares: '', sell_price: '' });
+    } else {
+      setSellFormTicker(ticker);
+      setSellForm({ shares: '', sell_price: '' });
+    }
+  };
+
+  const sellStock = async (e, ticker) => {
+    e.preventDefault();
+    if (!user) { toast.error('Login required'); return; }
+    if (!sellForm.shares || !sellForm.sell_price) { toast.error('Enter shares and price'); return; }
+    try {
+      setLoading(true);
+      const payload = { ticker, shares: sellForm.shares, sell_price: sellForm.sell_price };
+      const response = await axios.post('/api/portfolio/stocks/sell', payload);
+      if (response.data.success) {
+        toast.success('Sell order recorded');
+        setSellFormTicker(null);
+        setSellForm({ shares: '', sell_price: '' });
+        fetchPortfolio();
+      } else if (response.data.message) {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error selling stock:', error);
+      toast.error(error.response?.data?.message || 'Failed to sell stock');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteTicker = async (ticker) => {
+    if (!user) { toast.error('Login required'); return; }
+    if (!window.confirm(`Delete ALL transactions for ${ticker}? This cannot be undone.`)) return;
+    try {
+      setDeleting(true);
+      const response = await axios.delete(`/api/portfolio/stocks/${ticker}`);
+      if (response.data.success) {
+        toast.success(`${ticker} removed`);
+        fetchPortfolio();
+      } else if (response.data.message) {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error deleting ticker:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete ticker');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -345,7 +408,6 @@ const Finance = () => {
                   {/* Add Stock Form */}
                   <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
                     <h2 className="text-2xl font-bold text-white mb-6">Add Stock to Portfolio</h2>
-                    
                     <form onSubmit={addToPortfolio} className="grid md:grid-cols-4 gap-4">
                       <input
                         type="text"
@@ -357,7 +419,7 @@ const Finance = () => {
                       />
                       <input
                         type="number"
-                        step="0.01"
+                        step="1"
                         placeholder="Shares"
                         value={newStock.shares}
                         onChange={(e) => setNewStock({ ...newStock, shares: e.target.value })}
@@ -367,9 +429,9 @@ const Finance = () => {
                       <input
                         type="number"
                         step="0.01"
-                        placeholder="Purchase Price"
-                        value={newStock.purchase_price}
-                        onChange={(e) => setNewStock({ ...newStock, purchase_price: e.target.value })}
+                        placeholder="Buy Price"
+                        value={newStock.buy_price}
+                        onChange={(e) => setNewStock({ ...newStock, buy_price: e.target.value })}
                         className="px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                         required
                       />
@@ -383,46 +445,52 @@ const Finance = () => {
                         {loading ? (
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                         ) : (
-                          <>
-                            <PlusIcon className="w-5 h-5 mr-2" />
-                            Add Stock
-                          </>
+                          <>Add Stock</>
                         )}
                       </motion.button>
                     </form>
+                    <p className="text-xs text-gray-400 mt-2">Note: Fractional shares not supported yet (values are rounded down).</p>
                   </div>
-
                   {/* Portfolio Holdings */}
                   <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
-                    <h2 className="text-2xl font-bold text-white mb-6">Your Portfolio</h2>
-                    
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center">Your Portfolio {deleting && <span className="ml-3 text-xs text-gray-400">Updating...</span>}</h2>
                     {portfolio.length > 0 ? (
                       <div className="space-y-4">
-                        {portfolio.map((stock, index) => (
-                          <motion.div
-                            key={stock.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex items-center justify-between p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
-                          >
-                            <div className="flex items-center">
-                              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-4">
-                                <span className="text-white font-bold">{stock.ticker.substring(0, 2)}</span>
+                        {portfolio.map((stock, index) => {
+                          const gainLoss = (stock.price_change || 0) * (stock.shares_held || 0);
+                          return (
+                            <motion.div key={stock.ticker} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div className="flex items-center">
+                                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-4">
+                                    <span className="text-white font-bold">{stock.ticker.substring(0, 2)}</span>
+                                  </div>
+                                  <div>
+                                    <h3 className="text-white font-semibold text-lg">{stock.ticker}</h3>
+                                    <p className="text-gray-400 text-sm">{stock.shares_held} shares @ ${stock.average_buy_price?.toFixed(2) || '—'}</p>
+                                    <p className="text-gray-400 text-xs">Current: ${stock.current_price?.toFixed(2) || '—'} | Change: {stock.price_change >= 0 ? '+' : ''}{stock.price_change?.toFixed(2)} ({stock.percent_change?.toFixed(2)}%)</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-white font-semibold text-lg">${stock.total_current_value?.toFixed(2) || 'N/A'}</p>
+                                  <p className={`text-sm ${gainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>{gainLoss >= 0 ? '+' : ''}${gainLoss.toFixed(2)}</p>
+                                </div>
                               </div>
-                              <div>
-                                <h3 className="text-white font-semibold text-lg">{stock.ticker}</h3>
-                                <p className="text-gray-400">{stock.shares} shares @ ${stock.purchase_price}</p>
+                              <div className="mt-4 flex flex-wrap gap-3">
+                                <button onClick={() => openSellForm(stock.ticker)} className="px-4 py-2 text-sm bg-white/10 hover:bg-white/20 rounded-lg text-white border border-white/20">{sellFormTicker === stock.ticker ? 'Cancel' : 'Sell'}</button>
+                                <button onClick={() => deleteTicker(stock.ticker)} className="px-4 py-2 text-sm bg-red-600/20 hover:bg-red-600/30 rounded-lg text-red-300 border border-red-500/30">Delete</button>
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-white font-semibold text-lg">${stock.current_value?.toFixed(2) || 'N/A'}</p>
-                              <p className={`text-sm ${(stock.gain_loss || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                {(stock.gain_loss || 0) >= 0 ? '+' : ''}${(stock.gain_loss || 0).toFixed(2)}
-                              </p>
-                            </div>
-                          </motion.div>
-                        ))}
+                              {sellFormTicker === stock.ticker && (
+                                <form onSubmit={(e) => sellStock(e, stock.ticker)} className="mt-4 grid md:grid-cols-4 gap-4 bg-black/20 p-4 rounded-lg">
+                                  <input type="number" step="1" placeholder="Shares" value={sellForm.shares} onChange={(e) => setSellForm({ ...sellForm, shares: e.target.value })} className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm" required />
+                                  <input type="number" step="0.01" placeholder="Sell Price" value={sellForm.sell_price} onChange={(e) => setSellForm({ ...sellForm, sell_price: e.target.value })} className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm" required />
+                                  <button type="submit" disabled={loading} className="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-sm font-semibold disabled:opacity-50 flex items-center justify-center">{loading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> : 'Confirm Sell'}</button>
+                                  <div className="text-xs text-gray-400 flex items-center">Selling reduces shares held.</div>
+                                </form>
+                              )}
+                            </motion.div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className="text-center py-12">

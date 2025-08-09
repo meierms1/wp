@@ -1,5 +1,5 @@
 # Multi-stage build: React (Vite or CRA) frontend + Flask backend
-# Final image: python:3.11-slim serving Flask via Gunicorn
+# Final image: python:3.12-slim serving Flask via Gunicorn
 
 ############################
 # Stage 1: Frontend build  #
@@ -28,7 +28,8 @@ RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
 ############################
 # Stage 2: Backend image   #
 ############################
-FROM python:3.13-slim AS runtime
+FROM python:3.12-slim AS runtime
+# If upgrading to 3.13 later and wheels missing, ensure CFLAGS='-std=gnu11' and install cython before pandas to build from source.
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -42,10 +43,11 @@ COPY . .
 # Place built frontend (if any) under static/frontend
 RUN mkdir -p static/frontend && \
     if [ -d /app/frontend_output ]; then cp -a /app/frontend_output/. static/frontend/; fi
-# Expose port
-EXPOSE 5000
+# Expose Cloud Run default (will still honor $PORT env at runtime)
+EXPOSE 8080
 # Non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
-ENV FLASK_DEBUG=False PORT=5000 HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "backend.app:app", "--workers", "3", "--threads", "4", "--timeout", "120"]
+# Remove hard-coded PORT env (Cloud Run injects $PORT)
+ENV FLASK_DEBUG=False HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
+CMD ["bash","-c","gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 3 --threads 4 --timeout 120"]

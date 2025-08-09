@@ -307,6 +307,22 @@ def legacy_dashboard():
 # SPA Route - Serve React Frontend
 FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
 
+# Handle React build static assets (CSS, JS, etc.)
+@app.route('/static/css/<path:filename>')
+def serve_react_css(filename):
+    """Serve CSS files from React build"""
+    return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'css'), filename)
+
+@app.route('/static/js/<path:filename>')
+def serve_react_js(filename):
+    """Serve JS files from React build"""
+    return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'js'), filename)
+
+@app.route('/static/media/<path:filename>')
+def serve_react_media(filename):
+    """Serve media files from React build"""
+    return send_from_directory(os.path.join(FRONTEND_BUILD_DIR, 'static', 'media'), filename)
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def spa(path):

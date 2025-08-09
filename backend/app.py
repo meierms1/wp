@@ -27,7 +27,7 @@ except ImportError as e:
     def get_current_price(*args, **kwargs):
         return 0.0
 
-from flask import Flask, render_template, request, redirect, flash, url_for, abort, session, jsonify, send_from_directory
+from flask import Flask, request, redirect, abort, session, jsonify, send_from_directory
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
@@ -64,15 +64,29 @@ app.jinja_loader = ChoiceLoader([
     FileSystemLoader(ROOT_TEMPLATES_DIR),
 ])
 
-# Enable CORS for API routes (development)
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]}}, supports_credentials=True)
+# Enable CORS for API routes (production-ready)
+cors_origins = os.getenv('CORS_ORIGINS', 'https://meierms.com').split(',')
+CORS(app, resources={
+    r"/api/*": {
+        "origins": cors_origins,
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+}, supports_credentials=True)
 
 # Configuration
 # Set up PostgreSQL database URL (with fallback to SQLite for local development)
 DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///database2.db')
+
 # Handle PostgreSQL URL format for SQLAlchemy 2.x compatibility
 if DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+
+# For Neon and other PostgreSQL services, ensure SSL is configured properly
+if DATABASE_URL.startswith('postgresql://') and 'sslmode' not in DATABASE_URL:
+    # Add SSL mode for production PostgreSQL connections
+    separator = '&' if '?' in DATABASE_URL else '?'
+    DATABASE_URL += f"{separator}sslmode=require"
 
 # If using a relative SQLite path, make it absolute in an instance folder
 if DATABASE_URL.startswith('sqlite:///') and '://' in DATABASE_URL:
@@ -84,17 +98,58 @@ if DATABASE_URL.startswith('sqlite:///') and '://' in DATABASE_URL:
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', "secret-change-this-in-production")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event system
-# Session / cookie settings for cross-origin React dev (adjust for production HTTPS)
-app.config.setdefault('SESSION_COOKIE_SAMESITE', 'None')
-app.config.setdefault('SESSION_COOKIE_SECURE', False)  # Set True when using HTTPS
+# Session / cookie settings for production
+is_production = os.getenv('FLASK_ENV', 'production') == 'production'
+app.config.setdefault('SESSION_COOKIE_SAMESITE', 'None' if not is_production else 'Lax')
+app.config.setdefault('SESSION_COOKIE_SECURE', is_production)  # True in production HTTPS
+app.config.setdefault('SESSION_COOKIE_HTTPONLY', True)  # Security: prevent XSS
 
-# Configure Flask-Caching for performance optimization
-app.config['CACHE_TYPE'] = 'simple'  # Use simple in-memory cache
-app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 5 minutes cache timeout
+# Configure Flask-Caching for production performance
+cache_config = {
+    'CACHE_TYPE': os.getenv('CACHE_TYPE', 'simple'),
+    'CACHE_DEFAULT_TIMEOUT': int(os.getenv('CACHE_TIMEOUT', '300')),
+}
+# Use Redis in production if available
+if os.getenv('REDIS_URL'):
+    cache_config.update({
+        'CACHE_TYPE': 'redis',
+        'CACHE_REDIS_URL': os.getenv('REDIS_URL'),
+    })
+app.config.update(cache_config)
 
 # Initialize extensions
 db = SQLAlchemy(app)
 cache = Cache(app)
+
+# Add security headers for production
+@app.after_request
+def add_security_headers(response):
+    """Add security headers for production deployment"""
+    if is_production:
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        # Content Security Policy
+        csp = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.plot.ly; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "img-src 'self' data: https:; "
+            "connect-src 'self' https://api.polygon.io https://query1.finance.yahoo.com; "
+            "frame-ancestors 'none';"
+        )
+        response.headers['Content-Security-Policy'] = csp
+    
+    # Cache headers for static assets
+    if request.endpoint and 'static' in request.endpoint:
+        response.headers['Cache-Control'] = 'public, max-age=31536000'  # 1 year
+    elif request.endpoint in ['serve_react_css', 'serve_react_js', 'serve_react_media']:
+        response.headers['Cache-Control'] = 'public, max-age=31536000'  # 1 year
+    
+    return response
 
 # Email configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
@@ -277,6 +332,38 @@ def health():
             'timestamp': datetime.datetime.utcnow().isoformat(),
         }), 500
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate dynamic sitemap for SEO"""
+    pages = [
+        {'url': '/', 'priority': '1.0', 'changefreq': 'weekly'},
+        {'url': '/about', 'priority': '0.9', 'changefreq': 'monthly'},
+        {'url': '/resume', 'priority': '0.9', 'changefreq': 'monthly'},
+        {'url': '/projects', 'priority': '0.8', 'changefreq': 'monthly'},
+        {'url': '/finance', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'url': '/tools', 'priority': '0.7', 'changefreq': 'monthly'},
+        {'url': '/quiz', 'priority': '0.6', 'changefreq': 'monthly'},
+    ]
+    
+    sitemap_xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    sitemap_xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    
+    base_url = os.getenv('BASE_URL', 'https://meierms.com')
+    last_modified = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+    
+    for page in pages:
+        sitemap_xml.append('  <url>')
+        sitemap_xml.append(f'    <loc>{base_url}{page["url"]}</loc>')
+        sitemap_xml.append(f'    <lastmod>{last_modified}</lastmod>')
+        sitemap_xml.append(f'    <changefreq>{page["changefreq"]}</changefreq>')
+        sitemap_xml.append(f'    <priority>{page["priority"]}</priority>')
+        sitemap_xml.append('  </url>')
+    
+    sitemap_xml.append('</urlset>')
+    
+    response = app.response_class('\n'.join(sitemap_xml), mimetype='application/xml')
+    return response
+
 # Legacy Flask routes removed - now fully using React SPA routing
 # All frontend routes are handled by the SPA catch-all route below
 
@@ -303,337 +390,93 @@ def serve_react_media(filename):
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def spa(path):
-    # Debug logging for deployment
-    print(f"SPA route called with path: '{path}'")
-    print(f"FRONTEND_BUILD_DIR: {FRONTEND_BUILD_DIR}")
-    print(f"Index file exists: {os.path.isfile(os.path.join(FRONTEND_BUILD_DIR, 'index.html'))}")
-    
-    # Allow API routes to pass through (they'll be handled by their specific routes)
+    """Serve React SPA with optimized routing"""
+    # Allow API routes to pass through
     if path.startswith('api/'):
-        abort(404)  # API routes should be handled by @app.route('/api/...') decorators
+        abort(404)
     
     # Allow static routes to pass through to Flask's built-in static handler
     if path.startswith('static/'):
-        print(f"Allowing static route to pass through: {path}")
-        abort(404)  # Let Flask's static handler deal with this
+        abort(404)
     
     # Serve static files from React build if they exist (non-static paths)
-    if path and '.' in path:  # Likely a static asset
+    if path and '.' in path:
         candidate = os.path.join(FRONTEND_BUILD_DIR, path)
-        print(f"Looking for static file: {path}")
-        print(f"Candidate path: {candidate}")
-        print(f"File exists: {os.path.isfile(candidate)}")
         if os.path.isfile(candidate):
-            print(f"✅ Serving static file: {path}")
             return send_from_directory(FRONTEND_BUILD_DIR, path)
-        else:
-            print(f"❌ Static file not found: {path}")
     
-    # For all other routes (including /finance, /about, etc.), serve the React SPA
+    # For all other routes, serve the React SPA
     index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
     if os.path.isfile(index_path):
-        print("Serving React SPA index.html")
         return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
     
     # If build is missing, show error
-    print(f"ERROR: React build not found at {FRONTEND_BUILD_DIR}")
     return jsonify({
         'error': 'React build not found',
-        'expected_dir': FRONTEND_BUILD_DIR,
-        'help': 'Run "cd frontend && npm run build" and rebuild Docker image',
-        'directory_contents': os.listdir(FRONTEND_BUILD_DIR) if os.path.exists(FRONTEND_BUILD_DIR) else 'Directory does not exist'
+        'help': 'Frontend build is missing. Please contact administrator.'
     }), 500
-
-@app.route("/test-plot/")
-def test_plot():
-    """Test route to verify Plotly is working"""
-    import datetime
-    import math
-    
-    # Generate test data
-    base_date = datetime.datetime.now() - datetime.timedelta(days=10)
-    labels = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(10)]
-    prices = [100 + (i * 2) + (5 * math.sin(i)) for i in range(10)]
-    
-    info_data = ["Test Company", "Technology", "Software", 90.0, 120.0, 1.5, "This is a test company for debugging the plot functionality."]
-    
-    return render_template("finance.html", labels=labels, values=prices, stock_info=info_data, hide_block=False)
 
 # Legacy Flask template routes removed - using React SPA for all frontend
 
-@app.route("/calculator/", methods=["GET","POST"])
-def unittool():
-    if (request.method == "POST"):
-        try:
-            e = -1; g = -1; k = -1; l = -1; v = -1
-            first = request.form.get("first_property_name")
-            second = request.form.get("second_property_name")
-            if first == "young": e = float(request.form.get("first_property_value"))
-            elif first == "shear": g = float(request.form.get("first_property_value"))
-            elif first == "bulk": k = float(request.form.get("first_property_value"))
-            elif first == "lame": l = float(request.form.get("first_property_value"))
-            elif first == "poisson": v = float(request.form.get("first_property_value"))
-            if second == "young": e = float(request.form.get("second_property_value"))
-            elif second == "shear": g = float(request.form.get("second_property_value"))
-            elif second == "bulk": k = float(request.form.get("second_property_value"))
-            elif second == "lame": l = float(request.form.get("second_property_value"))
-            elif second == "poisson": v = float(request.form.get("second_property_value"))
-            calc = material(K = k, E = e, lame = l, G = g, Poisson = v)
-            return render_template("tools.html", success_compute=True, E=round(calc.E, 3), G=round(calc.G, 3), K=round(calc.K, 3), L=round(calc.lame, 3), V=round(calc.Poisson, 3),value="Value")
-        except:
-            input_value = float(request.form.get("input_value"))
-            input_unit = request.form.get("input_unit")
-            output_unit = request.form.get("output_unit")
-            if len(input_unit) > 50 or len(output_unit) > 50:
-                flash("String is too long. Stopping for security")
-                return render_template("tools.html", success_convert=True, value="String is too long")
-            try:
-                convert = GeneralConverter(input_value, input_unit, output_unit)
-                output_value = convert.converted_value
-                return render_template("tools.html", success_convert=True, value=str(output_value))
-            except:
-                return render_template("tools.html", success_convert=True, value="Incompatible units")
-    return render_template("tools.html", value= "Value")
+# Legacy Flask template routes removed - using React SPA for all frontend
 
 
 
-@app.route("/dashboard/", methods=["GET", "POST"])
-@login_required
-def dashboard():
+# Legacy Flask template routes removed - using React SPA for all frontend
+
+# Health check and monitoring endpoints
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring and deployment verification."""
     try:
-        import numpy as np  # Only load when dashboard is accessed
+        # Test database connection
+        with db.engine.connect() as conn:
+            conn.execute(text('SELECT 1'))
         
-        c_user = current_user.id
-        print(f"DEBUG: Dashboard accessed by user {c_user}")
+        # Test user table
+        user_count = User.query.count()
         
-        if request.method == "POST":        
-            if "add_buy" in request.form:
-                try:
-                    ticker = request.form.get("ticker_name")
-                    price = float(request.form.get("ticker_price"))
-                    date = request.form.get("action_date")
-                    date = datetime.datetime.strptime(date, '%Y-%m-%d')
-                    amount = int(request.form.get("ticker_amount"))
-                    total = amount * price
-                    user_id = c_user
-                    new_transaction = Dashinfo(ticker=ticker, price=price, date=date, type="BUY", amount=amount, user=user_id, total=total)
-                    db.session.add(new_transaction)
-                    db.session.commit()
-                    # Clear cache for this ticker to ensure fresh data
-                    cache.delete_memoized(cached_get_current_price, ticker)
-                    flash("Transaction added successfully!", "success")
-                except Exception as e:
-                    db.session.rollback()
-                    flash(f"Error adding transaction: {str(e)}", "error")           
-            elif "add_sell" in request.form:
-                try:
-                    ticker = request.form.get("ticker_name")
-                    price = float(request.form.get("ticker_price"))
-                    date = request.form.get("action_date")
-                    date = datetime.datetime.strptime(date, '%Y-%m-%d')
-                    amount = int(request.form.get("ticker_amount"))
-                    user_id = c_user
-
-                    current_stock_amount_buy = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==ticker, Dashinfo.type=="BUY").scalar()
-                    current_stock_amount_sell = db.session.query(func.sum(Dashinfo.amount)).filter(Dashinfo.user==c_user, Dashinfo.ticker==ticker, Dashinfo.type=="SELL").scalar()
-                    if current_stock_amount_buy is None: current_stock_amount_buy = 0
-                    if current_stock_amount_sell is None: current_stock_amount_sell = 0
-                    current_ballance = current_stock_amount_buy - current_stock_amount_sell
-
-                    if current_ballance < int(amount):
-                        flash("You can not sell more than you have")
-                    else:
-                        new_transaction = Dashinfo(ticker=ticker, price=price*(-1), date=date, type="SELL", amount=amount*(-1), user=user_id)
-                        db.session.add(new_transaction)
-                        db.session.commit()
-                        # Clear cache for this ticker to ensure fresh data
-                        cache.delete_memoized(cached_get_current_price, ticker)
-                        flash("Transaction added successfully!", "success")
-                except Exception as e:
-                    db.session.rollback()
-                    flash(f"Error adding transaction: {str(e)}", "error")
-
-            elif "remove_transaction" in request.form:
-                try:
-                    _id = request.form.get("remove_from_db")
-                    user_id = c_user
-                    transaction_id = Dashinfo.query.filter(Dashinfo.id==_id).first()
-
-                    if transaction_id and transaction_id.user == user_id:
-                        db.session.delete(transaction_id)
-                        db.session.commit()
-                        flash("Transaction removed successfully!", "success")
-                    else:
-                        flash("Declined: This transaction doesn't belong to you.", "error")
-                except Exception as e:
-                    db.session.rollback()
-                    flash(f"Error removing transaction: {str(e)}", "error")
-
-        # GET request or after POST - display dashboard
-        data = Dashinfo.query.filter(Dashinfo.user==c_user).all()
-        data_config=[]
-        names = [] 
-        for i in data:
-            if (user_on_mobile()):
-                data_config.append([i.id,i.ticker, abs(i.price), abs(i.amount), i.type])
-            else:
-                data_config.append([i.id,i.ticker, abs(i.price), i.date, abs(i.amount), i.type])
-            if i.ticker not in names:
-                names.append(i.ticker)
-
-        # Optimize database queries - get all aggregated data in single queries per ticker
-        sum_price = []
-        local_changes = [] 
-        
-        # Pre-calculate aggregated data for all tickers to avoid N+1 query problem
-        buy_aggregates = db.session.query(
-            Dashinfo.ticker,
-            func.sum(Dashinfo.price).label('total_price'),
-            func.sum(Dashinfo.amount).label('total_amount')
-        ).filter(
-            Dashinfo.user==c_user, 
-            Dashinfo.type=="BUY"
-        ).group_by(Dashinfo.ticker).all()
-        
-        sell_aggregates = db.session.query(
-            Dashinfo.ticker,
-            func.sum(Dashinfo.price).label('total_price'),
-            func.sum(Dashinfo.amount).label('total_amount')
-        ).filter(
-            Dashinfo.user==c_user, 
-            Dashinfo.type=="SELL"
-        ).group_by(Dashinfo.ticker).all()
-        
-        # Convert to dictionaries for O(1) lookup
-        buy_data = {row.ticker: {'price': row.total_price or 0, 'amount': row.total_amount or 0} for row in buy_aggregates}
-        sell_data = {row.ticker: {'price': row.total_price or 0, 'amount': row.total_amount or 0} for row in sell_aggregates}
-        
-        for ticker in names:
-            # Get aggregated data from pre-calculated dictionaries
-            p_buy = buy_data.get(ticker, {}).get('price', 0)
-            p_sell = abs(sell_data.get(ticker, {}).get('price', 0))  # Convert back from negative
-            a_buy = buy_data.get(ticker, {}).get('amount', 0)
-            a_sell = abs(sell_data.get(ticker, {}).get('amount', 0))  # Convert back from negative
-            
-            value = (p_buy*a_buy - p_sell*a_sell)
-
-            # Get individual transactions for average calculation (only for this ticker)
-            ticker_data = [transaction for transaction in data if transaction.ticker == ticker]
-            avg_prepare = [j.price for j in ticker_data if j.type == "BUY"]
-            avg_prepare2 = [j.amount for j in ticker_data if j.type == "BUY"]
-
-            if a_buy > 0:
-                total_buy = sum([price*amount for price, amount in zip(avg_prepare, avg_prepare2)])
-                price_avg = total_buy / a_buy
-            else:
-                price_avg = 0
-     
-            current_price = cached_get_current_price(ticker)
-            current_cap = (a_buy - a_sell) * price_avg  
-            current_market = (a_buy - a_sell) * current_price      
-
-            sum_price.append(value)
-            local_changes.append(current_market - current_cap)
-
-        total_capital = round(sum(sum_price), 2)
-        total_change = round(sum(local_changes),2)
-        
-        if total_change is None: total_change=0
-        if total_capital is None or total_capital==0: total_capital=1
-        
-        if (user_on_mobile()): 
-            return render_template('dashboard-mobile.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
-        return render_template('dashboard.html', data_table=data_config, tickers_list=names, sum_price=sum_price, local_changes=local_changes, total_capital=total_capital, total_change=total_change)
-    
+        return jsonify({
+            'status': 'healthy',
+            'database': 'connected',
+            'users': user_count,
+            'quiz_questions': len(QUESTIONS),
+            'timestamp': datetime.datetime.now().isoformat()
+        }), 200
     except Exception as e:
-        flash(f"Dashboard error: {str(e)}", "error")
-        print(f"Dashboard error: {e}")
-        return redirect("/about/")
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.datetime.now().isoformat()
+        }), 503
 
-@app.route("/Logout/")
-@login_required
-def legacy_logout_redirect():
-    logout_user()
-    return redirect("/")
-
-# Quiz Routes
-@app.route('/quiz/', methods=['GET', 'POST'])
-def quiz():
-    form = QuizForm()
-    if form.validate_on_submit():
-        n = form.num_questions.data
-        if n > 100:
-            flash('Please select a number of questions between 1 and 100.', 'error')
-            return render_template('firequiz.html', form=form)
-        if n < 1 or n > len(QUESTIONS):
-            flash(f'Please select between 1 and 100 questions.', 'error')
-            return render_template('firequiz.html', form=form)
-        session['quiz_questions'] = random.sample(range(len(QUESTIONS)), n)
-        session['quiz_current'] = 0
-        session['quiz_score'] = 0
-        return redirect(url_for('quiz_question'))
-    return render_template('firequiz.html', form=form)
-
-@app.route('/quiz_question')
-def quiz_question():
-    if 'quiz_questions' not in session or session['quiz_current'] >= len(session['quiz_questions']):
-        return redirect(url_for('quiz_result'))
-    q_index = session['quiz_questions'][session['quiz_current']]
-    question = QUESTIONS[q_index]
-    return render_template('quiz_question.html', question=question,
-                          q_num=session['quiz_current'] + 1,
-                          total=len(session['quiz_questions']))
-
-@app.route('/quiz_submit', methods=['POST'])
-def quiz_submit():
-    if 'quiz_questions' not in session:
-        flash('Quiz session expired.', 'error')
-        return redirect(url_for('quiz'))
-    answer = request.form.get('answer')
-    if not answer:
-        flash('Please select an answer.', 'error')
-        return redirect(url_for('quiz_question'))
-    q_index = session['quiz_questions'][session['quiz_current']]
-    question = QUESTIONS[q_index]
-    correct = answer == question['correct_answer']
-    if correct:
-        session['quiz_score'] += 1
-    session['quiz_feedback'] = {
-        'correct': correct,
-        'explanation': question['explanation_long'] if not correct else '',
-        'correct_answer': question['correct_answer'] if not correct else '',
-        'question_text': question['question_text']
-    }
-    return redirect(url_for('quiz_feedback'))
-
-@app.route('/quiz_feedback')
-def quiz_feedback():
-    if 'quiz_feedback' not in session:
-        flash('No feedback available.', 'error')
-        return redirect(url_for('quiz'))
-    feedback = session['quiz_feedback']
-    return render_template('quiz_feedback.html', feedback=feedback)
-
-@app.route('/quiz_next', methods=['POST'])
-def quiz_next():
-    if 'quiz_questions' not in session:
-        flash('Quiz session expired.', 'error')
-        return redirect(url_for('quiz'))
-    session['quiz_current'] += 1
-    return redirect(url_for('quiz_question') if session['quiz_current'] < len(session['quiz_questions']) else url_for('quiz_result'))
-
-@app.route('/quiz_result')
-def quiz_result():
-    if 'quiz_score' not in session:
-        flash('No quiz results available.', 'error')
-        return redirect(url_for('quiz'))
-    score = session['quiz_score']
-    total = len(session['quiz_questions'])
-    session.pop('quiz_questions', None)
-    session.pop('quiz_current', None)
-    session.pop('quiz_score', None)
-    session.pop('quiz_feedback', None)
-    return render_template('quiz_result.html', score=score, total=total)
+@app.route('/api/debug/db-info')
+def api_debug_db_info():
+    """Debug endpoint to check database configuration (remove in production)."""
+    if not os.getenv('DEBUG_AUTH'):
+        return jsonify({'error': 'Debug mode not enabled'}), 403
+    
+    try:
+        database_url = app.config.get('SQLALCHEMY_DATABASE_URI', 'Not set')
+        # Hide password for security
+        safe_url = database_url
+        if '@' in database_url:
+            parts = database_url.split('@')
+            if '://' in parts[0]:
+                scheme_user = parts[0].split('://')
+                if ':' in scheme_user[1]:
+                    user_pass = scheme_user[1].split(':')
+                    safe_url = f"{scheme_user[0]}://{user_pass[0]}:***@{parts[1]}"
+        
+        user_count = User.query.count()
+        
+        return jsonify({
+            'database_url': safe_url,
+            'users_count': user_count,
+            'questions_loaded': len(QUESTIONS)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # React Quiz API endpoints
 @app.route('/api/quiz/questions', methods=['GET'])
@@ -1088,21 +931,55 @@ def init_db():
         return
     try:
         with app.app_context():
-            # Test database connection
+            # Test database connection with more detailed error handling
+            print(f"🔗 Connecting to database: {DATABASE_URL[:50]}...")
+            
             with db.engine.connect() as conn:
-                conn.execute(text('SELECT 1'))  # use sqlalchemy.text
+                # Test basic connectivity
+                result = conn.execute(text('SELECT 1'))
+                print("✅ Database connection successful")
+                
+                # For PostgreSQL, also test that we can create schemas if needed
+                if DATABASE_URL.startswith('postgresql://'):
+                    try:
+                        conn.execute(text("SELECT current_database(), current_user"))
+                        print("✅ PostgreSQL connection verified")
+                    except Exception as e:
+                        print(f"⚠️ PostgreSQL verification warning: {e}")
             
             # Create tables if they don't exist (idempotent)
             db.create_all()
-            print("Database tables created successfully")
-            print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+            print("✅ Database tables created successfully")
+            print(f"📊 Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+            
+            # Verify tables were created by checking User table
+            user_count = User.query.count()
+            print(f"👥 User count in database: {user_count}")
+            
             _db_initialized = True
     except Exception as e:
-        print(f"Database initialization error: {e}")
+        print(f"❌ Database initialization error: {e}")
+        print(f"   Error type: {type(e).__name__}")
+        
+        # More specific error handling for common PostgreSQL issues
+        error_str = str(e).lower()
+        if 'password authentication failed' in error_str:
+            print("   🔑 Issue: Password authentication failed")
+            print("   💡 Check: DATABASE_URL environment variable has correct credentials")
+        elif 'could not connect to server' in error_str:
+            print("   🌐 Issue: Could not connect to database server")
+            print("   💡 Check: Database server is running and accessible")
+        elif 'database' in error_str and 'does not exist' in error_str:
+            print("   🗄️  Issue: Database does not exist")
+            print("   💡 Check: Database was created on your PostgreSQL service")
+        elif 'ssl' in error_str:
+            print("   🔒 Issue: SSL connection problem")
+            print("   💡 Check: DATABASE_URL includes proper SSL configuration")
+        
         # Don't exit on table exists error - this is expected in some deployments
-        if "already exists" not in str(e).lower():
-            print("This might be due to ephemeral storage in cloud deployment.")
-            print("Consider using a persistent database service like Neon, PlanetScale, or Railway.")
+        if "already exists" not in error_str:
+            print("   💡 Consider using a persistent database service like Neon, PlanetScale, or Railway.")
+            print("   💡 Ensure DATABASE_URL environment variable is correctly set")
         _db_initialized = True  # Mark as initialized to prevent repeated attempts
 
 # Call immediately so DB is ready under any server (flask run, gunicorn, etc.)

@@ -3,14 +3,14 @@
 .gitignore
 .gitattributes
 
-# Development files
+# Documentation
 README.md
 *.md
-.env
-.env.local
-.env.development
-.env.test
-.env.production
+LICENSE
+
+# Environment and config files
+.env*
+test.env
 
 # IDE and editor files
 .vscode/
@@ -18,6 +18,43 @@ README.md
 *.swp
 *.swo
 *~
+
+# Development and testing
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+.tox/
+.venv/
+venv/
+env/
+
+# Development scripts and logs
+run_bash.sh
+run_bash.log
+bash_build.sh
+test_*.py
+tests.py
+
+# Frontend development files (build handles copying)
+frontend/node_modules/
+frontend/build/
+frontend/.eslintcache
+frontend/package-lock.json
+
+# Database files (should use external DB in prod)
+*.db
+instance/
+database*.db
+
+# Temporary and cache files
+*.tmp
+*.temp
+.cache/
+.DS_Store
+Thumbs.db
 
 # OS generated files
 .DS_Store

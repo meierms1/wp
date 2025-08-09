@@ -15,7 +15,9 @@ import {
   MagnifyingGlassIcon,
   PlusIcon,
   ArrowRightIcon
-} from '@heroicons/react/24/outline';const Finance = () => {
+} from '@heroicons/react/24/outline';
+
+const Finance = () => {
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('market');
   const [stockData, setStockData] = useState(null);
@@ -27,6 +29,11 @@ import {
     shares: '',
     purchase_price: ''
   });
+  // New: controls for selecting period or date range
+  const [rangeMode, setRangeMode] = useState('period'); // 'period' | 'range'
+  const [period, setPeriod] = useState('max');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     if (user && activeTab === 'portfolio') {
@@ -50,13 +57,22 @@ import {
     e.preventDefault();
     if (!searchTicker.trim()) return;
 
+    // Build payload according to selected mode
+    const payload = { ticker_name: searchTicker.toUpperCase() };
+    if (rangeMode === 'range') {
+      if (!startDate || !endDate) {
+        toast.error('Please select start and end dates');
+        return;
+      }
+      payload.start_date = startDate;
+      payload.end_date = endDate;
+    } else {
+      payload.period = period; // string, backend accepts string or array
+    }
+
     try {
       setLoading(true);
-      const response = await axios.post('/api/finance/stock-data', {
-        ticker_name: searchTicker.toUpperCase(),
-        period: ['1y']
-      });
-
+      const response = await axios.post('/api/finance/stock-data', payload);
       if (response.data.success) {
         setStockData(response.data.data);
         toast.success(`Loaded data for ${searchTicker.toUpperCase()}`);
@@ -169,7 +185,7 @@ import {
               <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
                 <h2 className="text-2xl font-bold text-white mb-6">Stock Market Analysis</h2>
                 
-                <form onSubmit={searchStock} className="mb-8">
+                <form onSubmit={searchStock} className="mb-8 space-y-6">
                   <div className="flex gap-4">
                     <div className="flex-1">
                       <input
@@ -197,9 +213,64 @@ import {
                       )}
                     </motion.button>
                   </div>
+
+                  {/* Period vs Date Range Controls */}
+                  <div className="grid md:grid-cols-3 gap-4 items-end">
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-2 font-medium">Mode</label>
+                      <div className="flex gap-3">
+                        <button type="button" onClick={() => setRangeMode('period')} className={`px-4 py-2 rounded-lg border ${rangeMode==='period' ? 'bg-white/20 border-white/40 text-white' : 'bg-white/10 border-white/20 text-gray-300'}`}>Period</button>
+                        <button type="button" onClick={() => setRangeMode('range')} className={`px-4 py-2 rounded-lg border ${rangeMode==='range' ? 'bg-white/20 border-white/40 text-white' : 'bg-white/10 border-white/20 text-gray-300'}`}>Date Range</button>
+                      </div>
+                    </div>
+
+                    {rangeMode === 'period' ? (
+                      <div className="col-span-2">
+                        <label className="block text-gray-300 mb-2 font-medium">Period</label>
+                        <select
+                          value={period}
+                          onChange={(e) => setPeriod(e.target.value)}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                          <option value="1d">1 day</option>
+                          <option value="5d">5 days</option>
+                          <option value="1mo">1 month</option>
+                          <option value="3mo">3 months</option>
+                          <option value="6mo">6 months</option>
+                          <option value="1y">1 year</option>
+                          <option value="2y">2 years</option>
+                          <option value="5y">5 years</option>
+                          <option value="10y">10 years</option>
+                          <option value="ytd">YTD</option>
+                          <option value="max">Max</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <label className="block text-gray-300 mb-2 font-medium">Start Date</label>
+                          <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 mb-2 font-medium">End Date</label>
+                          <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </form>
 
-                {/* Stock Chart */}
+                {/* Stock Chart and Info */}
                 {stockData && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -218,6 +289,34 @@ import {
                       config={{ displayModeBar: false, responsive: true }}
                       style={{ width: '100%', height: '400px' }}
                     />
+
+                    {/* Info box */}
+                    {stockData.stock_info && (
+                      <div className="mt-6 grid md:grid-cols-3 gap-4">
+                        <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                          <p className="text-gray-400 text-sm">Company</p>
+                          <p className="text-white font-semibold">{stockData.stock_info.longName}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                          <p className="text-gray-400 text-sm">Sector / Industry</p>
+                          <p className="text-white font-semibold">{stockData.stock_info.sector || '—'} / {stockData.stock_info.industry || '—'}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                          <p className="text-gray-400 text-sm">52W Range</p>
+                          <p className="text-white font-semibold">{(stockData.stock_info.fiftyTwoWeekLow ?? '—')} - {(stockData.stock_info.fiftyTwoWeekHigh ?? '—')}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-4 border border-white/10 md:col-span-3">
+                          <p className="text-gray-400 text-sm">Dividend Yield</p>
+                          <p className="text-white font-semibold">{(stockData.stock_info.dividendYield ?? null) !== null ? `${(((+stockData.stock_info.dividendYield) <= 1 ? (+stockData.stock_info.dividendYield) * 100 : (+stockData.stock_info.dividendYield))).toFixed(2)}%` : '—'}</p>
+                        </div>
+                        {stockData.stock_info.longBusinessSummary && (
+                          <div className="bg-white/5 rounded-lg p-4 border border-white/10 md:col-span-3">
+                            <p className="text-gray-400 text-sm">About</p>
+                            <p className="text-gray-300">{stockData.stock_info.longBusinessSummary}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 )}
 

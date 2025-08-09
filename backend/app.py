@@ -116,12 +116,29 @@ def cached_get_current_price(ticker):
 
 @cache.memoize(timeout=600)  # Cache for 10 minutes (stock data changes less frequently)
 def cached_get_stock_data(ticker, *args):
-    """Cached version of get_stock_data to reduce API calls"""
-    if len(args) == 1:
-        return get_stock_data(ticker, args[0])
-    elif len(args) == 2:
-        return get_stock_data(ticker, args[0], args[1])
-    else:
+    """Cached version of get_stock_data to reduce API calls.
+    Supports:
+    - cached_get_stock_data(ticker) -> default max period
+    - cached_get_stock_data(ticker, period) -> explicit period string
+    - cached_get_stock_data(ticker, start, end) -> explicit date range (YYYY-MM-DD)
+    """
+    try:
+        if len(args) == 2:
+            start, end = args
+            # Detect YYYY-MM-DD date strings
+            def _is_date(s):
+                return isinstance(s, str) and len(s) == 10 and s[4] == '-' and s[7] == '-'
+            if _is_date(start) and _is_date(end):
+                return get_stock_data(ticker, start=start, end=end)
+            # Fallback: treat as (period, start)
+            return get_stock_data(ticker, period=start, start=end)
+        elif len(args) == 1:
+            period = args[0]
+            return get_stock_data(ticker, period=period)
+        else:
+            return get_stock_data(ticker)
+    except Exception:
+        # On any error in wrapper, call with defaults to avoid breaking callers
         return get_stock_data(ticker)
 
 @cache.memoize(timeout=3600)  # Cache for 1 hour (company info rarely changes)

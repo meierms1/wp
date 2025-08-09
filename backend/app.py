@@ -187,6 +187,7 @@ except Exception as e:
 # Database Models
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
+    __table_args__ = {'extend_existing': True}  # Prevent duplicate table errors
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -198,6 +199,7 @@ class User(db.Model, UserMixin):
 
 class Dashinfo(db.Model):
     __tablename__ = 'dashinfo'
+    __table_args__ = {'extend_existing': True}  # Prevent duplicate table errors
     
     id = db.Column(db.Integer, primary_key=True)
     ticker = db.Column(db.String(10), nullable=False)
@@ -248,6 +250,33 @@ def alamo():
 def classification():
     return redirect("https://github.com/meierms1/Supervised-Dimension-Reduction-For-Optical-Vapor-Sensing.git")
 
+@app.route('/health')
+def health():
+    """Health check endpoint for deployment verification"""
+    try:
+        # Test database connection
+        with db.engine.connect() as conn:
+            conn.execute(text('SELECT 1'))
+        
+        # Test React build availability
+        index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
+        frontend_ok = os.path.isfile(index_path)
+        
+        return jsonify({
+            'status': 'ok',
+            'timestamp': datetime.datetime.utcnow().isoformat(),
+            'database': 'connected',
+            'frontend_build': 'available' if frontend_ok else 'missing',
+            'questions_loaded': len(QUESTIONS),
+            'python_version': sys.version,
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e),
+            'timestamp': datetime.datetime.utcnow().isoformat(),
+        }), 500
+
 # Legacy Flask routes for backward compatibility (now serve React SPA)
 @app.route("/about/", methods=["GET","POST"])
 def about():
@@ -281,20 +310,20 @@ FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def spa(path):
-    # Allow API routes to pass through
+    # Allow API routes to pass through (they'll be handled by their specific routes)
     if path.startswith('api/'):
-        abort(404)
+        abort(404)  # API routes should be handled by @app.route('/api/...') decorators
     
-    # Allow legacy routes to handle themselves (they redirect to SPA)
-    if path in ['about', 'resume', 'finance', 'projects', 'dashboard', 'calculator', 'quiz', 'test-plot']:
-        # Let the specific route handlers manage these
-        pass
+    # Allow specific legacy routes to handle themselves first
+    if path in ['about', 'resume', 'finance', 'projects', 'dashboard', 'calculator', 'quiz', 'test-plot', 'alamo', 'classification']:
+        # These routes have their own handlers that redirect to SPA
+        abort(404)  # Let Flask find the appropriate route handler
     elif path.startswith(('about/', 'resume/', 'finance/', 'projects/', 'dashboard/', 'calculator/', 'quiz/')):
-        # Let the specific route handlers manage these  
-        pass
+        # Let the specific route handlers manage these
+        abort(404)  # Let Flask find the appropriate route handler
     else:
         # Serve static files from React build if they exist
-        if path:
+        if path and '.' in path:  # Likely a static asset
             candidate = os.path.join(FRONTEND_BUILD_DIR, path)
             if os.path.isfile(candidate):
                 return send_from_directory(FRONTEND_BUILD_DIR, path)

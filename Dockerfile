@@ -28,7 +28,7 @@ RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
 ############################
 # Stage 2: Backend image   #
 ############################
-FROM python:3.11-slim AS runtime
+FROM python:3.12-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -56,4 +56,4 @@ RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 ENV FLASK_DEBUG=False HOST=0.0.0.0 SESSION_COOKIE_SECURE=True SESSION_COOKIE_SAMESITE=None
 # Bind to $PORT environment variable (fallback to 8080)
-CMD gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 3 --threads 4 --timeout 120
+CMD gunicorn -b 0.0.0.0:${PORT:-8080} backend.app:app --workers 2 --threads 2 --timeout 120

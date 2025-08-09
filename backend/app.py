@@ -277,32 +277,8 @@ def health():
             'timestamp': datetime.datetime.utcnow().isoformat(),
         }), 500
 
-# Legacy Flask routes for backward compatibility (now serve React SPA)
-@app.route("/about/", methods=["GET","POST"])
-def about():
-    # Legacy route - redirect to React SPA
-    return redirect('/#about')
-
-@app.route("/resume/")
-def resume():
-    # Legacy route - redirect to React SPA  
-    return redirect('/#resume')
-
-@app.route("/finance/", methods=["GET", "POST"])  
-def legacy_finance():
-    # Legacy route - redirect to React SPA
-    return redirect('/#finance')
-
-@app.route("/projects/")
-def legacy_projects():
-    # Legacy route - redirect to React SPA
-    return redirect('/#projects')
-
-@app.route("/dashboard/", methods=["GET", "POST"])
-@login_required
-def legacy_dashboard():
-    # Legacy route - redirect to React SPA
-    return redirect('/#dashboard')
+# Legacy Flask routes removed - now fully using React SPA routing
+# All frontend routes are handled by the SPA catch-all route below
 
 # SPA Route - Serve React Frontend
 FRONTEND_BUILD_DIR = os.path.join(STATIC_DIR, 'frontend')
@@ -335,40 +311,32 @@ def spa(path):
     if path.startswith('api/'):
         abort(404)  # API routes should be handled by @app.route('/api/...') decorators
     
-    # Allow specific legacy routes to handle themselves first
-    if path in ['about', 'resume', 'finance', 'projects', 'dashboard', 'calculator', 'quiz', 'test-plot', 'alamo', 'classification']:
-        # These routes have their own handlers that redirect to SPA
-        abort(404)  # Let Flask find the appropriate route handler
-    elif path.startswith(('about/', 'resume/', 'finance/', 'projects/', 'dashboard/', 'calculator/', 'quiz/')):
-        # Let the specific route handlers manage these
-        abort(404)  # Let Flask find the appropriate route handler
-    else:
-        # Serve static files from React build if they exist
-        if path and '.' in path:  # Likely a static asset
-            candidate = os.path.join(FRONTEND_BUILD_DIR, path)
-            print(f"Looking for static file: {path}")
-            print(f"Candidate path: {candidate}")
-            print(f"File exists: {os.path.isfile(candidate)}")
-            if os.path.isfile(candidate):
-                print(f"✅ Serving static file: {path}")
-                return send_from_directory(FRONTEND_BUILD_DIR, path)
-            else:
-                print(f"❌ Static file not found: {path}")
-        
-        # Fallback to index.html for SPA routing
-        index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
-        if os.path.isfile(index_path):
-            print("Serving React SPA index.html")
-            return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
-        
-        # If build is missing, show error
-        print(f"ERROR: React build not found at {FRONTEND_BUILD_DIR}")
-        return jsonify({
-            'error': 'React build not found',
-            'expected_dir': FRONTEND_BUILD_DIR,
-            'help': 'Run "cd frontend && npm run build" and rebuild Docker image',
-            'directory_contents': os.listdir(FRONTEND_BUILD_DIR) if os.path.exists(FRONTEND_BUILD_DIR) else 'Directory does not exist'
-        }), 500
+    # Serve static files from React build if they exist
+    if path and '.' in path:  # Likely a static asset
+        candidate = os.path.join(FRONTEND_BUILD_DIR, path)
+        print(f"Looking for static file: {path}")
+        print(f"Candidate path: {candidate}")
+        print(f"File exists: {os.path.isfile(candidate)}")
+        if os.path.isfile(candidate):
+            print(f"✅ Serving static file: {path}")
+            return send_from_directory(FRONTEND_BUILD_DIR, path)
+        else:
+            print(f"❌ Static file not found: {path}")
+    
+    # For all other routes (including /finance, /about, etc.), serve the React SPA
+    index_path = os.path.join(FRONTEND_BUILD_DIR, 'index.html')
+    if os.path.isfile(index_path):
+        print("Serving React SPA index.html")
+        return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
+    
+    # If build is missing, show error
+    print(f"ERROR: React build not found at {FRONTEND_BUILD_DIR}")
+    return jsonify({
+        'error': 'React build not found',
+        'expected_dir': FRONTEND_BUILD_DIR,
+        'help': 'Run "cd frontend && npm run build" and rebuild Docker image',
+        'directory_contents': os.listdir(FRONTEND_BUILD_DIR) if os.path.exists(FRONTEND_BUILD_DIR) else 'Directory does not exist'
+    }), 500
 
 @app.route("/test-plot/")
 def test_plot():
@@ -385,76 +353,7 @@ def test_plot():
     
     return render_template("finance.html", labels=labels, values=prices, stock_info=info_data, hide_block=False)
 
-@app.route("/finance/", methods=["GET", "POST"])
-def finance():
-    if request.method == "POST":
-        ticker = request.form.get("ticker_name")
-        period = request.form.get("period")
-        start = request.form.get("start_date")
-        end = request.form.get("end_date")
-        
-        print(f"DEBUG: ticker={ticker}, period={period}, start={start}, end={end}")
-        
-        # Temporary fallback data for testing
-        try:
-            # Check if we have start and end dates
-            if start and end and start.strip() and end.strip():
-                print(f"DEBUG: Using date range {start} to {end}")
-                label, price = cached_get_stock_data(ticker, start, end)
-            elif period and period.strip():
-                print(f"DEBUG: Using period {period}")
-                label, price = cached_get_stock_data(ticker, period)
-            else:
-                print("DEBUG: Using default (max) period")
-                label, price = cached_get_stock_data(ticker)
-
-            print(f"DEBUG: Got {len(label)} labels and {len(price)} prices")
-            
-            # If no data returned, use sample data for testing
-            if not label or not price or len(label) == 0:
-                print("DEBUG: No data from API, using sample data")
-                import datetime
-                # Generate sample data for testing
-                base_date = datetime.datetime.now() - datetime.timedelta(days=30)
-                label = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30)]
-                import math
-                base_price = 150.0
-                price = [base_price + (i * 0.5) + (10 * math.sin(i/5)) for i in range(30)]
-            
-            info_data = cached_get_stock_info(ticker)
-            print(f"DEBUG: Got stock info: {info_data[0] if info_data else 'None'}")
-            
-            # If no info data, use sample info
-            if not info_data or info_data[0] == "N/A":
-                info_data = [f"{ticker.upper()} Company", "Technology", "Technology", 100.0, 200.0, 2.5, f"Sample company information for {ticker.upper()}"]
-
-        except Exception as e:
-            print(f"DEBUG: Error occurred: {e}")
-            # Fallback to sample data
-            import datetime
-            base_date = datetime.datetime.now() - datetime.timedelta(days=30)
-            label = [(base_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30)]
-            import math
-            base_price = 150.0
-            price = [base_price + (i * 0.5) + (10 * math.sin(i/5)) for i in range(30)]
-            info_data = [f"{ticker.upper()} Company", "Technology", "Technology", 100.0, 200.0, 2.5, f"Sample company information for {ticker.upper()}"]
-
-        if (user_on_mobile()): 
-            return render_template("finance-mobile.html", labels=label, values=price, stock_info=info_data, hide_block=False)
-        return render_template("finance.html", labels=label, values=price, stock_info=info_data, hide_block=False)
-    
-    # GET request - show empty form
-    label = []
-    price = []
-    info_data = ["-", "-", "-", "-", "-", "-", "-"]
-    if (user_on_mobile()): 
-        return render_template("finance-mobile.html", labels=label, values=price, stock_info=info_data, hide_block=True)
-    return render_template("finance.html", labels=label, values=price, stock_info=info_data, hide_block=True)
-
-@app.route("/projects/")
-def projects():
-    if (user_on_mobile()): return render_template("projects-mobile.html")
-    return render_template("projects.html")
+# Legacy Flask template routes removed - using React SPA for all frontend
 
 @app.route("/calculator/", methods=["GET","POST"])
 def unittool():

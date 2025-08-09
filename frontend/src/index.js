@@ -5,7 +5,7 @@ import App from './App';
 import axios from 'axios';
 
 // Global axios configuration
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE || window.location.origin;
 axios.defaults.withCredentials = true; // send session cookies
 
 // Optional: default headers

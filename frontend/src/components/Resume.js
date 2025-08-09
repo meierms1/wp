@@ -211,7 +211,7 @@ const Resume = () => {
                 href="https://www.linkedin.com/in/maycon-meier/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 bg-white dark:bg-gray-800 px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center space-x-2 bg-white dark:bg-white-800 px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
               >
                 <FaLinkedin className="h-6 w-6 text-blue-600" />
                 <span className="font-semibold">LinkedIn</span>
@@ -220,7 +220,7 @@ const Resume = () => {
                 href="/static/resume.pdf"
                 download="Maycon_Meier_Resume.pdf"
                 target="_blank"
-                className="flex items-center space-x-2 bg-white dark:bg-gray-800 px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center space-x-2 bg-white dark:bg-white-800 px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
               >
                 <DocumentArrowDownIcon className="h-6 w-6 text-indigo-600" />
                 <span className="font-semibold">Download PDF</span>

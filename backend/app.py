@@ -828,6 +828,87 @@ def api_transactions():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@app.route('/api/transactions', methods=['POST'])
+@login_required
+def api_add_transaction():
+    """Add a manual transaction (BUY or SELL)"""
+    try:
+        data = request.get_json(silent=True) or {}
+        ticker = (data.get('ticker') or '').strip().upper()
+        shares = data.get('shares')
+        price = data.get('price')
+        transaction_type = (data.get('type') or '').strip().upper()
+        transaction_date = data.get('date') or data.get('transaction_date')
+        
+        if not ticker or shares is None or price is None or not transaction_type:
+            return jsonify({'success': False, 'message': 'ticker, shares, price and type required'}), 400
+        
+        if transaction_type not in ['BUY', 'SELL']:
+            return jsonify({'success': False, 'message': 'type must be BUY or SELL'}), 400
+        
+        try:
+            shares = float(shares)
+            price = float(price)
+        except ValueError:
+            return jsonify({'success': False, 'message': 'shares and price must be numbers'}), 400
+        
+        if shares <= 0 or price <= 0:
+            return jsonify({'success': False, 'message': 'shares and price must be positive'}), 400
+        
+        # For SELL transactions, check if user has enough shares
+        if transaction_type == 'SELL':
+            buy_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='BUY').scalar() or 0
+            sell_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='SELL').scalar() or 0
+            held = buy_sum + sell_sum  # sells are negative
+            
+            if held < shares:
+                return jsonify({'success': False, 'message': 'Not enough shares to sell'}), 400
+        
+        # Parse transaction date if provided, otherwise use current time
+        if transaction_date:
+            try:
+                if 'T' in transaction_date:
+                    trans_date = datetime.datetime.fromisoformat(transaction_date.replace('Z', '+00:00'))
+                else:
+                    trans_date = datetime.datetime.strptime(transaction_date, '%Y-%m-%d')
+            except ValueError:
+                return jsonify({'success': False, 'message': 'Invalid date format. Use YYYY-MM-DD or ISO format'}), 400
+        else:
+            trans_date = datetime.datetime.utcnow()
+        
+        # Create transaction based on type
+        if transaction_type == 'BUY':
+            tx = Dashinfo(
+                ticker=ticker,
+                price=price,
+                date=trans_date,
+                type='BUY',
+                amount=int(shares),
+                user=current_user.id,
+                total=price * shares
+            )
+        else:  # SELL
+            tx = Dashinfo(
+                ticker=ticker,
+                price=-price,  # maintain legacy convention
+                date=trans_date,
+                type='SELL',
+                amount=-int(shares),
+                user=current_user.id,
+                total=price * shares
+            )
+        
+        db.session.add(tx)
+        db.session.commit()
+        
+        # Clear cache for this ticker
+        cache.delete_memoized(cached_get_current_price, ticker)
+        
+        return jsonify({'success': True, 'message': f'{transaction_type} transaction added successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 # ==================== Portfolio API (React) ====================
 @app.route('/api/portfolio/stocks', methods=['GET'])
 @login_required
@@ -900,20 +981,39 @@ def api_add_portfolio_stock():
         ticker = (data.get('ticker') or '').strip().upper()
         shares = data.get('shares')
         buy_price = data.get('buy_price') or data.get('price')
+        transaction_date = data.get('date') or data.get('transaction_date')
+        
         if not ticker or shares is None or buy_price is None:
             return jsonify({'success': False, 'message': 'ticker, shares and buy_price required'}), 400
+        
         try:
             shares = float(shares)
             buy_price = float(buy_price)
         except ValueError:
             return jsonify({'success': False, 'message': 'shares and buy_price must be numbers'}), 400
+        
         if shares <= 0 or buy_price <= 0:
             return jsonify({'success': False, 'message': 'shares and buy_price must be positive'}), 400
-        now = datetime.datetime.utcnow()
+        
+        # Parse transaction date if provided, otherwise use current time
+        if transaction_date:
+            try:
+                # Try parsing different date formats
+                if 'T' in transaction_date:
+                    # ISO format with time
+                    trans_date = datetime.datetime.fromisoformat(transaction_date.replace('Z', '+00:00'))
+                else:
+                    # Date only format (YYYY-MM-DD)
+                    trans_date = datetime.datetime.strptime(transaction_date, '%Y-%m-%d')
+            except ValueError:
+                return jsonify({'success': False, 'message': 'Invalid date format. Use YYYY-MM-DD or ISO format'}), 400
+        else:
+            trans_date = datetime.datetime.utcnow()
+        
         tx = Dashinfo(
             ticker=ticker,
             price=buy_price,
-            date=now,
+            date=trans_date,
             type='BUY',
             amount=int(shares),
             user=current_user.id,
@@ -921,7 +1021,10 @@ def api_add_portfolio_stock():
         )
         db.session.add(tx)
         db.session.commit()
+        
+        # Clear cache for this ticker
         cache.delete_memoized(cached_get_current_price, ticker)
+        
         return api_get_portfolio()
     except Exception as e:
         db.session.rollback()
@@ -936,34 +1039,58 @@ def api_sell_portfolio_stock():
         ticker = (data.get('ticker') or '').strip().upper()
         shares = data.get('shares')
         sell_price = data.get('sell_price') or data.get('price')
+        transaction_date = data.get('date') or data.get('transaction_date')
+        
         if not ticker or shares is None or sell_price is None:
             return jsonify({'success': False, 'message': 'ticker, shares and sell_price required'}), 400
+        
         try:
             shares = float(shares)
             sell_price = float(sell_price)
         except ValueError:
             return jsonify({'success': False, 'message': 'shares and sell_price must be numbers'}), 400
+        
         if shares <= 0 or sell_price <= 0:
             return jsonify({'success': False, 'message': 'shares and sell_price must be positive'}), 400
+        
         # Compute current held shares
         buy_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='BUY').scalar() or 0
         sell_sum = db.session.query(func.sum(Dashinfo.amount)).filter_by(user=current_user.id, ticker=ticker, type='SELL').scalar() or 0
         held = buy_sum + sell_sum  # sells are negative
+        
         if held < shares:
             return jsonify({'success': False, 'message': 'Not enough shares to sell'}), 400
-        now = datetime.datetime.utcnow()
+        
+        # Parse transaction date if provided, otherwise use current time
+        if transaction_date:
+            try:
+                # Try parsing different date formats
+                if 'T' in transaction_date:
+                    # ISO format with time
+                    trans_date = datetime.datetime.fromisoformat(transaction_date.replace('Z', '+00:00'))
+                else:
+                    # Date only format (YYYY-MM-DD)
+                    trans_date = datetime.datetime.strptime(transaction_date, '%Y-%m-%d')
+            except ValueError:
+                return jsonify({'success': False, 'message': 'Invalid date format. Use YYYY-MM-DD or ISO format'}), 400
+        else:
+            trans_date = datetime.datetime.utcnow()
+        
         tx = Dashinfo(
             ticker=ticker,
-            price= -sell_price,  # maintain legacy convention
-            date=now,
+            price=-sell_price,  # maintain legacy convention
+            date=trans_date,
             type='SELL',
-            amount= -int(shares),
+            amount=-int(shares),
             user=current_user.id,
-            total= sell_price * shares
+            total=sell_price * shares
         )
         db.session.add(tx)
         db.session.commit()
+        
+        # Clear cache for this ticker
         cache.delete_memoized(cached_get_current_price, ticker)
+        
         return api_get_portfolio()
     except Exception as e:
         db.session.rollback()

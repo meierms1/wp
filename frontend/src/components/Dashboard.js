@@ -358,11 +358,21 @@ const Dashboard = () => {
                             className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                           >
                             <div>
-                              <p className="text-white text-sm font-medium">{transaction.description}</p>
-                              <p className="text-gray-400 text-xs">{new Date(transaction.date).toLocaleDateString()}</p>
+                              <p className="text-white text-sm font-medium">
+                                {transaction.type} {Math.abs(transaction.amount)} shares of {transaction.ticker}
+                              </p>
+                              <p className="text-gray-400 text-xs">
+                                {new Date(transaction.date).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })} • ${Math.abs(transaction.price).toFixed(2)}/share
+                              </p>
                             </div>
-                            <span className={`text-sm font-semibold ${transaction.amount >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                              {transaction.amount >= 0 ? '+' : ''}${Math.abs(transaction.amount).toFixed(2)}
+                            <span className={`text-sm font-semibold ${transaction.type === 'BUY' ? 'text-green-400' : 'text-red-400'}`}>
+                              {transaction.type === 'BUY' ? '-' : '+'}${(Math.abs(transaction.price) * Math.abs(transaction.amount)).toFixed(2)}
                             </span>
                           </motion.div>
                         ))}

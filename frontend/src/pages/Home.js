@@ -21,7 +21,7 @@ const Home = () => {
     {
       icon: AcademicCapIcon,
       title: 'PhD in Mechanical Engineering',
-      description: 'Advanced research in computational mechanics and materials science from University of Colorado.',
+      description: 'Advanced research in computational mechanics and materials science from the University of Colorado.',
       color: 'from-blue-500 to-cyan-500',
     },
     {
@@ -45,10 +45,10 @@ const Home = () => {
   ];
 
   const stats = [
-    { number: '10+', label: 'Years Experience', icon: RocketLaunchIcon },
+    { number: '5+', label: 'Years of Experience', icon: RocketLaunchIcon },
     { number: '5+', label: 'Programming Languages', icon: CodeBracketIcon },
     { number: '3', label: 'Languages Spoken', icon: GlobeAltIcon },
-    { number: '15+', label: 'Projects Completed', icon: BeakerIcon },
+    { number: '10+', label: 'Projects Completed', icon: BeakerIcon },
   ];
 
   return (

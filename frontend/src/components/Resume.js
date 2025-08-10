@@ -80,7 +80,7 @@ const Resume = () => {
   ];
 
   const skills = {
-    programming: ["Python", "C++", "Java", "HTML", "CSS", "GIT", "SQL", "LaTeX"],
+    programming: ["Python", "C++", "JavaScript", "HTML", "CSS", "GIT", "SQL", "LaTeX"],
     frameworks: ["Flask", ".NET", "React"],
     tools: ["Github", "AWS", "Inkscape"],
     engineering: ["SolidWorks", "Comsol", "MS Excel", "ISO 9000"],
@@ -188,7 +188,7 @@ const Resume = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-20">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

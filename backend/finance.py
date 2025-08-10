@@ -34,7 +34,8 @@ def get_stock_data(stock, period="max", start=None, end=None):
         labels = df["Date"].tolist()
         print("here")
         print(df["Close"])
-        prices = df["CloseP"].astype(float).tolist()
+        # Format prices to 2 decimal places
+        prices = [round(float(price), 2) for price in df["CloseP"].astype(float).tolist()]
         
         return labels, prices
     
@@ -79,9 +80,9 @@ def get_stock_info(stock):
             info.get("longName") or info.get("shortName") or f"{stock.upper()} Company",
             info.get("industry", "N/A"),
             info.get("sector", "N/A"),
-            float(info.get("fiftyTwoWeekLow", 0.0) or 0.0),
-            float(info.get("fiftyTwoWeekHigh", 0.0) or 0.0),
-            dividend_yield,
+            round(float(info.get("fiftyTwoWeekLow", 0.0) or 0.0), 2),
+            round(float(info.get("fiftyTwoWeekHigh", 0.0) or 0.0), 2),
+            round(dividend_yield, 2),
             info.get("longBusinessSummary", f"No description available for {stock.upper()}")
         ]
         
@@ -111,7 +112,8 @@ def get_current_price(stock):
             print(f"Warning: No price data found for ticker {stock}")
             return 0.0
         
-        return float(data["Close"].iloc[-1])
+        # Format current price to 2 decimal places
+        return round(float(data["Close"].iloc[-1]), 2)
     
     except Exception as e:
         print(f"Error fetching current price for {stock}: {e}")

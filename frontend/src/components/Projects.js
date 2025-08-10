@@ -36,6 +36,14 @@ const Projects = () => {
           label: "Research Paper"
         }
       ],
+      collaborators: [
+        {name: "Dr. Ram Mohanta" , url:"https://www.linkedin.com/in/rammohanta21"},
+        {name: "Dr. Sridhar Seetharaman", url:"https://search.asu.edu/profile/3858630"},
+        {name: "Dr. Yuri Korobeinikov", url:"https://search.asu.edu/profile/3946734"},
+        {name: "Dr. Noemi Leick", url:"https://research-hub.nrel.gov/en/persons/noemi-leick"},
+        {name: "Dr. Hari Sitaraman" , url:"https://research-hub.nrel.gov/en/persons/hariswaran-sitaraman"},
+        {name: "Dr. Kumar Ankit", url:"https://search.asu.edu/profile/3173066"},
+        ],
       funding: "This material is based upon work supported by the U.S. Department of Energy (DOE), Office of Science, Office of Basic Energy Sciences (BES), Materials Sciences and Engineering Division under Award DE-SC0024724 'Fundamental Studies of Hydrogen Arc Plasmas for High-efficiency and Carbon-free Steelmaking'.",
       icon: BeakerIcon,
       color: "from-blue-500 to-cyan-500"
@@ -107,6 +115,14 @@ const Projects = () => {
           label: "Published in Combustion and Flame"
         }
       ],
+      collaborators: [
+        {name: "Dr. Brandon Runnels" , url:"https://www.engineering.iastate.edu/people/profile/brunnels/"},
+        {name: "Dr. Emma Boyd", url:"https://scholar.google.com/citations?user=WN-qmqgAAAAJ&hl=en"},
+        {name: "Dr. Matt Quinlan", url:"https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/matt-quinlan"},
+        {name: "Dr. Vinamra Agrawal" , url:"https://vinagr.github.io/"},
+        {name: "Dr. Brian Bojko", url:"https://scholar.google.com/citations?user=mepqCdIAAAAJ&hl=en"},
+        {name: "Dr. Joseph Kalman", url:"https://www.csulb.edu/college-of-engineering/dr-joseph-kalman"},
+        {name: "Patrick Martinez", url:"https://gocaltech.com/sports/track-and-field/roster/patrick-martinez/5540"}],
       funding: "This work is sponsored by the Department of Defense - Office of Naval Research grant #N00014-21-1-2113.",
       icon: RocketLaunchIcon,
       color: "from-red-500 to-orange-500"
@@ -168,6 +184,9 @@ const Projects = () => {
           label: "Published in RSC Advances"
         }
       ],
+      collaborators: [
+        {name: "Dr. Xin (Cindy) Yee" , url:"https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/xin-cindy-yee"},
+        {name: "Dr. Joshua Kittle", url:"https://sciprofiles.com/profile/joshdkittle"}],
       icon: ChartBarIcon,
       color: "from-purple-500 to-pink-500",
       funding: "This work was supported by the University of Colorado at Colorado Springs.",
@@ -176,6 +195,29 @@ const Projects = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900 py-20">
+      {/* Add JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Maycon Meier",
+            "jobTitle": "Computational Engineer",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "University Research"
+            },
+            "sameAs": projects.flatMap(p => p.links.map(l => l.url)),
+            "hasCredential": projects.map(project => ({
+              "@type": "EducationalOccupationalCredential",
+              "name": project.title,
+              "description": project.description,
+              "url": project.links.find(l => l.type === 'paper')?.url
+            }))
+          })
+        }}
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -271,9 +313,11 @@ const Projects = () => {
                           )}
                           {media.type === 'video' && (
                             <video
-                              autoPlay
                               loop
                               muted
+                              controls
+                              playsInline
+                              preload="metadata"
                               className="w-full h-auto rounded-lg shadow-lg"
                             >
                               <source src={media.src} type="video/webm" />
@@ -298,6 +342,28 @@ const Projects = () => {
                         </p>
                       </div>
                     )}
+
+                    {/*Project Colaborators */}
+                    {project.collaborators && project.collaborators.length > 0 && (
+                      <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+                          Collaborators
+                        </h4>
+                        <ul className="space-y-1">
+                          {project.collaborators.map((collaborator) => (
+                              <a
+                                href={collaborator.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
+                              >
+                                {collaborator.name}{";   "}
+                              </a>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                   </div>
                 </motion.div>
               );

@@ -4,18 +4,14 @@ import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Plot from 'react-plotly.js';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
   ChartBarIcon,
   ClockIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon,
   CurrencyDollarIcon,
   UserIcon,
   MagnifyingGlassIcon,
-  PlusIcon,
-  ArrowRightIcon,
-  CalendarIcon
+  ArrowRightIcon
 } from '@heroicons/react/24/outline';
 
 const Finance = () => {
@@ -248,24 +244,11 @@ const Finance = () => {
     }
   };
 
-  const plotData = stockData ? [{
-    x: stockData.labels,
-    y: stockData.values,
-    type: 'scatter',
-    mode: 'lines',
-    name: stockData.ticker,
-    line: { color: '#3b82f6', width: 2 }
-  }] : [];
-
-  const plotLayout = {
-    title: stockData ? `${stockData.ticker} Stock Price` : '',
-    xaxis: { title: 'Date', color: '#e5e7eb' },
-    yaxis: { title: 'Price ($)', color: '#e5e7eb' },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#e5e7eb' },
-    margin: { l: 50, r: 50, t: 50, b: 50 }
-  };
+  // Format data for Recharts
+  const chartData = stockData ? stockData.labels.map((date, index) => ({
+    date: new Date(date).toLocaleDateString(),
+    price: stockData.values[index]
+  })) : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900">
@@ -422,12 +405,43 @@ const Finance = () => {
                         <p className="text-gray-300">{stockData.stock_info.longName || stockData.ticker}</p>
                       )}
                     </div>
-                    <Plot
-                      data={plotData}
-                      layout={plotLayout}
-                      config={{ displayModeBar: false, responsive: true }}
-                      style={{ width: '100%', height: '400px' }}
-                    />
+                    
+                    {/* Stock Chart */}
+                    <div className="h-96 w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                          <XAxis 
+                            dataKey="date" 
+                            stroke="#e5e7eb"
+                            tick={{ fontSize: 12 }}
+                          />
+                          <YAxis 
+                            stroke="#e5e7eb"
+                            tick={{ fontSize: 12 }}
+                            domain={['dataMin - 5', 'dataMax + 5']}
+                          />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0,0,0,0.8)',
+                              border: '1px solid rgba(255,255,255,0.2)',
+                              borderRadius: '8px',
+                              color: '#fff'
+                            }}
+                            formatter={(value) => [`$${value.toFixed(2)}`, 'Price']}
+                            labelStyle={{ color: '#e5e7eb' }}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="price" 
+                            stroke="#3b82f6" 
+                            strokeWidth={2}
+                            dot={false}
+                            activeDot={{ r: 4, fill: '#3b82f6' }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
 
                     {/* Info box */}
                     {stockData.stock_info && (

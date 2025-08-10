@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 
-// Layout Components
+// Context Providers
+import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+
+// Layout Components (keep these for immediate load)
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
-// Page Components
-import Home from './pages/Home';
-import About from './components/About';
-import Resume from './components/Resume';
-import Projects from './components/Projects';
-import Finance from './pages/Finance';
-import Login from './components/Login';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
-import Tools from './components/Tools';
-import Quiz from './components/Quiz';
+// Lazy-loaded Page Components
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./components/About'));
+const Resume = lazy(() => import('./components/Resume'));
+const Projects = lazy(() => import('./components/Projects'));
+const Finance = lazy(() => import('./pages/Finance'));
+const Login = lazy(() => import('./components/Login'));
+const Register = lazy(() => import('./components/Register'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const Tools = lazy(() => import('./components/Tools'));
+const Quiz = lazy(() => import('./components/Quiz'));
 
-// Context Providers
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
+// Loading Component
+const LoadingSpinner = React.memo(() => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 via-secondary-900 to-accent-900">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
+      <p className="text-white text-lg">Loading...</p>
+    </div>
+  </div>
+));
 
 function App() {
   return (
@@ -34,18 +44,20 @@ function App() {
             <Navbar />
             
             <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/resume" element={<Resume />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/finance" element={<Finance />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/tools" element={<Tools />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/quiz" element={<Quiz />} />
-              </Routes>
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/resume" element={<Resume />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/finance" element={<Finance />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/tools" element={<Tools />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/quiz" element={<Quiz />} />
+                </Routes>
+              </Suspense>
             </AnimatePresence>
             
             <Footer />

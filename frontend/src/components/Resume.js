@@ -8,7 +8,7 @@ import {
   TrophyIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
-import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import { FaLinkedin } from 'react-icons/fa';
 
 const Resume = () => {
   const [activeTab, setActiveTab] = useState('experience');

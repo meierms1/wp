@@ -226,7 +226,7 @@ const Projects = () => {
         { name: "Dr. Naimara Vieira do Prado", url: "https://orcid.org/0000-0001-8952-7092" },
         { name: "Dr. Evellin Balbinot-Alfaro", url: "https://www.researchgate.net/profile/Evellin-Balbinot-Alfaro" }
       ],
-      funding: "This research was supported by the National Food Safety Initiative and the Sustainable Agriculture Fund.",
+      funding: "This research was supported by the Federal University of Technology - Parana and BRF Brasil Foods.",
       icon: BeakerIcon,
       color: "from-green-500 to-blue-500"
     }

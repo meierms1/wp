@@ -37,13 +37,13 @@ const Projects = () => {
         }
       ],
       collaborators: [
-        {name: "Dr. Ram Mohanta" , url:"https://www.linkedin.com/in/rammohanta21"},
-        {name: "Dr. Sridhar Seetharaman", url:"https://search.asu.edu/profile/3858630"},
-        {name: "Dr. Yuri Korobeinikov", url:"https://search.asu.edu/profile/3946734"},
-        {name: "Dr. Noemi Leick", url:"https://research-hub.nrel.gov/en/persons/noemi-leick"},
-        {name: "Dr. Hari Sitaraman" , url:"https://research-hub.nrel.gov/en/persons/hariswaran-sitaraman"},
-        {name: "Dr. Kumar Ankit", url:"https://search.asu.edu/profile/3173066"},
-        ],
+        { name: "Dr. Ram Mohanta", url: "https://www.linkedin.com/in/rammohanta21" },
+        { name: "Dr. Sridhar Seetharaman", url: "https://search.asu.edu/profile/3858630" },
+        { name: "Dr. Yuri Korobeinikov", url: "https://search.asu.edu/profile/3946734" },
+        { name: "Dr. Noemi Leick", url: "https://research-hub.nrel.gov/en/persons/noemi-leick" },
+        { name: "Dr. Hari Sitaraman", url: "https://research-hub.nrel.gov/en/persons/hariswaran-sitaraman" },
+        { name: "Dr. Kumar Ankit", url: "https://search.asu.edu/profile/3173066" },
+      ],
       funding: "This material is based upon work supported by the U.S. Department of Energy (DOE), Office of Science, Office of Basic Energy Sciences (BES), Materials Sciences and Engineering Division under Award DE-SC0024724 'Fundamental Studies of Hydrogen Arc Plasmas for High-efficiency and Carbon-free Steelmaking'.",
       icon: BeakerIcon,
       color: "from-blue-500 to-cyan-500"
@@ -61,7 +61,7 @@ const Projects = () => {
           type: "video",
           src: `${process.env.PUBLIC_URL}/static/gcolors3.webm`,
           caption: "Mesoscale 3D simulations of composite solid propellant regression"
-        },{},{},
+        }, {}, {},
         {
           type: "gif",
           src: `${process.env.PUBLIC_URL}/static/vm-crop.gif`,
@@ -71,7 +71,7 @@ const Projects = () => {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/maximum2.png`,
           caption: "Maximum stress spots"
-        },{},
+        }, {},
         {
           type: "gif",
           src: `${process.env.PUBLIC_URL}/static/rodandtube_temp.gif`,
@@ -116,13 +116,13 @@ const Projects = () => {
         }
       ],
       collaborators: [
-        {name: "Dr. Brandon Runnels" , url:"https://www.engineering.iastate.edu/people/profile/brunnels/"},
-        {name: "Dr. Emma Boyd", url:"https://scholar.google.com/citations?user=WN-qmqgAAAAJ&hl=en"},
-        {name: "Dr. Matt Quinlan", url:"https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/matt-quinlan"},
-        {name: "Dr. Vinamra Agrawal" , url:"https://vinagr.github.io/"},
-        {name: "Dr. Brian Bojko", url:"https://scholar.google.com/citations?user=mepqCdIAAAAJ&hl=en"},
-        {name: "Dr. Joseph Kalman", url:"https://www.csulb.edu/college-of-engineering/dr-joseph-kalman"},
-        {name: "Patrick Martinez", url:"https://gocaltech.com/sports/track-and-field/roster/patrick-martinez/5540"}],
+        { name: "Dr. Brandon Runnels", url: "https://www.engineering.iastate.edu/people/profile/brunnels/" },
+        { name: "Dr. Emma Boyd", url: "https://scholar.google.com/citations?user=WN-qmqgAAAAJ&hl=en" },
+        { name: "Dr. Matt Quinlan", url: "https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/matt-quinlan" },
+        { name: "Dr. Vinamra Agrawal", url: "https://vinagr.github.io/" },
+        { name: "Dr. Brian Bojko", url: "https://scholar.google.com/citations?user=mepqCdIAAAAJ&hl=en" },
+        { name: "Dr. Joseph Kalman", url: "https://www.csulb.edu/college-of-engineering/dr-joseph-kalman" },
+        { name: "Patrick Martinez", url: "https://gocaltech.com/sports/track-and-field/roster/patrick-martinez/5540" }],
       funding: "This work is sponsored by the Department of Defense - Office of Naval Research grant #N00014-21-1-2113.",
       icon: RocketLaunchIcon,
       color: "from-red-500 to-orange-500"
@@ -140,7 +140,7 @@ const Projects = () => {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/kittle.jpeg`,
           caption: "Morpho Didius Butterfly wing structure"
-        },{},{},
+        }, {}, {},
         {
           type: "image",
           src: `${process.env.PUBLIC_URL}/static/PCA7.webp`,
@@ -185,11 +185,50 @@ const Projects = () => {
         }
       ],
       collaborators: [
-        {name: "Dr. Xin (Cindy) Yee" , url:"https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/xin-cindy-yee"},
-        {name: "Dr. Joshua Kittle", url:"https://sciprofiles.com/profile/joshdkittle"}],
+        { name: "Dr. Xin (Cindy) Yee", url: "https://eas.uccs.edu/departments/mechanical-and-aerospace-engineering/directory/faculty/xin-cindy-yee" },
+        { name: "Dr. Joshua Kittle", url: "https://sciprofiles.com/profile/joshdkittle" }],
       icon: ChartBarIcon,
       color: "from-purple-500 to-pink-500",
       funding: "This work was supported by the University of Colorado at Colorado Springs.",
+    },
+
+    {
+      title: "Air Chilling for Poultry Processing: Enhancing Quality and Safety",
+      subtitle: "Comparative study of air vs. water chilling methods",
+      description: "This project investigates the use of air chilling in comparison to traditional water chilling in poultry processing. The study evaluates the impact of air chilling on meat quality, microbial safety, environmental sustainability, and operational efficiency, providing insights into its advantages and challenges for modern food production.",
+      details: [
+        "A comprehensive analysis of air chilling's effects on poultry carcass quality, including texture, flavor, and microbial growth, is presented in the published paper.",
+        "The research compares air chilling and water chilling, highlighting reduced water usage, lower cross-contamination risk, and potential improvements in product quality.",
+        "The study also analyzes the impact of multistage air chilling processes."
+      ],
+      media: [
+        {
+          type: "image",
+          src: `${process.env.PUBLIC_URL}/static/AirFig1.webp`,
+          caption: "Micrographs of turkey meat refrigerated in the air chilling system with two stages (air/water spray+air)"
+        },
+        {
+          type: "image",
+          src: `${process.env.PUBLIC_URL}/static/AirFig2.webp`,
+          caption: "Micrographs of turkey meat refrigerated in the air chilling system with a single stage (air/water spray)"
+        }
+      ], 
+      links: [
+        {
+          type: "paper",
+          url: "https://doi.org/10.1007/s13197-022-05391-7",
+          label: "Research Paper"
+        }
+      ],
+      collaborators: [
+        { name: "Rosemar Frigotto, MSc, DVM", url: "https://www.linkedin.com/in/rosemar-frigotto-saggin-31a13425/?originalSubdomain=br" },
+        { name: "Dr. Alexandre da Trindade Alfaro", url: "https://scholar.google.com/citations?user=US90TFAAAAAJ&hl=pt-BR" },
+        { name: "Dr. Naimara Vieira do Prado", url: "https://orcid.org/0000-0001-8952-7092" },
+        { name: "Dr. Evellin Balbinot-Alfaro", url: "https://www.researchgate.net/profile/Evellin-Balbinot-Alfaro" }
+      ],
+      funding: "This research was supported by the National Food Safety Initiative and the Sustainable Agriculture Fund.",
+      icon: BeakerIcon,
+      color: "from-green-500 to-blue-500"
     }
   ];
 
@@ -215,7 +254,7 @@ const Projects = () => {
               "description": project.description,
               "url": project.links.find(l => l.type === 'paper')?.url
             })),
-            "colleague": projects.flatMap(p => 
+            "colleague": projects.flatMap(p =>
               p.collaborators?.map(c => ({
                 "@type": "Person",
                 "name": c.name,
@@ -265,7 +304,7 @@ const Projects = () => {
                         <p className="text-white/90 text-lg">{project.subtitle}</p>
                       </div>
                     </div>
-                    
+
                     {/* Links */}
                     <div className="flex flex-wrap gap-3">
                       {project.links.map((link, linkIndex) => (
@@ -358,14 +397,14 @@ const Projects = () => {
                         </h4>
                         <ul className="space-y-1">
                           {project.collaborators.map((collaborator) => (
-                              <a
-                                href={collaborator.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
-                              >
-                                {collaborator.name}{";   "}
-                              </a>
+                            <a
+                              href={collaborator.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
+                            >
+                              {collaborator.name}{";   "}
+                            </a>
                           ))}
                         </ul>
                       </div>

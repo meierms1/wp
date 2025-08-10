@@ -10,7 +10,7 @@ const Quiz = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const [timeLeft, setTimeLeft] = useState(0); // Will be calculated based on questions
   const [quizStarted, setQuizStarted] = useState(false);
   const [numQuestions, setNumQuestions] = useState(10);
   const [totalAvailable, setTotalAvailable] = useState(0);
@@ -54,11 +54,12 @@ const Quiz = () => {
     let timer;
     if (quizStarted && timeLeft > 0 && score === null) {
       timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && quizStarted && questions.length > 0 && score === null) {
+      // Only auto-submit if quiz has started and questions are loaded
       handleSubmitQuiz();
     }
     return () => clearTimeout(timer);
-  }, [timeLeft, quizStarted, score, handleSubmitQuiz]);
+  }, [timeLeft, quizStarted, score, questions.length, handleSubmitQuiz]);
 
   // Debug effect to monitor questions state changes
   useEffect(() => {
@@ -124,11 +125,13 @@ const Quiz = () => {
     console.log('Starting quiz with', numQuestions, 'questions');
     
     setQuizStarted(true);
-    setTimeLeft(300);
+    // Calculate time: 30 seconds per question
+    const calculatedTime = numQuestions * 60;
+    setTimeLeft(calculatedTime);
     
     // Fetch the real questions
     fetchQuestions(numQuestions);
-    console.log('Quiz started, fetchQuestions called');
+    console.log('Quiz started, fetchQuestions called, time set to:', calculatedTime, 'seconds');
   };
 
   const resetQuiz = () => {
@@ -136,7 +139,7 @@ const Quiz = () => {
     setAnswers({});
     setScore(null);
     setQuizStarted(false);
-    setTimeLeft(300);
+    setTimeLeft(0);
     setQuestions([]);
     setWrongDetails([]);
   };
@@ -200,7 +203,7 @@ const Quiz = () => {
               </h2>
               <div className="space-y-4 text-gray-600 dark:text-gray-300 mb-8">
                 <p>• Multiple choice questions from FIRE investigation database</p>
-                <p>• 5 minutes time limit</p>
+                <p>• 60 seconds per question (dynamic timer)</p>
                 <p>• Covers NFPA 1033 and NFPA 921 standards</p>
                 <p>• {totalAvailable} questions available in total</p>
                 <p>Disclaimer: The questions in this quiz are parsed from CFItrainer.net and are for educational purposes only.</p>
@@ -230,7 +233,7 @@ const Quiz = () => {
                   ))}
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  Selected: {numQuestions} questions
+                  Selected: {numQuestions} questions ({numQuestions * 60} seconds total time)
                 </p>
               </div>
 

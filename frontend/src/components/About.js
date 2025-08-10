@@ -245,7 +245,10 @@ const About = () => {
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              Get In Touch
+              <a 
+                href="mailto:m85830874@gmail.com" 
+              >
+              Get In Touch</a>
             </motion.button>
           </motion.div>
         </motion.div>

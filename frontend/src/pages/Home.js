@@ -150,12 +150,12 @@ const Home = () => {
             className="absolute bottom-4 right-1 transform -translate-x-1/2"
           >
             <motion.div
-              animate={{ y: [0, 10, 0] }}
+              animate={{ y: [0, 5, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
             >
               <motion.div
-                animate={{ y: [0, 16, 0] }}
+                animate={{ y: [3, 10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-1 h-3 bg-white/70 rounded-full mt-2"
               />

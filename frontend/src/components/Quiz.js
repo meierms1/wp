@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { QuestionMarkCircleIcon, ClockIcon, TrophyIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, TrophyIcon, FireIcon  } from '@heroicons/react/24/outline';
 
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -14,6 +14,8 @@ const Quiz = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [numQuestions, setNumQuestions] = useState(10);
   const [totalAvailable, setTotalAvailable] = useState(0);
+  // Track incorrect answers with explanations
+  const [wrongDetails, setWrongDetails] = useState([]);
 
   useEffect(() => {
     // Load initial info about available questions
@@ -27,6 +29,19 @@ const Quiz = () => {
         answers,
         questions
       });
+      
+      // Build list of incorrect answers with explanations
+      const wrongs = questions
+        .filter(q => answers[q.id] !== q.correct_answer)
+        .map(q => ({
+          id: q.id,
+          question_text: q.question_text,
+          correct_answer: q.correct_answer,
+          user_answer: answers[q.id],
+          explanation: q.explanation_long || q.explanation || ''
+        }));
+      setWrongDetails(wrongs);
+      
       setScore(response.data.percentage);
       toast.success(`Quiz completed! Score: ${response.data.percentage}%`);
     } catch (error) {
@@ -123,6 +138,7 @@ const Quiz = () => {
     setQuizStarted(false);
     setTimeLeft(300);
     setQuestions([]);
+    setWrongDetails([]);
   };
 
   const formatTime = (seconds) => {
@@ -134,9 +150,9 @@ const Quiz = () => {
   if (loading) {
     console.log('Rendering loading state');
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 dark:from-gray-900 dark:to-red-900 py-20">
         <div className="container mx-auto px-4 text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600 mx-auto"></div>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading quiz...</p>
         </div>
       </div>
@@ -153,7 +169,7 @@ const Quiz = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 dark:from-gray-900 dark:to-red-900 py-20">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -178,7 +194,7 @@ const Quiz = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center"
             >
-              <QuestionMarkCircleIcon className="h-24 w-24 text-indigo-600 mx-auto mb-6" />
+              <FireIcon className="h-24 w-24 text-red-600 mx-auto mb-6" />
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 Ready to test your knowledge?
               </h2>
@@ -187,6 +203,7 @@ const Quiz = () => {
                 <p>• 5 minutes time limit</p>
                 <p>• Covers NFPA 1033 and NFPA 921 standards</p>
                 <p>• {totalAvailable} questions available in total</p>
+                <p>Disclaimer: The questions in this quiz are parsed from CFItrainer.net and are for educational purposes only.</p>
               </div>
               
               {/* Number of Questions Selector */}
@@ -202,10 +219,10 @@ const Quiz = () => {
                       disabled={count > totalAvailable}
                       className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                         numQuestions === count
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-red-600 text-white'
                           : count > totalAvailable
                           ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          : 'bg-gray-200 text-gray-700 hover:bg-orange-300'
                       }`}
                     >
                       {count}
@@ -220,7 +237,7 @@ const Quiz = () => {
               <button
                 onClick={startQuiz}
                 disabled={loading}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-bold py-3 px-8 rounded-lg transition-colors"
               >
                 {loading ? 'Loading Questions...' : 'Start Quiz'}
               </button>
@@ -236,7 +253,7 @@ const Quiz = () => {
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Quiz Complete!
               </h2>
-              <div className="text-6xl font-bold text-indigo-600 mb-4">
+              <div className="text-6xl font-bold text-red-600 mb-4">
                 {score}%
               </div>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
@@ -244,9 +261,37 @@ const Quiz = () => {
                  score >= 60 ? 'Good job!' : 
                  'Keep learning!'}
               </p>
+              
+              {/* Review Incorrect Answers */}
+              <div className="mt-12 text-left">
+                <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Review Incorrect Answers</h4>
+                {wrongDetails.length === 0 ? (
+                  <p className="text-green-600 dark:text-green-400">Perfect score! No incorrect answers.</p>
+                ) : (
+                  <div className="space-y-6">
+                    {wrongDetails.map((item, idx) => (
+                      <div key={item.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
+                        <p className="text-gray-900 dark:text-white font-semibold mb-2">{idx + 1}. {item.question_text}</p>
+                        <div className="flex flex-wrap gap-3 mb-3">
+                          <span className="px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-500/40">
+                            Your answer: {item.user_answer || '—'}
+                          </span>
+                          <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-500/40">
+                            Correct: {item.correct_answer}
+                          </span>
+                        </div>
+                        {item.explanation && (
+                          <p className="text-gray-700 dark:text-gray-300">{item.explanation}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
               <button
                 onClick={resetQuiz}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
               >
                 Take Quiz Again
               </button>
@@ -258,7 +303,7 @@ const Quiz = () => {
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-2">
-                    <ClockIcon className="h-6 w-6 text-indigo-600" />
+                    <ClockIcon className="h-6 w-6 text-red-600" />
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                       {formatTime(timeLeft)}
                     </span>
@@ -269,7 +314,7 @@ const Quiz = () => {
                 </div>
                 <div className="mt-4 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
-                    className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-orange-500 to-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0}%` }}
                   ></div>
                 </div>
@@ -292,8 +337,8 @@ const Quiz = () => {
                           onClick={() => handleAnswerSelect(questions[currentQuestion].id, option)}
                           className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                             answers[questions[currentQuestion].id] === option
-                              ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                              : 'border-gray-200 dark:border-gray-600 hover:border-indigo-300'
+                              ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                              : 'border-gray-200 dark:border-gray-600 hover:border-orange-300'
                           }`}
                         >
                           <span className="text-gray-900 dark:text-white">{option}</span>
@@ -314,14 +359,14 @@ const Quiz = () => {
                     {currentQuestion === questions.length - 1 ? (
                       <button
                         onClick={handleSubmitQuiz}
-                        className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+                        className="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold"
                       >
                         Submit Quiz
                       </button>
                     ) : (
                       <button
                         onClick={() => setCurrentQuestion(Math.min(questions.length - 1, currentQuestion + 1))}
-                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
+                        className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
                       >
                         Next
                       </button>

@@ -4,12 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { 
   CalculatorIcon, 
-  AcademicCapIcon, 
-  ArrowPathIcon, 
-  CheckCircleIcon,
-  XCircleIcon,
-  PlayIcon,
-  ChartBarIcon
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 
 const Tools = () => {
@@ -27,34 +22,10 @@ const Tools = () => {
   });
   const [conversionResult, setConversionResult] = useState(null);
   const [materialResult, setMaterialResult] = useState(null);
-  const [quizQuestions, setQuizQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [quizResults, setQuizResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  // Track incorrect answers with explanations
-  const [wrongDetails, setWrongDetails] = useState([]);
 
   // Common units for the calculator
   // Removed predefined units dropdown; free-text unit syntax is now used.
-
-  useEffect(() => {
-    fetchQuizQuestions();
-  }, []);
-
-  const fetchQuizQuestions = async () => {
-    try {
-      const response = await axios.get('/api/quiz/questions');
-      if (response.data.success) {
-        setQuizQuestions(response.data.questions);
-      }
-    } catch (error) {
-      console.error('Error fetching quiz questions:', error);
-      toast.error('Failed to load quiz questions');
-    }
-  };
 
   const handleConvert = async (e) => {
     e.preventDefault();
@@ -117,71 +88,6 @@ const Tools = () => {
     }
   };
 
-  const startQuiz = () => {
-    setQuizStarted(true);
-    setCurrentQuestion(0);
-    setUserAnswers({});
-    setQuizCompleted(false);
-    setQuizResults(null);
-  };
-
-  // Store selected answer by question id with the selected option text
-  const selectAnswer = (questionId, option) => {
-    setUserAnswers(prev => ({
-      ...prev,
-      [questionId]: option
-    }));
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      submitQuiz();
-    }
-  };
-
-  const submitQuiz = async () => {
-    try {
-      setLoading(true);
-      // Include both answers and questions so backend can grade
-      const response = await axios.post('/api/quiz/submit', { 
-        answers: userAnswers,
-        questions: quizQuestions
-      });
-      if (response.data.success) {
-        // Build list of incorrect answers with explanations
-        const wrongs = quizQuestions
-          .filter(q => userAnswers[q.id] !== q.correct_answer)
-          .map(q => ({
-            id: q.id,
-            question_text: q.question_text,
-            correct_answer: q.correct_answer,
-            user_answer: userAnswers[q.id],
-            explanation: q.explanation_long || q.explanation || ''
-          }));
-        setWrongDetails(wrongs);
-        setQuizResults(response.data);
-        setQuizCompleted(true);
-        toast.success('Quiz completed!');
-      }
-    } catch (error) {
-      toast.error('Failed to submit quiz');
-      console.error('Error submitting quiz:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetQuiz = () => {
-    setQuizStarted(false);
-    setCurrentQuestion(0);
-    setUserAnswers({});
-    setQuizCompleted(false);
-    setQuizResults(null);
-    setWrongDetails([]);
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -217,7 +123,7 @@ const Tools = () => {
               Tools
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Enhance your financial knowledge with our calculator and quiz tools.
+              Enhance your financial knowledge with our calculator tools.
             </p>
           </motion.div>
 
@@ -226,8 +132,7 @@ const Tools = () => {
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
               {[
                 { id: 'calculator', label: 'Unit Calculator', icon: CalculatorIcon },
-                { id: 'materialproperties', label: 'Material Properties', icon: CalculatorIcon },
-                { id: 'quiz', label: 'FIRE Quiz', icon: AcademicCapIcon }
+                { id: 'materialproperties', label: 'Material Properties', icon: CalculatorIcon }
               ].map((tab) => (
                 <motion.button
                   key={tab.id}
@@ -672,241 +577,6 @@ const Tools = () => {
                         </table>
                       </div>
                     </div>
-                  )}
-                </motion.div>
-              </motion.div>
-            )}
-
-            {/* FIRE Quiz */}
-            {activeTab === 'quiz' && (
-              <motion.div
-                key="quiz"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                className="max-w-4xl mx-auto"
-              >
-                <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
-                  <div className="flex items-center mb-6">
-                    <AcademicCapIcon className="w-8 h-8 text-pink-400 mr-4" />
-                    <h2 className="text-3xl font-bold text-white">FIRE Quiz</h2>
-                  </div>
-
-                  {!quizStarted && !quizCompleted && (
-                    <div className="text-center py-12">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                        className="w-24 h-24 bg-gradient-to-r from-pink-500 to-red-500 rounded-full mx-auto mb-6 flex items-center justify-center"
-                      >
-                        <PlayIcon className="w-12 h-12 text-white" />
-                      </motion.div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Test Your FIRE Knowledge</h3>
-                      <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Take our NFPA 1033 and 921 Fire Investigation quiz to test your understanding 
-                        of key concepts and strategies.
-                      </p>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={startQuiz}
-                        disabled={quizQuestions.length === 0}
-                        className="bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 disabled:opacity-50"
-                      >
-                        Start Quiz ({quizQuestions.length} Questions)
-                      </motion.button>
-                    </div>
-                  )}
-
-                  {quizStarted && !quizCompleted && quizQuestions.length > 0 && (
-                    <div>
-                      {/* Progress Bar */}
-                      <div className="mb-8">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-300">Question {currentQuestion + 1} of {quizQuestions.length}</span>
-                          <span className="text-gray-300">{Math.round(((currentQuestion + 1) / quizQuestions.length) * 100)}%</span>
-                        </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2">
-                          <motion.div
-                            className="bg-gradient-to-r from-pink-500 to-red-500 h-2 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
-                            transition={{ duration: 0.5 }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Question */}
-                      <motion.div
-                        key={currentQuestion}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-6"
-                      >
-                        <h3 className="text-xl font-semibold text-white mb-6">
-                          {quizQuestions[currentQuestion]?.question_text}
-                        </h3>
-
-                        <div className="space-y-3">
-                          {quizQuestions[currentQuestion]?.options?.map((option, index) => (
-                            <motion.button
-                              key={index}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={() => selectAnswer(quizQuestions[currentQuestion].id, option)}
-                              className={`w-full text-left p-4 rounded-lg transition-all duration-300 ${
-                                userAnswers[quizQuestions[currentQuestion].id] === option
-                                  ? 'bg-gradient-to-r from-pink-500/30 to-red-500/30 border-2 border-pink-500'
-                                  : 'bg-white/5 hover:bg-white/10 border border-white/20'
-                              }`}
-                            >
-                              <div className="flex items-center">
-                                <div className={`w-6 h-6 rounded-full border-2 mr-4 flex items-center justify-center ${
-                                  userAnswers[quizQuestions[currentQuestion].id] === option
-                                    ? 'border-pink-500 bg-pink-500'
-                                    : 'border-gray-400'
-                                }`}>
-                                  {userAnswers[quizQuestions[currentQuestion].id] === option && (
-                                    <CheckCircleIcon className="w-4 h-4 text-white" />
-                                  )}
-                                </div>
-                                <span className="text-white">{option}</span>
-                              </div>
-                            </motion.button>
-                          ))}
-                        </div>
-
-                        <div className="flex justify-end">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={nextQuestion}
-                            disabled={userAnswers[quizQuestions[currentQuestion].id] === undefined || loading}
-                            className="bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50"
-                          >
-                            {loading ? (
-                              <ArrowPathIcon className="w-5 h-5 animate-spin" />
-                            ) : currentQuestion === quizQuestions.length - 1 ? (
-                              'Submit Quiz'
-                            ) : (
-                              'Next Question'
-                            )}
-                          </motion.button>
-                        </div>
-                      </motion.div>
-                    </div>
-                  )}
-
-                  {quizCompleted && quizResults && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-center py-12"
-                    >
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                        className={`w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center ${
-                          quizResults.percentage >= 80 ? 'bg-green-500' : 
-                          quizResults.percentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}
-                      >
-                        {quizResults.percentage >= 80 ? (
-                          <CheckCircleIcon className="w-12 h-12 text-white" />
-                        ) : quizResults.percentage >= 60 ? (
-                          <ChartBarIcon className="w-12 h-12 text-white" />
-                        ) : (
-                          <XCircleIcon className="w-12 h-12 text-white" />
-                        )}
-                      </motion.div>
-
-                      <h3 className="text-3xl font-bold text-white mb-4">Quiz Complete!</h3>
-                      <p className="text-gray-300 mb-6">Here are your results:</p>
-                      
-                      <div className="grid md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-white/5 rounded-lg p-6">
-                          <p className="text-gray-400 text-sm">Score</p>
-                          <p className="text-3xl font-bold text-white">{quizResults.score}/{quizResults.total}</p>
-                        </div>
-                        <div className="bg-white/5 rounded-lg p-6">
-                          <p className="text-gray-400 text-sm">Percentage</p>
-                          <p className={`text-3xl font-bold ${
-                            quizResults.percentage >= 80 ? 'text-green-400' : 
-                            quizResults.percentage >= 60 ? 'text-yellow-400' : 'text-red-400'
-                          }`}>
-                            {quizResults.percentage.toFixed(1)}%
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-lg p-6">
-                          <p className="text-gray-400 text-sm">Grade</p>
-                          <p className={`text-3xl font-bold ${
-                            quizResults.percentage >= 80 ? 'text-green-400' : 
-                            quizResults.percentage >= 60 ? 'text-yellow-400' : 'text-red-400'
-                          }`}>
-                            {quizResults.percentage >= 80 ? 'A' : 
-                             quizResults.percentage >= 60 ? 'B' : 'C'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        {quizResults.percentage >= 80 && (
-                          <p className="text-green-400 font-semibold">
-                            🎉 Excellent! You have a strong understanding of FIRE principles.
-                          </p>
-                        )}
-                        {quizResults.percentage >= 60 && quizResults.percentage < 80 && (
-                          <p className="text-yellow-400 font-semibold">
-                            👍 Good job! You have a solid foundation, but there's room for improvement.
-                          </p>
-                        )}
-                        {quizResults.percentage < 60 && (
-                          <p className="text-red-400 font-semibold">
-                            📚 Keep learning! Consider reviewing FIRE concepts and investment strategies.
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Review Incorrect Answers */}
-                      <div className="mt-12 text-left">
-                        <h4 className="text-2xl font-bold text-white mb-4">Review Incorrect Answers</h4>
-                        {wrongDetails.length === 0 ? (
-                          <p className="text-green-400">Perfect score! No incorrect answers.</p>
-                        ) : (
-                          <div className="space-y-6">
-                            {wrongDetails.map((item, idx) => (
-                              <div key={item.id} className="bg-white/5 rounded-lg p-6 border border-white/10">
-                                <p className="text-white font-semibold mb-2">{idx + 1}. {item.question_text}</p>
-                                <div className="flex flex-wrap gap-3 mb-3">
-                                  <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/40">
-                                    Your answer: {item.user_answer || '—'}
-                                  </span>
-                                  <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-500/40">
-                                    Correct: {item.correct_answer}
-                                  </span>
-                                </div>
-                                {item.explanation && (
-                                  <p className="text-gray-300">{item.explanation}</p>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={resetQuiz}
-                        className="mt-8 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
-                      >
-                        Take Quiz Again
-                      </motion.button>
-                    </motion.div>
                   )}
                 </motion.div>
               </motion.div>

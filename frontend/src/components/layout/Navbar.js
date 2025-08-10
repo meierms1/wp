@@ -10,12 +10,16 @@ import {
   BeakerIcon,
   ChartBarIcon,
   Cog6ToothIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  ChevronDownIcon,
+  CalculatorIcon,
+  FireIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
 
@@ -25,10 +29,15 @@ const Navbar = () => {
     { name: 'Resume', href: '/resume', icon: DocumentTextIcon },
     { name: 'Projects', href: '/projects', icon: BeakerIcon },
     { name: 'Finance', href: '/finance', icon: ChartBarIcon },
-    { name: 'Tools', href: '/tools', icon: Cog6ToothIcon },
+  ];
+
+  const toolsDropdownItems = [
+    { name: 'Engineering', href: '/tools', icon: CalculatorIcon },
+    { name: 'Fire Quiz', href: '/quiz', icon: FireIcon },
   ];
 
   const isActive = (path) => location.pathname === path;
+  const isToolsActive = () => location.pathname === '/tools' || location.pathname === '/quiz';
 
   return (
     <motion.nav
@@ -72,6 +81,50 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            
+            {/* Tools Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsToolsDropdownOpen(!isToolsDropdownOpen)}
+                className={`nav-link px-4 py-2 rounded-lg flex items-center space-x-2 ${
+                  isToolsActive() 
+                    ? 'bg-white/20 text-white' 
+                    : 'hover:bg-white/10'
+                }`}
+              >
+                <Cog6ToothIcon className="w-4 h-4" />
+                <span>Tools</span>
+                <ChevronDownIcon className={`w-4 h-4 transition-transform ${isToolsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Dropdown Menu */}
+              {isToolsDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full mt-2 w-48 bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 shadow-lg"
+                  onMouseLeave={() => setIsToolsDropdownOpen(false)}
+                >
+                  {toolsDropdownItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        onClick={() => setIsToolsDropdownOpen(false)}
+                        className={`flex items-center space-x-2 px-4 py-3 text-white hover:bg-white/10 first:rounded-t-lg last:rounded-b-lg ${
+                          isActive(item.href) ? 'bg-white/20' : ''
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </div>
           </div>
 
           {/* Right side actions */}
@@ -143,6 +196,54 @@ const Navbar = () => {
                   </Link>
                 );
               })}
+              
+              {/* Mobile Tools Dropdown */}
+              <div>
+                <button
+                  onClick={() => setIsToolsDropdownOpen(!isToolsDropdownOpen)}
+                  className={`w-full nav-link px-4 py-3 rounded-lg flex items-center space-x-3 ${
+                    isToolsActive() 
+                      ? 'bg-white/20 text-white' 
+                      : 'hover:bg-white/10'
+                  }`}
+                >
+                  <Cog6ToothIcon className="w-5 h-5" />
+                  <span>Tools</span>
+                  <ChevronDownIcon className={`w-5 h-5 ml-auto transition-transform ${isToolsDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {/* Mobile Dropdown Items */}
+                {isToolsDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="ml-4 mt-2 space-y-2"
+                  >
+                    {toolsDropdownItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.name}
+                          to={item.href}
+                          onClick={() => {
+                            setIsOpen(false);
+                            setIsToolsDropdownOpen(false);
+                          }}
+                          className={`nav-link px-4 py-3 rounded-lg flex items-center space-x-3 ${
+                            isActive(item.href) 
+                              ? 'bg-white/20 text-white' 
+                              : 'hover:bg-white/10'
+                          }`}
+                        >
+                          <Icon className="w-5 h-5" />
+                          <span>{item.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </div>
               
               <div className="pt-4 border-t border-white/10">
                 {isAuthenticated ? (

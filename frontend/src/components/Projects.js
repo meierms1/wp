@@ -214,7 +214,14 @@ const Projects = () => {
               "name": project.title,
               "description": project.description,
               "url": project.links.find(l => l.type === 'paper')?.url
-            }))
+            })),
+            "colleague": projects.flatMap(p => 
+              p.collaborators?.map(c => ({
+                "@type": "Person",
+                "name": c.name,
+                "url": c.url
+              })) || []
+            )
           })
         }}
       />

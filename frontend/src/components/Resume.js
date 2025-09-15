@@ -23,7 +23,7 @@ const Resume = () => {
 
   const experiences = [
     {
-      title: "PD Researcher - Software Development",
+      title: "Postdoctoral Researcher / Iron and Vapor-Deposition Nanostructure Manufacturing",
       company: "Arizona State University",
       website: "https://www.asu.edu",
       period: "July 2024 - July 2025",
@@ -34,7 +34,7 @@ const Resume = () => {
       ]
     },
     {
-      title: "Graduate Research - Software Development",
+      title: "Graduate Research Assistant / Software Developer and Data Analyst",
       company: "University of Colorado",
       website: "https://www.uccs.edu",
       period: "March 2020 - June 2024",
@@ -56,7 +56,7 @@ const Resume = () => {
       ]
     },
     {
-      title: "Supervisor (Trainee)",
+      title: "Production Supervisor Trainee / Industrial Engineer",
       company: "BRF - Brasil Foods",
       website: "https://www.brf-global.com/en/",
       period: "January 2017 - January 2018",

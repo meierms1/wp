@@ -195,11 +195,10 @@ const Projects = () => {
     {
       title: "Air Chilling for Poultry Processing: Enhancing Quality and Safety",
       subtitle: "Comparative study of air vs. water chilling methods",
-      description: "This project investigates the use of air chilling in comparison to traditional water chilling in poultry processing. The study evaluates the impact of air chilling on meat quality, microbial safety, environmental sustainability, and operational efficiency, providing insights into its advantages and challenges for modern food production.",
+      description: "This project investigates the use of multi-step air chilling in comparison to traditional air chilling in poultry processing. The study evaluates the impact of air chilling on meat quality, microbial safety, environmental sustainability, and operational efficiency, providing insights into its advantages and challenges for modern food production.",
       details: [
         "A comprehensive analysis of air chilling's effects on poultry carcass quality, including texture, flavor, and microbial growth, is presented in the published paper.",
-        "The research compares air chilling and water chilling, highlighting reduced water usage, lower cross-contamination risk, and potential improvements in product quality.",
-        "The study also analyzes the impact of multistage air chilling processes."
+        "The research highlights reduced water usage, lower cross-contamination risk, and potential improvements in product quality."
       ],
       media: [
         {

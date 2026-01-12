@@ -46,21 +46,81 @@
     },
     {
       "id": 8,
-      "question_text": "What is the normal operating fuel capacity in gallons?",
-      "correct_answer": "53",
-      "explanation": "The normal operating fuel capacity is 53 gallons."
+      "question_text": "What is total fuel load in gallons?",
+      "correct_answer": "58.5",
+      "explanation": "The maximum fuel load is 58.5 gallons."
     },
     {
       "id": 9,
-      "question_text": "What is the useful load in lbs?",
-      "correct_answer": "1087",
-      "explanation": "The useful load is the maximum amount of weight that can be carried."
+      "question_text": "What is the total fueled useful load in gallons?",
+      "correct_answer": "56",
+      "explanation": "The total fueled useful load is 56 gallons."
     },
     {
       "id": 10,
-      "question_text": "What is the empty weight in lbs?",
-      "correct_answer": "2063",
-      "explanation": "Empty weight is the basic weight of the aircraft without fuel, cargo, or passengers."
+      "question_text": "What is the maximum fuel imbalance between tanks in gallons",
+      "correct_answer": "7.5",
+      "explanation": "The maximum allowable fuel imbalance between the left and right tanks is 7.5 gallons."
+    },
+    {
+      "id": 11,
+      "question_text": "What is the fuel capacity of each tank in gallons?",
+      "correct_answer": "29.3",
+      "explanation": "Each fuel tank has a capacity of 29.3 gallons."
+    },
+    {
+      "id": 12,
+      "question_text": "what is the Tab level in gallons of each tank?",
+      "correct_answer": "13",
+      "explanation": "The tab level in each tank is 13 gallons."
+    },
+    {
+      "id": 13,
+      "question_text": "What is the fuel level for Amber alert in gallons?",
+      "correct_answer": "8.2",
+      "explanation": "The fuel level for Amber alert is 8.2 gallons."
+    },
+    {
+      "id": 14,
+      "question_text": "What is the fuel level for Red alert in gallons?",
+      "correct_answer": "7",
+      "explanation": "The fuel level for Red alert is 7 gallons."
+    },
+    {
+      "id": 15,
+      "question_text": "What is the maximum amount of oil in quarts?",
+      "correct_answer": "7",
+      "explanation": "The maximum allowable amount of oil is 7 quarts."
+    },
+    {
+      "id": 16,
+      "question_text": "What is the minimum amount of oil in quarts?",
+      "correct_answer": "6",
+      "explanation": "The minimum allowable amount of oil is 6 quarts."
+    },
+    {
+      "id": 17,
+      "question_text": "What is the load factor limit at 3150 lbs and 0% flaps?",
+      "correct_answer": "3.8",
+      "explanation": "The load factor limit at 3150 lbs with 0% flaps is 3.8 Gs."
+    },
+    {
+      "id": 18,
+      "question_text": "What is the load factor limit at 3150 lbs and 100% flaps?",
+      "correct_answer": "1.9",
+      "explanation": "The load factor limit at 3150 lbs with 100% flaps is 1.9 Gs."
+    },
+    {
+      "id": 19,
+      "question_text": "What is the load factor limit at 3150 lbs and 50% flaps?",
+      "correct_answer": "1.9",
+      "explanation": "The load factor limit at maximum takeoff weight (3150 lbs) with 50% flaps is 1.9 Gs."
+    },
+    {
+      "id": 20,
+      "question_text": "What is the negative load factor limit at 3150 lbs and 0% flaps?",
+      "correct_answer": "-1.9",
+      "explanation": "The negative load factor limit at 3150 lbs with 0% flaps is -1.9 Gs."
     }
   ]
 }

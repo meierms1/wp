@@ -61,6 +61,60 @@
       "question_text": "What is the stall speed in clean configuration (Vs) in knots?",
       "correct_answer": "71",
       "explanation": "VS is the stall speed in clean configuration."
+    },
+    {
+      "id": 11,
+      "question_text": "What is the maximum speed for parachute deployment (Vpd) in knots?",
+      "correct_answer": "133",
+      "explanation": "VPD is the maximum speed for parachute deployment."
+    },
+    {
+      "id": 12,
+      "question_text": "What is the the best glide speed (Vbg) at 3150lbs in knots?",
+      "correct_answer": "100",
+      "explanation": "Vbg is the best glide speed at maximum weight."
+    },
+    {
+      "id": 13,
+      "question_text": "What is the the best glide speed (Vbg) at 2600lbs in knots?",
+      "correct_answer": "92",
+      "explanation": "Vbg is the best glide speed at 2600lbs."
+    },
+    {
+      "id": 14,
+      "question_text": "What is the final aproach speed (Vapch) with 0% flaps in knots?",
+      "correct_answer": "89",
+      "explanation": "Vapch is the final approach speed with 0% flaps."
+    },
+    {
+      "id": 15,
+      "question_text": "What is the final aproach speed (Vapch) with 50% flaps in knots?",
+      "correct_answer": "84",
+      "explanation": "Vapch is the final approach speed with 50% flaps."
+    },
+    {
+      "id": 16,
+      "question_text": "What is the final aproach speed (Vapch) with 100% flaps in knots?",
+      "correct_answer": "78",
+      "explanation": "Vapch is the final approach speed with 100% flaps."
+    },
+    {
+      "id": 17,
+      "question_text": "What is the final aproach speed (Vapch) with 0% flaps and engine out in knots?",
+      "correct_answer": "89",
+      "explanation": "Vapch is the final approach speed with 0% flaps and engine out."
+    },
+    {
+      "id": 18,
+      "question_text": "What is the final aproach speed (Vapch) with 50% flaps and engine out in knots?",
+      "correct_answer": "83",
+      "explanation": "Vapch is the final approach speed with 50% flaps and engine out."
+    },
+    {
+      "id": 19,
+      "question_text": "What is the final aproach speed (Vapch) with 100% flaps and engine out in knots?",
+      "correct_answer": "78",
+      "explanation": "Vapch is the final approach speed with 100% flaps and engine out."
     }
   ]
 }

@@ -1,0 +1,66 @@
+{
+  "category": "weights",
+  "category_name": "Aircraft Weight & Balance",
+  "questions": [
+    {
+      "id": 1,
+      "question_text": "What is the Maximum Takeoff/Landing Weight (MTOW) in lbs?",
+      "correct_answer": "3150",
+      "explanation": "Maximum Takeoff/Landing Weight (MTOW) is the maximum weight at which the aircraft is certified to take off or land safely."
+    },
+    {
+      "id": 2,
+      "question_text": "What is the maximum baggage weight in lbs?",
+      "correct_answer": "130",
+      "explanation": "The maximum baggage weight for this aircraft is 130 pounds."
+    },
+    {
+      "id": 3,
+      "question_text": "What is the maximum MSL altitude for take off in feet?",
+      "correct_answer": "10000",
+      "explanation": "The maximum Mean Sea Level (MSL) altitude for takeoff is 10,000 feet."
+    },
+    {
+      "id": 4,
+      "question_text": "What is the maximum MSL optimum altitude for cruise in feet?",
+      "correct_answer": "17500",
+      "explanation": "The maximum MSL optimum altitude for cruise is 17,500 feet."
+    },
+    {
+      "id": 5,
+      "question_text": "What is the maximum crosswind in knots?",
+      "correct_answer": "20",
+      "explanation": "The maximum crosswind component for this aircraft is 20 knots."
+    },
+    {
+      "id": 6,
+      "question_text": "What is the minimum time to maximum thrust from zero in seconds?",
+      "correct_answer": "3",
+      "explanation": "The minimum time to reach maximum thrust from zero is 3 seconds."
+    },
+    {
+      "id": 7,
+      "question_text": "What is the maximum Cylinder Head Temperature (CHT) in Fahrenheit?",
+      "correct_answer": "435",
+      "explanation": "The maximum Cylinder Head Temperature (CHT) is 435 degrees Fahrenheit."
+    },
+    {
+      "id": 8,
+      "question_text": "What is the normal operating fuel capacity in gallons?",
+      "correct_answer": "53",
+      "explanation": "The normal operating fuel capacity is 53 gallons."
+    },
+    {
+      "id": 9,
+      "question_text": "What is the useful load in lbs?",
+      "correct_answer": "1087",
+      "explanation": "The useful load is the maximum amount of weight that can be carried."
+    },
+    {
+      "id": 10,
+      "question_text": "What is the empty weight in lbs?",
+      "correct_answer": "2063",
+      "explanation": "Empty weight is the basic weight of the aircraft without fuel, cargo, or passengers."
+    }
+  ]
+}

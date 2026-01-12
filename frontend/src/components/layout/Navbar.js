@@ -13,7 +13,8 @@ import {
   ArrowRightOnRectangleIcon,
   ChevronDownIcon,
   CalculatorIcon,
-  FireIcon
+  FireIcon,
+  PaperAirplaneIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -34,10 +35,11 @@ const Navbar = () => {
   const toolsDropdownItems = [
     { name: 'Engineering', href: '/tools', icon: CalculatorIcon },
     { name: 'Fire Quiz', href: '/quiz', icon: FireIcon },
+    { name: 'Pilot Quiz', href: '/pilot', icon: PaperAirplaneIcon },
   ];
 
   const isActive = (path) => location.pathname === path;
-  const isToolsActive = () => location.pathname === '/tools' || location.pathname === '/quiz';
+  const isToolsActive = () => location.pathname === '/tools' || location.pathname === '/quiz' || location.pathname === '/pilot';
 
   return (
     <motion.nav

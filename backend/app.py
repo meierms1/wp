@@ -678,6 +678,68 @@ def api_submit_quiz():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+# Pilot Quiz API endpoints
+@app.route('/api/pilot-quiz/questions', methods=['GET'])
+def api_get_pilot_quiz_questions():
+    try:
+        category = request.args.get('category', '1', type=str)
+        
+        # Map category IDs to file names
+        category_map = {
+            '1': 'pilot-alphabet',
+            '2': 'pilot-speed',
+            '3': 'pilot-weights',
+            '4': 'pilot-procedures'
+        }
+        
+        filename = category_map.get(category, 'pilot-alphabet')
+        
+        # Try to load from frontend public directory first
+        frontend_path = os.path.join(PROJECT_ROOT, 'frontend', 'public', 'quiz-data', f'{filename}.json')
+        backend_path = os.path.join(BACKEND_DIR, 'quiz-data', f'{filename}.json')
+        
+        if os.path.exists(frontend_path):
+            filepath = frontend_path
+        elif os.path.exists(backend_path):
+            filepath = backend_path
+        else:
+            return jsonify({'success': False, 'message': f'Quiz file not found for category {category}'}), 404
+        
+        with open(filepath, 'r') as f:
+            data = json.load(f)
+        
+        questions = data.get('questions', [])
+        
+        return jsonify({
+            'success': True,
+            'questions': questions,
+            'total_available': len(questions)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/pilot-quiz/submit', methods=['POST'])
+def api_submit_pilot_quiz():
+    try:
+        data = request.get_json() or {}
+        answers = data.get('answers', {})
+        quiz_questions = data.get('questions', [])
+        score = 0
+        total_questions = len(quiz_questions)
+        
+        for question in quiz_questions:
+            qid = str(question.get('id'))
+            user_answer = (answers.get(qid) or '').lower().strip()
+            correct_answer = (question.get('correct_answer') or '').lower().strip()
+            
+            if user_answer == correct_answer:
+                score += 1
+        
+        percentage = round((score / total_questions * 100), 1) if total_questions > 0 else 0
+        return jsonify({'success': True, 'score': score, 'total': total_questions, 'percentage': percentage})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 # New: Unit converter API endpoint
 @app.route('/api/calculator/convert', methods=['POST'])
 def api_calculator_convert():

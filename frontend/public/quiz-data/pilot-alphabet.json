@@ -1,0 +1,222 @@
+{
+  "category": "alphabet",
+  "category_name": "Aviation Phonetic Alphabet",
+  "questions": [
+    {
+      "id": 1,
+      "question_text": "What phonetic word represents the letter 'A'?",
+      "correct_answer": "Alfa",
+      "explanation": "In aviation, the letter 'A' is represented by 'Alfa' (note the spelling with an 'f' instead of 'ph'). This is used in radio communications to prevent confusion."
+    },
+    {
+      "id": 2,
+      "question_text": "What phonetic word represents the letter 'B'?",
+      "correct_answer": "Bravo",
+      "explanation": "The letter 'B' is represented by 'Bravo' in the NATO phonetic alphabet, which is used in aviation communications."
+    },
+    {
+      "id": 3,
+      "question_text": "What phonetic word represents the letter 'C'?",
+      "correct_answer": "Charlie",
+      "explanation": "The letter 'C' is represented by 'Charlie' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 4,
+      "question_text": "What phonetic word represents the letter 'D'?",
+      "correct_answer": "Delta",
+      "explanation": "The letter 'D' is represented by 'Delta' in the NATO phonetic alphabet used in aviation."
+    },
+    {
+      "id": 5,
+      "question_text": "What phonetic word represents the letter 'E'?",
+      "correct_answer": "Echo",
+      "explanation": "The letter 'E' is represented by 'Echo' in aviation communications."
+    },
+    {
+      "id": 6,
+      "question_text": "What phonetic word represents the letter 'F'?",
+      "correct_answer": "Foxtrot",
+      "explanation": "The letter 'F' is represented by 'Foxtrot' in the NATO phonetic alphabet."
+    },
+    {
+      "id": 7,
+      "question_text": "What phonetic word represents the letter 'G'?",
+      "correct_answer": "Golf",
+      "explanation": "The letter 'G' is represented by 'Golf' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 8,
+      "question_text": "What phonetic word represents the letter 'H'?",
+      "correct_answer": "Hotel",
+      "explanation": "The letter 'H' is represented by 'Hotel' in aviation communications."
+    },
+    {
+      "id": 9,
+      "question_text": "What phonetic word represents the letter 'I'?",
+      "correct_answer": "India",
+      "explanation": "The letter 'I' is represented by 'India' in the NATO phonetic alphabet."
+    },
+    {
+      "id": 10,
+      "question_text": "What phonetic word represents the letter 'J'?",
+      "correct_answer": "Juliett",
+      "explanation": "The letter 'J' is represented by 'Juliett' (with two T's) in aviation communications."
+    },
+    {
+      "id": 11,
+      "question_text": "What phonetic word represents the letter 'K'?",
+      "correct_answer": "Kilo",
+      "explanation": "The letter 'K' is represented by 'Kilo' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 12,
+      "question_text": "What phonetic word represents the letter 'L'?",
+      "correct_answer": "Lima",
+      "explanation": "The letter 'L' is represented by 'Lima' in the NATO phonetic alphabet used in aviation."
+    },
+    {
+      "id": 13,
+      "question_text": "What phonetic word represents the letter 'M'?",
+      "correct_answer": "Mike",
+      "explanation": "The letter 'M' is represented by 'Mike' in aviation. This ensures clarity when spelling out words over radio communications."
+    },
+    {
+      "id": 14,
+      "question_text": "What phonetic word represents the letter 'N'?",
+      "correct_answer": "November",
+      "explanation": "The letter 'N' is represented by 'November' in aviation's NATO phonetic alphabet."
+    },
+    {
+      "id": 15,
+      "question_text": "What phonetic word represents the letter 'O'?",
+      "correct_answer": "Oscar",
+      "explanation": "The letter 'O' is represented by 'Oscar' in aviation communications."
+    },
+    {
+      "id": 16,
+      "question_text": "What phonetic word represents the letter 'P'?",
+      "correct_answer": "Papa",
+      "explanation": "The letter 'P' is represented by 'Papa' in the NATO phonetic alphabet."
+    },
+    {
+      "id": 17,
+      "question_text": "What phonetic word represents the letter 'Q'?",
+      "correct_answer": "Quebec",
+      "explanation": "The letter 'Q' is represented by 'Quebec' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 18,
+      "question_text": "What phonetic word represents the letter 'R'?",
+      "correct_answer": "Romeo",
+      "explanation": "The letter 'R' is represented by 'Romeo' in aviation communications."
+    },
+    {
+      "id": 19,
+      "question_text": "What phonetic word represents the letter 'S'?",
+      "correct_answer": "Sierra",
+      "explanation": "The letter 'S' is represented by 'Sierra' in aviation communications."
+    },
+    {
+      "id": 20,
+      "question_text": "What phonetic word represents the letter 'T'?",
+      "correct_answer": "Tango",
+      "explanation": "The letter 'T' is represented by 'Tango' in the NATO phonetic alphabet."
+    },
+    {
+      "id": 21,
+      "question_text": "What phonetic word represents the letter 'U'?",
+      "correct_answer": "Uniform",
+      "explanation": "The letter 'U' is represented by 'Uniform' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 22,
+      "question_text": "What phonetic word represents the letter 'V'?",
+      "correct_answer": "Victor",
+      "explanation": "The letter 'V' is represented by 'Victor' in aviation communications."
+    },
+    {
+      "id": 23,
+      "question_text": "What phonetic word represents the letter 'W'?",
+      "correct_answer": "Whiskey",
+      "explanation": "The letter 'W' is represented by 'Whiskey' in the NATO phonetic alphabet."
+    },
+    {
+      "id": 24,
+      "question_text": "What phonetic word represents the letter 'X'?",
+      "correct_answer": "X-ray",
+      "explanation": "The letter 'X' is represented by 'X-ray' in aviation communications."
+    },
+    {
+      "id": 25,
+      "question_text": "What phonetic word represents the letter 'Y'?",
+      "correct_answer": "Yankee",
+      "explanation": "The letter 'Y' is represented by 'Yankee' in aviation's phonetic alphabet."
+    },
+    {
+      "id": 26,
+      "question_text": "What phonetic word represents the letter 'Z'?",
+      "correct_answer": "Zulu",
+      "explanation": "The letter 'Z' is represented by 'Zulu' in the NATO phonetic alphabet used in aviation communications."
+    },
+    {
+      "id": 27,
+      "question_text": "How is the number '0' phonetically represented in aviation?",
+      "correct_answer": "Zero",
+      "explanation": "The number '0' is called 'Zero' in aviation communications."
+    },
+    {
+      "id": 28,
+      "question_text": "How is the number '1' phonetically represented in aviation?",
+      "correct_answer": "Wun",
+      "explanation": "The number '1' is called 'Wun' in aviation to prevent confusion with other similar-sounding words during radio communications."
+    },
+    {
+      "id": 29,
+      "question_text": "How is the number '2' phonetically represented in aviation?",
+      "correct_answer": "Two",
+      "explanation": "The number '2' is called 'Two' in aviation communications."
+    },
+    {
+      "id": 30,
+      "question_text": "How is the number '3' phonetically represented in aviation?",
+      "correct_answer": "Tree",
+      "explanation": "The number '3' is called 'Tree' in aviation to prevent confusion with other numbers during radio communications."
+    },
+    {
+      "id": 31,
+      "question_text": "How is the number '4' phonetically represented in aviation?",
+      "correct_answer": "Fower",
+      "explanation": "The number '4' is called 'Fower' in aviation to avoid confusion with similar-sounding numbers."
+    },
+    {
+      "id": 32,
+      "question_text": "How is the number '5' phonetically represented in aviation?",
+      "correct_answer": "Fife",
+      "explanation": "The number '5' is called 'Fife' in aviation to prevent confusion with other numbers during radio communications."
+    },
+    {
+      "id": 33,
+      "question_text": "How is the number '6' phonetically represented in aviation?",
+      "correct_answer": "Six",
+      "explanation": "The number '6' is called 'Six' in aviation communications."
+    },
+    {
+      "id": 34,
+      "question_text": "How is the number '7' phonetically represented in aviation?",
+      "correct_answer": "Seven",
+      "explanation": "The number '7' is called 'Seven' in aviation communications."
+    },
+    {
+      "id": 35,
+      "question_text": "How is the number '8' phonetically represented in aviation?",
+      "correct_answer": "Ait",
+      "explanation": "The number '8' is called 'Ait' in aviation to prevent confusion with other numbers during radio communications."
+    },
+    {
+      "id": 36,
+      "question_text": "How is the number '9' phonetically represented in aviation?",
+      "correct_answer": "Niner",
+      "explanation": "The number '9' is called 'Niner' in aviation to avoid confusion with the word 'five' over radio communications."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "category": "speed",
+  "category_name": "Aircraft Speed Terminology",
+  "questions": [
+    {
+      "id": 1,
+      "question_text": "What is the Rotation Speed (Vr) in knots?",
+      "correct_answer": "71",
+      "explanation": "VR is the speed at which the pilot gently pulls back on the control column to lift the nose off of the runway during takeoff."
+    },
+    {
+      "id": 2,
+      "question_text": "What is the best angle of climb speed (Vx) in knots?",
+      "correct_answer": "81",
+      "explanation": "VX is the airspeed that provides the best angle of climb."
+    },
+    {
+      "id": 3,
+      "question_text": "What is the best rate of climb speed (Vy) in knots?",
+      "correct_answer": "96",
+      "explanation": "VY is the airspeed for best rate of climb."
+    },
+    {
+      "id": 4,
+      "question_text": "What is the maneuvering speed at maximum weight (Va) in knots?",
+      "correct_answer": "133",
+      "explanation": "VA is the aircraft's design maneuvering speed."
+    },
+    {
+      "id": 5,
+      "question_text": "What is the maximum structural cruising speed (Vno) in knots?",
+      "correct_answer": "164",
+      "explanation": "Vno is the maximum structural cruising speed."
+    },
+    {
+      "id": 6,
+      "question_text": "What is the velocity never to exceed (Vne) in knots?",
+      "correct_answer": "201",
+      "explanation": "VNE is the speed above which you should never venture under any circumstances."
+    },
+    {
+      "id": 7,
+      "question_text": "What is the maximum speed with 50% flaps extended (Vfe) in knots?",
+      "correct_answer": "150",
+      "explanation": "VFE is the maximum flap extended speed."
+    },
+    {
+      "id": 8,
+      "question_text": "What is the maximum speed with 100% flaps extended (Vfe) in knots?",
+      "correct_answer": "110",
+      "explanation": "VFE with full flaps is the highest speed permissible with flaps fully extended."
+    },
+    {
+      "id": 9,
+      "question_text": "What is the stall speed in dirty configuration (Vs0) in knots?",
+      "correct_answer": "62",
+      "explanation": "Vs0 is the stall speed in the landing configuration."
+    },
+    {
+      "id": 10,
+      "question_text": "What is the stall speed in clean configuration (Vs) in knots?",
+      "correct_answer": "71",
+      "explanation": "VS is the stall speed in clean configuration."
+    }
+  ]
+}

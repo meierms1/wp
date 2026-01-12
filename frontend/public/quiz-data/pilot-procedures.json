@@ -1,0 +1,66 @@
+{
+  "category": "procedures",
+  "category_name": "Flight Procedures",
+  "questions": [
+    {
+      "id": 1,
+      "question_text": "What is the purpose of a 'Preflight Check'?",
+      "correct_answer": "To verify all aircraft systems are functioning properly before flight",
+      "explanation": "The preflight check is a systematic inspection of the aircraft to ensure all systems, controls, and equipment are in working order before takeoff."
+    },
+    {
+      "id": 2,
+      "question_text": "What is the 'Run-up Check'?",
+      "correct_answer": "A systems check performed at the holding point before takeoff",
+      "explanation": "The Run-up Check is performed after preflight, at the designated holding point, to verify engine performance, flight controls, and instruments before requesting takeoff clearance."
+    },
+    {
+      "id": 3,
+      "question_text": "What does 'GUMPS' stand for in the landing checklist?",
+      "correct_answer": "Gear Undercarriage Mixture Propeller Switches",
+      "explanation": "GUMPS is a memory aid for final landing checks: Gear (down), Undercarriage, Mixture (rich/appropriate), Propeller (if variable pitch), and Switches (lights on)."
+    },
+    {
+      "id": 4,
+      "question_text": "What is a 'Steep Turn'?",
+      "correct_answer": "A turn exceeding 45 degrees of bank",
+      "explanation": "A steep turn is generally defined as any turn with a bank angle greater than 45 degrees. This maneuver is used to develop aircraft control skills."
+    },
+    {
+      "id": 5,
+      "question_text": "What is 'Trimming' an aircraft?",
+      "correct_answer": "Adjusting flight controls to maintain desired flight attitude without constant pressure",
+      "explanation": "Trimming uses trim tabs or control surfaces to balance aerodynamic forces, allowing the pilot to maintain flight attitude without constant control pressure."
+    },
+    {
+      "id": 6,
+      "question_text": "What does 'VFR' stand for?",
+      "correct_answer": "Visual Flight Rules",
+      "explanation": "VFR (Visual Flight Rules) allows pilots to fly by reference to landmarks and weather visibility when conditions permit. It requires visual contact with the ground."
+    },
+    {
+      "id": 7,
+      "question_text": "What is 'IFR'?",
+      "correct_answer": "Instrument Flight Rules",
+      "explanation": "IFR (Instrument Flight Rules) governs flight when visibility is restricted. Pilots navigate using instruments and must file flight plans with air traffic control."
+    },
+    {
+      "id": 8,
+      "question_text": "What is a 'Go-Around'?",
+      "correct_answer": "Aborting a landing attempt and climbing back to altitude",
+      "explanation": "A Go-Around is executed when conditions aren't suitable for landing. The pilot adds power, climbs, and returns to the landing pattern for another approach."
+    },
+    {
+      "id": 9,
+      "question_text": "What is 'Crosswind Correction'?",
+      "correct_answer": "Angling the aircraft into the wind to maintain desired track",
+      "explanation": "Crosswind correction (crabbing) involves pointing the aircraft's nose into the wind at an angle to compensate and maintain the desired flight path over the ground."
+    },
+    {
+      "id": 10,
+      "question_text": "What is 'Slip'?",
+      "correct_answer": "A maneuver where the aircraft moves sideways through the air while maintaining control",
+      "explanation": "A slip is an intentional maneuver where the aircraft is positioned at an angle to the relative wind, causing it to move sideways. It's useful for rapid descent or approach correction."
+    }
+  ]
+}

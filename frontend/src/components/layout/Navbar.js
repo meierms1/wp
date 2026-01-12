@@ -35,7 +35,7 @@ const Navbar = () => {
   const toolsDropdownItems = [
     { name: 'Engineering', href: '/tools', icon: CalculatorIcon },
     { name: 'Fire Quiz', href: '/quiz', icon: FireIcon },
-    { name: 'Pilot Quiz', href: '/pilot', icon: PaperAirplaneIcon },
+    { name: 'SR20 Quiz', href: '/pilot', icon: PaperAirplaneIcon },
   ];
 
   const isActive = (path) => location.pathname === path;

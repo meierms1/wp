@@ -23,7 +23,7 @@ const Pilot = () => {
     { id: 1, name: 'Alphabet', icon: '🔤', description: 'Aviation phonetic alphabet' },
     { id: 2, name: 'Speed', icon: '✈️', description: 'Aircraft speed terminology' },
     { id: 3, name: 'Weights', icon: '⚖️', description: 'Aircraft weight & balance' },
-    { id: 4, name: 'Procedures', icon: '📋', description: 'Flight procedures' }
+    { id: 4, name: 'Procedures', icon: '📋', description: 'Emergency procedures' }
   ];
 
   // Define handleSubmitQuiz early and memoize it
@@ -76,6 +76,7 @@ const Pilot = () => {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
+        console.log(`Category ${categoryId}: Shuffled ${shuffled.length} questions. First 3:`, shuffled.slice(0, 3).map(q => q.question_text));
         setQuestions(shuffled);
       } else {
         toast.error('Invalid response format from server');
@@ -97,9 +98,11 @@ const Pilot = () => {
   };
 
   const startQuiz = (categoryId) => {
+    setCurrentQuestion(0);
+    setAnswers({});
     setSelectedCategory(categoryId);
     setQuizStarted(true);
-    const calculatedTime = 10 * 60; // 10 minutes
+    const calculatedTime = 10 * 30; // 10 minutes
     setTimeLeft(calculatedTime);
     fetchQuestions(categoryId);
   };

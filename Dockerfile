@@ -22,6 +22,7 @@ RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
         npm install; \
       fi && \
       echo "Running build..." && \
+      export PATH=./node_modules/.bin:$PATH && \
       npm run build && \
       echo "=== Frontend build completed ===" && \
       ls -la build/ && \

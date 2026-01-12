@@ -22,8 +22,8 @@ RUN if [ -d frontend ] && [ -f frontend/package.json ]; then \
         npm install; \
       fi && \
       echo "Running build..." && \
-      export PATH=./node_modules/.bin:$PATH && \
-      npm run build && \
+      npx react-scripts build && \
+      npm run compress && \
       echo "=== Frontend build completed ===" && \
       ls -la build/ && \
       echo "Moving build to frontend_output..." && \

@@ -42,7 +42,7 @@ tests.py
 frontend/node_modules/
 frontend/build/
 frontend/.eslintcache
-frontend/package-lock.json
+# Keep package-lock.json for reproducible builds in Docker
 
 # Database files (should use external DB in prod)
 *.db

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -18,6 +18,7 @@ const Pilot = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [wrongDetails, setWrongDetails] = useState([]);
+  const inputRef = useRef(null);
 
   const categories = [
     { id: 1, name: 'Alphabet', icon: '🔤', description: 'Aviation phonetic alphabet' },
@@ -64,6 +65,13 @@ const Pilot = () => {
     return () => clearTimeout(timer);
   }, [timeLeft, quizStarted, score, questions.length, handleSubmitQuiz]);
 
+  // Focus input field when question changes
+  useEffect(() => {
+    if (inputRef.current && quizStarted && score === null) {
+      inputRef.current.focus();
+    }
+  }, [currentQuestion, quizStarted, score]);
+
   const fetchQuestions = async (categoryId) => {
     setLoading(true);
     try {
@@ -95,6 +103,17 @@ const Pilot = () => {
       ...prev,
       [questionId]: answer
     }));
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (currentQuestion === questions.length - 1) {
+        handleSubmitQuiz();
+      } else {
+        setCurrentQuestion(currentQuestion + 1);
+      }
+    }
   };
 
   const startQuiz = (categoryId) => {
@@ -275,9 +294,11 @@ const Pilot = () => {
                   {/* Answer Input Field */}
                   <div className="mb-8">
                     <input
+                      ref={inputRef}
                       type="text"
                       value={answers[questions[currentQuestion]?.id] || ''}
                       onChange={(e) => handleAnswerSelect(questions[currentQuestion].id, e.target.value)}
+                      onKeyDown={handleInputKeyDown}
                       placeholder="Type your answer here..."
                       className="w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors"
                       autoFocus

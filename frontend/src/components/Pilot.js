@@ -261,6 +261,14 @@ const Pilot = () => {
           ) : (
             // Quiz Questions
             <div className="space-y-6">
+              {/* Back Button */}
+              <button
+                onClick={resetQuiz}
+                className="text-sm px-3 py-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline transition-colors"
+              >
+                ← Back to Categories
+              </button>
+
               {/* Timer and Progress */}
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <div className="flex justify-between items-center">

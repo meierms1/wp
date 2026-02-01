@@ -1,0 +1,360 @@
+{
+  "category": "general",
+  "category_name": "FAA Written Exam - Memorization Facts",
+  "questions": [
+    {
+      "id": 2,
+      "question_text": "What is the maximum speed limit for Class C airspace?",
+      "correct_answer": "200 knots indicated airspeed below 2,500 feet AGL within 5 nautical miles",
+      "explanation": "Class C airspace has a 200 knot speed restriction for aircraft operating at or below 2,500 feet AGL within 5 nautical miles of the primary airport."
+    },
+    {
+      "id": 3,
+      "question_text": "What is the altitude limit for Class D airspace?",
+      "correct_answer": "Up to but not including 2,500 feet AGL",
+      "explanation": "Class D airspace is typically surface area to 2,500 feet AGL around busy airports with control towers."
+    },
+    {
+      "id": 4,
+      "question_text": "What is the altitude limit for Class E airspace?",
+      "correct_answer": "Generally from 1,200 feet AGL up to but not including 18,000 feet MSL",
+      "explanation": "Class E is controlled airspace; the base altitude can be higher in some areas. Above 18,000 feet MSL is Class A."
+    },
+    {
+      "id": 5,
+      "question_text": "What is the altitude of Class A airspace?",
+      "correct_answer": "18,000 feet MSL and above",
+      "explanation": "Class A airspace begins at 18,000 feet MSL and extends upward. All aircraft require IFR clearance and transponders with Mode C."
+    },
+    {
+      "id": 6,
+      "question_text": "What is the minimum required cloud clearance for VFR flight in Class B airspace?",
+      "correct_answer": "Clear of clouds",
+      "explanation": "Class B requires VFR pilots to remain clear of all clouds (zero cloud clearance) and have 3 statute miles visibility."
+    },
+    {
+      "id": 7,
+      "question_text": "What is the minimum required cloud clearance for VFR flight in Class C airspace?",
+      "correct_answer": "1,000 feet above, 500 feet below, 2,000 feet horizontal",
+      "explanation": "Standard IFR cloud clearances apply in Class C (and Class D and E) controlled airspace."
+    },
+    {
+      "id": 8,
+      "question_text": "What visibility is required for VFR flight in Class B airspace?",
+      "correct_answer": "3 statute miles",
+      "explanation": "Class B requires 3 SM minimum visibility for all VFR aircraft."
+    },
+    {
+      "id": 9,
+      "question_text": "What is the minimum safe altitude over congested areas?",
+      "correct_answer": "1,000 feet above highest obstacle within 2,000 feet horizontally",
+      "explanation": "14 CFR Part 91.119 requires this altitude over congested areas."
+    },
+    {
+      "id": 10,
+      "question_text": "What is the minimum safe altitude over non-congested areas?",
+      "correct_answer": "500 feet above surface",
+      "explanation": "Can be flown as low as 500 feet over non-congested areas, except over water/open terrain."
+    },
+    {
+      "id": 11,
+      "question_text": "What is the maximum altitude a private pilot can fly without supplemental oxygen?",
+      "correct_answer": "12,500 feet MSL",
+      "explanation": "Pilots can operate up to 12,500 feet MSL without supplemental oxygen. Oxygen required above 14,000 feet MSL for more than 30 minutes."
+    },
+    {
+      "id": 12,
+      "question_text": "At what altitude does supplemental oxygen become required for continuous flight?",
+      "correct_answer": "14,000 feet MSL",
+      "explanation": "All occupants require oxygen for flights at or above 14,000 feet MSL that last more than 30 minutes; above 15,000 feet MSL for all flight time."
+    },
+    {
+      "id": 13,
+      "question_text": "What is the standard temperature lapse rate in the troposphere?",
+      "correct_answer": "3.5°F or 2°C per 1,000 feet",
+      "explanation": "This standard is used for density altitude calculations and understanding atmospheric conditions."
+    },
+    {
+      "id": 14,
+      "question_text": "At what temperature do you need to correct for density altitude?",
+      "correct_answer": "When the temperature is 15°C (59°F) or more above the standard temperature",
+      "explanation": "Density altitude significantly affects aircraft performance; high temperatures and high elevations increase density altitude."
+    },
+    {
+      "id": 15,
+      "question_text": "What is the standard sea-level pressure?",
+      "correct_answer": "29.92 inches of mercury (1013.25 millibars)",
+      "explanation": "This is used as the reference for setting altimeter subscale when above 18,000 feet."
+    },
+    {
+      "id": 16,
+      "question_text": "What is the standard sea-level temperature?",
+      "correct_answer": "59°F (15°C)",
+      "explanation": "Used as reference for standard atmospheric calculations and lapse rate calculations."
+    },
+    {
+      "id": 17,
+      "question_text": "What is the maximum crosswind component for most general aviation aircraft?",
+      "correct_answer": "Typically 15-20 knots (varies by aircraft)",
+      "explanation": "Check the aircraft's POH for specific limits; most single-engine aircraft are around 15 knots."
+    },
+    {
+      "id": 18,
+      "question_text": "What is the standard format for altitude clearances?",
+      "correct_answer": "Climb to 3,000 feet (or Descend to 2,000 feet, Level off at 5,000 feet, etc.)",
+      "explanation": "ATC always includes altitude restrictions in clearances; verify you understand before acknowledging."
+    },
+    {
+      "id": 19,
+      "question_text": "What is the standard transponder code for lost communication?",
+      "correct_answer": "7600",
+      "explanation": "Squawk 7600 if radio failure occurs; squawk 7700 for emergency."
+    },
+    {
+      "id": 20,
+      "question_text": "What is the transponder code for emergencies?",
+      "correct_answer": "7700",
+      "explanation": "Squawk 7700 for any emergency situation; ATC will provide priority handling."
+    },
+    {
+      "id": 21,
+      "question_text": "How far can you legally fly from shore in a single-engine aircraft?",
+      "correct_answer": "More than 50 nautical miles (gliding distance to shore required)",
+      "explanation": "FAR Part 91.509 requires this for single-engine aircraft; multiengine aircraft can fly further."
+    },
+    {
+      "id": 22,
+      "question_text": "What is the required fuel reserve for day VFR flight?",
+      "correct_answer": "30 minutes",
+      "explanation": "You must be able to fly to your destination plus 30 minutes reserve at normal cruise power."
+    },
+    {
+      "id": 23,
+      "question_text": "What is the required fuel reserve for night VFR flight?",
+      "correct_answer": "45 minutes",
+      "explanation": "Night VFR requires 45 minutes reserve beyond your destination."
+    },
+    {
+      "id": 24,
+      "question_text": "What is the required fuel reserve for IFR flight?",
+      "correct_answer": "45 minutes at normal cruise power to alternate airport (or 30 min if forecast landing minimums)",
+      "explanation": "IFR pilots must have enough fuel to reach destination, then alternate airport, plus 45 minutes reserve."
+    },
+    {
+      "id": 25,
+      "question_text": "What is the standard rate turn?",
+      "correct_answer": "3 degrees per second (360 degrees in 2 minutes)",
+      "explanation": "The standard rate is used in instrument flying; rate 2 is half this rate."
+    },
+    {
+      "id": 26,
+      "question_text": "What is the magnetic deviation tolerance for VOR equipment?",
+      "correct_answer": "±4 degrees",
+      "explanation": "VOR airborne equipment check must be within ±4 degrees; ±10 degrees for ground checks."
+    },
+    {
+      "id": 27,
+      "question_text": "How often must an altimeter be tested and certified?",
+      "correct_answer": "Every 24 months",
+      "explanation": "Static system and altimeter must be tested annually; encoder (Mode C) every 24 months."
+    },
+    {
+      "id": 28,
+      "question_text": "How often must a transponder be tested and certified?",
+      "correct_answer": "Every 24 months",
+      "explanation": "Transponder certification is required every 24 calendar months."
+    },
+    {
+      "id": 29,
+      "question_text": "How often must an ELT battery be replaced?",
+      "correct_answer": "Every 24 months or after 1 hour of accumulated transmission time",
+      "explanation": "ELT batteries must be replaced when this limit is reached, whichever comes first."
+    },
+    {
+      "id": 30,
+      "question_text": "What is the weight limit for an aircraft to be considered 'Light Sport'?",
+      "correct_answer": "1,320 pounds (maximum gross weight)",
+      "explanation": "Light sport aircraft have lower regulatory requirements and restrictions."
+    },
+    {
+      "id": 31,
+      "question_text": "What is the maximum useful load for most small general aviation aircraft?",
+      "correct_answer": "Typically 1,000-1,500 pounds (check POH)",
+      "explanation": "Useful load = Maximum Gross Weight - Empty Weight; must include fuel, passengers, and cargo."
+    },
+    {
+      "id": 32,
+      "question_text": "What G-load limits apply to normal category aircraft?",
+      "correct_answer": "3.8 G positive, 1.52 G negative",
+      "explanation": "Design limits for structures and stall speeds differ based on aircraft category."
+    },
+    {
+      "id": 33,
+      "question_text": "What is the required clearance from clouds during day VFR?",
+      "correct_answer": "500 feet below, 1,000 feet above, 2,000 feet horizontal",
+      "explanation": "This applies to Class E airspace; Class B has stricter requirements (clear of clouds)."
+    },
+    {
+      "id": 34,
+      "question_text": "What is true airspeed (TAS) at 5,000 feet density altitude compared to sea level?",
+      "correct_answer": "Approximately 8-10% higher than indicated airspeed",
+      "explanation": "TAS increases with altitude; use flight computer to calculate exact values."
+    },
+    {
+      "id": 35,
+      "question_text": "How many degrees of compass error exist at the magnetic poles?",
+      "correct_answer": "90 degrees (compass becomes unreliable near poles)",
+      "explanation": "Magnetic compasses are unreliable in polar regions; some areas have restrictions."
+    },
+    {
+      "id": 36,
+      "question_text": "What is the standard rate of descent?",
+      "correct_answer": "500 feet per minute",
+      "explanation": "This is often used as a reference for normal descent; rate 2 would be 250 fpm."
+    },
+    {
+      "id": 37,
+      "question_text": "At what speed does a propeller become a hazard to others on the ground?",
+      "correct_answer": "Any rotation - always treat as a hazard",
+      "explanation": "Even slow propeller rotation can be dangerous; maintain clear area around aircraft."
+    },
+    {
+      "id": 38,
+      "question_text": "What is the legal right-of-way rule for aircraft in flight?",
+      "correct_answer": "Aircraft on right has right-of-way; ascending aircraft gives way to descending",
+      "explanation": "Know all right-of-way rules for crossing, head-on, and overtaking encounters."
+    },
+    {
+      "id": 39,
+      "question_text": "What is the stall speed for a 20-degree bank?",
+      "correct_answer": "Approximately 3% higher than level-flight stall speed",
+      "explanation": "Stall speed increases with bank angle; critical at high bank angles and slow speeds."
+    },
+    {
+      "id": 40,
+      "question_text": "At what bank angle does stall speed increase by approximately 7%?",
+      "correct_answer": "45 degrees",
+      "explanation": "Load factor at 45 degrees is about 1.4 G; stall speed increases with square root of load factor."
+    },
+    {
+      "id": 41,
+      "question_text": "Cumulus clouds indicate?",
+      "correct_answer": "Convection and instability",
+      "explanation": "Fair weather cumulus = weak instability; towering cumulus = strong instability."
+    },
+    {
+      "id": 42,
+      "question_text": "Clear air turbulence (CAT) causes?",
+      "correct_answer": "Wind shear in clear skies",
+      "explanation": "No visual warning; common near jet streams at altitude."
+    },
+    {
+      "id": 43,
+      "question_text": "Lenticular clouds indicate?",
+      "correct_answer": "Mountain wave and strong winds",
+      "explanation": "Severe turbulence downwind likely."
+    },
+    {
+      "id": 44,
+      "question_text": "Mammatus clouds indicate?",
+      "correct_answer": "Strong vertical instability and severe weather",
+      "explanation": "Pouch-like clouds; severe turbulence possible."
+    },
+    {
+      "id": 45,
+      "question_text": "Virga is?",
+      "correct_answer": "Precipitation not reaching ground",
+      "explanation": "Often indicates severe turbulence above."
+    },
+    {
+      "id": 46,
+      "question_text": "Rotor clouds form from?",
+      "correct_answer": "Mountain wave circulation",
+      "explanation": "Severe turbulence on lee side of mountains."
+    },
+    {
+      "id": 47,
+      "question_text": "Radiation fog forms when?",
+      "correct_answer": "Ground cools on clear calm night",
+      "explanation": "Usually dissipates by mid-morning."
+    },
+    {
+      "id": 48,
+      "question_text": "Advection fog forms when?",
+      "correct_answer": "Warm moist air over cold surface",
+      "explanation": "Common over water; persists for days."
+    },
+    {
+      "id": 49,
+      "question_text": "Orographic lifting causes?",
+      "correct_answer": "Precipitation on windward mountain side",
+      "explanation": "Air rises, cools, moisture condenses."
+    },
+    {
+      "id": 50,
+      "question_text": "Rime ice forms from?",
+      "correct_answer": "Freezing drizzle or small droplets",
+      "explanation": "White, opaque ice; accumulates rapidly."
+    },
+    {
+      "id": 51,
+      "question_text": "Clear ice forms from?",
+      "correct_answer": "Large water droplets; supercooled rain",
+      "explanation": "Heavy dense ice; most dangerous type."
+    },
+    {
+      "id": 52,
+      "question_text": "Carburetor icing occurs most at?",
+      "correct_answer": "40°F to 70°F with high humidity",
+      "explanation": "Even clear skies can cause carb ice."
+    },
+    {
+      "id": 53,
+      "question_text": "Jet stream winds can exceed?",
+      "correct_answer": "200 knots",
+      "explanation": "At 35,000+ feet; affects flight planning."
+    },
+    {
+      "id": 54,
+      "question_text": "Freezing level approximately?",
+      "correct_answer": "3,500 feet per 10°C above surface",
+      "explanation": "Varies with temperature; icing hazard below."
+    },
+    {
+      "id": 55,
+      "question_text": "Stratus clouds indicate?",
+      "correct_answer": "Stable air at low altitude",
+      "explanation": "Layered clouds; reduced visibility typical."
+    },
+    {
+      "id": 56,
+      "question_text": "Density altitude definition?",
+      "correct_answer": "Altitude where air density equals actual altitude",
+      "explanation": "Higher DA = reduced aircraft performance."
+    },
+    {
+      "id": 57,
+      "question_text": "Pressure falling rapidly indicates?",
+      "correct_answer": "Deteriorating weather in 12-24 hours",
+      "explanation": "Low pressure system approaching."
+    },
+    {
+      "id": 58,
+      "question_text": "Pressure rising rapidly indicates?",
+      "correct_answer": "Improving weather conditions",
+      "explanation": "High pressure system moving in."
+    },
+    {
+      "id": 59,
+      "question_text": "Microbursts descend from?",
+      "correct_answer": "Cumulonimbus clouds",
+      "explanation": "Severe downdraft exceeding climb capability."
+    },
+    {
+      "id": 1,
+      "question_text": "Stall speed increases with?",
+      "correct_answer": "Bank angle and weight",
+      "explanation": "At 45° bank, stall speed increases ~7%."
+    }
+  ]
+}

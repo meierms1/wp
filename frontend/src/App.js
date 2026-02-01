@@ -23,6 +23,7 @@ const Register = lazy(() => import('./components/Register'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const Tools = lazy(() => import('./components/Tools'));
 const Quiz = lazy(() => import('./components/Quiz'));
+const Study = lazy(() => import('./components/Study'));
 const Pilot = lazy(() => import('./components/Pilot'));
 
 // Loading Component
@@ -57,6 +58,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/quiz" element={<Quiz />} />
+                  <Route path="/study" element={<Study />} />
                   <Route path="/pilot" element={<Pilot />} />
                 </Routes>
               </Suspense>

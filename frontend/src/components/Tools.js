@@ -20,8 +20,14 @@ const Tools = () => {
     second_property_name: '',
     second_property_value: ''
   });
+  const [sr20Form, setsr20Form] = useState({
+    pressure_value: "",
+    temperature_value: "",
+    unit: "C"
+  });
   const [conversionResult, setConversionResult] = useState(null);
   const [materialResult, setMaterialResult] = useState(null);
+  const [sr20Result, setSR20Result] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Common units for the calculator
@@ -47,6 +53,36 @@ const Tools = () => {
     } catch (error) {
       toast.error('Conversion failed');
       console.error('Conversion error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSR20 = async (e) => {
+    e.preventDefault();
+    const { pressure_value, temperature_value, unit } = sr20Form;
+    if (pressure_value === '' || temperature_value === '') {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload = {
+        pressure: parseFloat(pressure_value),
+        temperature: parseFloat(temperature_value),
+        unit: unit === 'F'
+      };
+      const response = await axios.post('/api/calculator/sr20-interpolator', payload);
+      if (response.data.success) {
+        setSR20Result(response.data.interpolated_value);
+        toast.success('SR20 interpolation successful!');
+      } else {
+        toast.error(response.data.message || 'SR20 interpolation failed');
+      }
+    } catch (error) {
+      toast.error('SR20 interpolation failed');
+      console.error('SR20 interpolation error:', error);
     } finally {
       setLoading(false);
     }
@@ -132,7 +168,8 @@ const Tools = () => {
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
               {[
                 { id: 'calculator', label: 'Unit Calculator', icon: CalculatorIcon },
-                { id: 'materialproperties', label: 'Material Properties', icon: CalculatorIcon }
+                { id: 'materialproperties', label: 'Material Properties', icon: CalculatorIcon },
+                { id: 'sr20', label: 'SR20 Performance', icon: CalculatorIcon }
               ].map((tab) => (
                 <motion.button
                   key={tab.id}
@@ -581,6 +618,132 @@ const Tools = () => {
                 </motion.div>
               </motion.div>
             )}
+            {activeTab === 'sr20' && (
+              <motion.div
+                key="sr20"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="max-w-4xl mx-auto"
+              >
+                <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+                  <div className="flex items-center mb-6">
+                    <CalculatorIcon className="w-8 h-8 text-purple-400 mr-4" />
+                    <h2 className="text-3xl font-bold text-white">SR20 Performance Interpolator</h2>
+                  </div>
+                  <p className="text-gray-400 mb-6 text-sm">
+                    Bilinear interpolation of the Cirrus SR20 POH performance tables. Pressure altitude: 0–10,000 ft. Temperature: 0–50 °C (or equivalent °F).
+                  </p>
+
+                  <form onSubmit={handleSR20} className="space-y-6">
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Pressure Altitude (ft)</label>
+                        <input
+                          type="number"
+                          step="any"
+                          placeholder="e.g. 2500"
+                          value={sr20Form.pressure_value}
+                          onChange={(e) => setsr20Form({ ...sr20Form, pressure_value: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Temperature</label>
+                        <input
+                          type="number"
+                          step="any"
+                          placeholder={sr20Form.unit === 'F' ? 'e.g. 86' : 'e.g. 30'}
+                          value={sr20Form.temperature_value}
+                          onChange={(e) => setsr20Form({ ...sr20Form, temperature_value: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Temperature Unit</label>
+                        <div className="flex">
+                          {['C', 'F'].map((u) => (
+                            <button
+                              key={u}
+                              type="button"
+                              onClick={() => setsr20Form({ ...sr20Form, unit: u })}
+                              className={`flex-1 py-3 font-semibold rounded-lg transition-all duration-200 ${
+                                sr20Form.unit === u
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
+                                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                              } ${u === 'C' ? 'mr-2' : ''}`}
+                            >
+                              °{u}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? (
+                        <ArrowPathIcon className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <>
+                          <CalculatorIcon className="w-6 h-6 mr-2" />
+                          Interpolate
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+
+                  {sr20Result && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-8"
+                    >
+                      <h3 className="text-xl font-bold text-white mb-4">Interpolated Performance (ft)</h3>
+                      <div className="overflow-x-auto">
+                        <table className="table-auto w-full text-left bg-white/90 rounded-lg text-black">
+                          <thead>
+                            <tr className="bg-purple-200">
+                              <th className="px-4 py-2">Phase</th>
+                              <th className="px-4 py-2">Distance (ft)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td className="px-4 py-2">Takeoff Roll</td>
+                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.takeoff_roll)}</td>
+                            </tr>
+                            <tr className="bg-gray-100">
+                              <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
+                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.takeoff_obs)}</td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2">Landing Roll</td>
+                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_roll)}</td>
+                            </tr>
+                            <tr className="bg-gray-100">
+                              <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
+                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_obs)}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <p className="text-gray-400 text-xs mt-3">Values interpolated at {sr20Form.pressure_value} ft / {sr20Form.temperature_value} °{sr20Form.unit || 'C'}. Source: Cirrus SR20 POH performance tables.</p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              </motion.div>
+            )}  
           </AnimatePresence>
         </motion.div>
       </div>

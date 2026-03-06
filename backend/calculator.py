@@ -3,6 +3,7 @@
 # Source: https://en.wikipedia.org/wiki/Shear_modulus
 
 import numpy as np
+from scipy.interpolate import RegularGridInterpolator
 
 run_tests = False
 
@@ -621,4 +622,88 @@ class material:
             return self.lame / 2.0 / (self.lame + self.G)
         else: raise TypeError("Wrong Input Parameters")
 
-# keep tests feature off here
+class SR20Interpolator():
+    def __init__(self, pressure:float, temperature:float, unit:bool=False):
+        self.pressure = pressure
+        self.temperature = temperature
+        self.unit = unit
+        if unit:
+            self.convertor()
+        self.sr20()
+
+    def sr20(self):
+        x = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000] 
+        y = [0, 10, 20, 30, 40, 50]
+
+        # 2. Define your table data as a 2D NumPy array
+        takeoff_roll = np.array([
+            [1503, 1623, 1748, 1877, 2011, 2150],
+            [1653, 1784, 1921, 2063, 2210, 2363],
+            [1818, 1962, 2113, 2269, 2431, 2599],
+            [2002, 2161, 2326, 2498, 2676, 2862],
+            [2206, 2381, 2563, 2753, 2950, 3154],
+            [2433,2626,2827,3037,3254,3479],
+            [2687,2900,3122,3353,3592,3841],
+            [2969,3205,3450,3705,3970,4245],
+            [3322,3586,3861,4146,4442,4750],
+            [3752,4050,4360,4682,5017,5364],
+            [4240,4577,4927,5291,5670,6062]
+        ])
+
+        takeoff_obs = np.array([
+            [2273,2443,2618,2799,2986,3179],
+            [2491,2675,2867,3065,3270,3482],
+            [2730,2932,3142,3359,3584,3817],
+            [2995,3217,3447,3686,3932,4187],
+            [3288,3532,3785,4048,4319,4599],
+            [3614,3883,4161,4449,4747,5055],
+            [3976,4272,4578,4895,5224,5563],
+            [4379,4705,5042,5392,5754,6127],
+            [4883,5246,5622,6013,6416,6833],
+            [5495,5904,6328,6767,7221,7691],
+            [6188,6649,7127,7621,8133,8663]
+        ])
+
+        landing_roll = np.array([
+            [809,838,868,897,927,957],
+            [838,869,900,931,961,992],
+            [870,901,933,965,997,1029],
+            [902,935,968,1001,1034,1067],
+            [936,971,1005,1039,1073,1108],
+            [972,1007,1043,1079,1114,1150],
+            [1009,1046,1083,1120,1157,1194],
+            [1048,1086,1125,1163,1201,1240],
+            [1089,1128,1168,1208,1248,1288],
+            [1131,1173,1214,1255,1297,1338],
+            [1176,1219,1262,1305,1348,1391]
+        ])
+
+        landing_obs = np.array([
+            [2557,2609,2663,2717,2773,2829],
+            [2610,2665,2722,2779,2838,2898],
+            [2666,2725,2785,2846,2907,2970],
+            [2726,2788,2852,2916,2981,3048],
+            [2790,2856,2923,2991,3060,3130],
+            [2858,2928,2999,3070,3143,3217],
+            [2931,3004,3079,3155,3232,3310],
+            [3008,3086,3165,3245,3326,3409],
+            [3091,3173,3256,3341,3427,3513],
+            [3179,3265,3353,3443,3533,3625],
+            [3272,3364,3457,3551,3646,3743]
+        ])
+
+        # 3. Create the interpolator
+        # method="linear" replaces kind="linear"
+        f = RegularGridInterpolator((x, y), takeoff_roll, method="linear", bounds_error=False, fill_value=None)
+        self.takeoff_roll = f([self.pressure, self.temperature])[0]
+        f = RegularGridInterpolator((x, y), takeoff_obs, method="linear", bounds_error=False, fill_value=None)
+        self.takeoff_obs = f([self.pressure, self.temperature])[0]
+        f = RegularGridInterpolator((x, y), landing_roll, method="linear", bounds_error=False, fill_value=None)
+        self.landing_roll = f([self.pressure, self.temperature])[0]
+        f = RegularGridInterpolator((x, y), landing_obs, method="linear", bounds_error=False, fill_value=None)
+        self.landing_obs = f([self.pressure, self.temperature])[0]
+
+
+    def convertor(self):
+        self.temperature = (self.temperature - 32) * 5.0/9.0
+

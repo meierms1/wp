@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.calculator import material, BaseConverter, GeneralConverter
+from backend.calculator import SR20Interpolator, material, BaseConverter, GeneralConverter
 
 # Import finance functions with error handling
 try:
@@ -888,6 +888,19 @@ def api_material_properties():
         return jsonify({'success': True, 'properties': result})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 400
+    
+@app.route('/api/calculator/sr20-interpolator', methods=['POST'])
+def app_sr20_interpolator():
+    try:
+        data = request.get_json(silent=True) or {}
+        pressure = float(data.get('pressure'))
+        temperature = float(data.get('temperature'))
+        unit = bool(data.get('unit', False))
+        interpolator = SR20Interpolator(pressure, temperature, unit)
+        return jsonify({'success': True, 'interpolated_value': vars(interpolator)})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+    
 
 # ==================== Auth JSON API Endpoints ====================
 @app.route('/api/auth/register', methods=['POST'])

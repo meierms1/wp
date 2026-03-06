@@ -25,8 +25,8 @@ const Pilot = () => {
     { id: 2, name: 'Speed', icon: '✈️', description: 'Aircraft speed terminology' },
     { id: 3, name: 'Weights', icon: '⚖️', description: 'Aircraft weight & balance' },
     { id: 4, name: 'Procedures', icon: '📋', description: 'Emergency procedures' },
-    { id: 5, name: "Meteorology", icon: '🌤️', description: 'METARS and Clouds'},
-    { id: 6, name: 'Airspace and Regulations', icon: '🧭', description: 'General Topics Memory aid' }
+    /* { id: 5, name: "Meteorology", icon: '🌤️', description: 'METARS and Clouds'},
+    { id: 6, name: 'Airspace and Regulations', icon: '🧭', description: 'General Topics Memory aid' } */
   ];
 
   // Define handleSubmitQuiz early and memoize it

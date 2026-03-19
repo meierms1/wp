@@ -692,6 +692,11 @@ class SR20Interpolator():
             [3272,3364,3457,3551,3646,3743]
         ])
 
+        self.check(takeoff_roll)
+        self.check(takeoff_obs)
+        self.check(landing_roll)
+        self.check(landing_obs)
+
         # 3. Create the interpolator
         # method="linear" replaces kind="linear"
         f = RegularGridInterpolator((x, y), takeoff_roll, method="linear", bounds_error=False, fill_value=None)
@@ -706,4 +711,19 @@ class SR20Interpolator():
 
     def convertor(self):
         self.temperature = (self.temperature - 32) * 5.0/9.0
+
+    def check(arr):
+        for i in arr:
+            var = 0
+            for j in i:
+                if j < var:
+                    raise ValueError("Inconsistent data on array")
+                    var = j
+        arr = np.transpose(arr)
+        for i in arr:
+            var = 0
+            for j in i:
+                if j < var:
+                    raise ValueError("Inconsistent data on transposed array")
+                    var = j
 

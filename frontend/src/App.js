@@ -25,6 +25,7 @@ const Tools = lazy(() => import('./components/Tools'));
 const Quiz = lazy(() => import('./components/Quiz'));
 const Study = lazy(() => import('./components/Study'));
 const Pilot = lazy(() => import('./components/Pilot'));
+const SR20Page = lazy(() => import('./pages/SR20'));
 
 // Loading Component
 const LoadingSpinner = React.memo(() => (
@@ -60,6 +61,7 @@ function App() {
                   <Route path="/quiz" element={<Quiz />} />
                   <Route path="/study" element={<Study />} />
                   <Route path="/pilot" element={<Pilot />} />
+                  <Route path="/sr20" element={<SR20Page />} />
                 </Routes>
               </Suspense>
             </AnimatePresence>

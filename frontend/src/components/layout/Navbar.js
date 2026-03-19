@@ -38,10 +38,11 @@ const Navbar = () => {
     { name: 'Fire Quiz', href: '/quiz', icon: FireIcon },
     { name: 'Study', href: '/study', icon: BookOpenIcon },
     { name: 'SR20 Quiz', href: '/pilot', icon: PaperAirplaneIcon },
+    { name: 'SR20', href: '/sr20', icon: PaperAirplaneIcon },
   ];
 
   const isActive = (path) => location.pathname === path;
-  const isToolsActive = () => location.pathname === '/tools' || location.pathname === '/quiz' || location.pathname === '/study' || location.pathname === '/pilot';
+  const isToolsActive = () => location.pathname === '/tools' || location.pathname === '/quiz' || location.pathname === '/study' || location.pathname === '/pilot' || location.pathname === '/sr20';
 
   return (
     <motion.nav

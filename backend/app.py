@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.calculator import SR20Interpolator, material, BaseConverter, GeneralConverter
+from backend.calculator import SR20Interpolator, flight_params, material, BaseConverter, GeneralConverter
 
 # Import finance functions with error handling
 try:
@@ -899,6 +899,83 @@ def app_sr20_interpolator():
         interpolator = SR20Interpolator(pressure, temperature, unit)
         return jsonify({'success': True, 'interpolated_value': vars(interpolator)})
     except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+
+
+@app.route('/api/calculator/sr20-advanced', methods=['POST'])
+def app_sr20_advanced():
+    try:
+        data = request.get_json(silent=True) or {}
+        fp = flight_params(
+            empty_weight     = float(data['empty_weight']),
+            empty_weight_cg  = float(data['empty_weight_cg']),
+            front_seat       = float(data['front_seat']),
+            front_seat_cg    = float(data['front_seat_cg']),
+            rear_seat        = float(data.get('rear_seat', 0)),
+            rear_seat_cg     = float(data.get('rear_seat_cg', 0)),
+            baggage          = float(data.get('baggage', 0)),
+            baggage_cg       = float(data.get('baggage_cg', 0)),
+            fuel             = float(data['fuel']),
+            fuel_cg          = float(data['fuel_cg']),
+            burn             = float(data['burn']),
+            runup            = float(data.get('runup', 0)),
+            altimeter        = float(data['altimeter_value']),
+            temperature      = float(data['temperature_value']),
+            elevation        = float(data['elevation_value']),
+            unit             = bool(data.get('unit', False))
+        )
+
+        # Interpolate at max gross (3150), light (2600), and actual takeoff weight
+        oat_c = fp.temperature
+        interp_base = SR20Interpolator(fp.pressure_alt, oat_c, unit=False, advanced=False)
+        interp_act  = SR20Interpolator(fp.pressure_alt, oat_c, unit=False, advanced=True, weight=fp.takeoff_weight)
+
+        wb_rows = [
+            {'name': 'Basic Empty Weight',       'weight': fp.empty_weight,     'arm': fp.empty_weight_cg, 'moment': fp.empty_weight * fp.empty_weight_cg,    'subtotal': False},
+            {'name': 'Front Seats',              'weight': fp.front_seat,       'arm': fp.front_seat_cg,   'moment': fp.front_seat * fp.front_seat_cg,        'subtotal': False},
+            {'name': 'Rear Seats',               'weight': fp.rear_seat,        'arm': fp.rear_seat_cg,    'moment': fp.rear_seat * fp.rear_seat_cg,          'subtotal': False},
+            {'name': 'Baggage 1',                'weight': fp.baggage,          'arm': fp.baggage_cg,      'moment': fp.baggage * fp.baggage_cg,              'subtotal': False},
+            {'name': 'Zero Fuel Weight',         'weight': fp.zero_fuel_weight, 'arm': fp.zero_fuel_cg,    'moment': fp.zero_fuel_weight * fp.zero_fuel_cg,   'subtotal': True},
+            {'name': 'Fuel',                     'weight': fp.fuel_weight,      'arm': fp.fuel_cg,         'moment': fp.fuel_weight * fp.fuel_cg,             'subtotal': False},
+            {'name': 'Ramp Weight',              'weight': fp.ramp_weight,      'arm': fp.ramp_cg,         'moment': fp.ramp_weight * fp.ramp_cg,             'subtotal': True},
+            {'name': 'Fuel Taxi and Runup',      'weight': -fp.taxi_use,        'arm': fp.fuel_cg,         'moment': -fp.taxi_use * fp.fuel_cg,               'subtotal': False},
+            {'name': 'Takeoff Weight',           'weight': fp.takeoff_weight,   'arm': fp.takeoff_cg,      'moment': fp.takeoff_weight * fp.takeoff_cg,       'subtotal': True},
+            {'name': 'Estimated Fuel Burn',      'weight': -fp.fuel_burn,       'arm': fp.fuel_cg,         'moment': -fp.fuel_burn * fp.fuel_cg,              'subtotal': False},
+            {'name': 'Estimated Landing Weight', 'weight': fp.landing_weight,   'arm': fp.landing_cg,      'moment': fp.landing_weight * fp.landing_cg,       'subtotal': True},
+        ]
+
+        result = {
+            'wb': {
+                'rows':           wb_rows,
+                'takeoff_weight': fp.takeoff_weight,
+            },
+            'conditions': {
+                'oat_c':        oat_c,
+                'oat_f':        oat_c * 9/5 + 32,
+                'altimeter':    fp.altimeter,
+                'elevation':    fp.altitude,
+                'pressure_alt': fp.pressure_alt,
+                'density_alt':  fp.density_alt,
+            },
+            'speeds': {
+                'vso_takeoff': float(fp.target_speed1),
+                'vso_landing': float(fp.target_speed2),
+                'va_takeoff':  float(fp.maneuvering_speed1),
+                'va_landing':  float(fp.maneuvering_speed2),
+                'vbg_takeoff': float(fp.glide_speed1),
+                'vbg_landing': float(fp.glide_speed2),
+            },
+            'performance': {
+                'takeoff_roll': float(interp_act.takeoff_roll),
+                'takeoff_obs':  float(interp_act.takeoff_obs),
+                'landing_roll': float(interp_base.landing_roll),
+                'landing_obs':  float(interp_base.landing_obs),
+            }
+        }
+        return jsonify({'success': True, 'result': result})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)}), 400
     
 

@@ -623,13 +623,17 @@ class material:
         else: raise TypeError("Wrong Input Parameters")
 
 class SR20Interpolator():
-    def __init__(self, pressure:float, temperature:float, unit:bool=False):
+    def __init__(self, pressure:float, temperature:float, unit:bool=False, advanced:bool=False, weight:float=3150.0):
         self.pressure = pressure
         self.temperature = temperature
         self.unit = unit
+        self.advanced = advanced
+        self.weight = weight
         if unit:
             self.convertor()
         self.sr20()
+        if self.advanced:
+            self.advanced_interpolation()
 
     def sr20(self):
         x = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000] 
@@ -760,6 +764,10 @@ class SR20Interpolator():
         self.takeoff_roll = f([self.pressure, self.temperature])[0]
         f = RegularGridInterpolator((x, y), takeoff_obs, method="linear", bounds_error=False, fill_value=None)
         self.takeoff_obs = f([self.pressure, self.temperature])[0]
+        f = RegularGridInterpolator((x, y), takeoff_roll2, method="linear", bounds_error=False, fill_value=None)
+        self.takeoff_roll2 = f([self.pressure, self.temperature])[0]
+        f = RegularGridInterpolator((x, y), takeoff_obs2, method="linear", bounds_error=False, fill_value=None)
+        self.takeoff_obs2 = f([self.pressure, self.temperature])[0]
         f = RegularGridInterpolator((x, y), landing_roll, method="linear", bounds_error=False, fill_value=None)
         self.landing_roll = f([self.pressure, self.temperature])[0]
         f = RegularGridInterpolator((x, y), landing_obs, method="linear", bounds_error=False, fill_value=None)
@@ -769,7 +777,7 @@ class SR20Interpolator():
     def convertor(self):
         self.temperature = (self.temperature - 32) * 5.0/9.0
 
-    def check(arr):
+    def check(self, arr):
         for i in arr:
             var = 0
             for j in i:
@@ -783,4 +791,69 @@ class SR20Interpolator():
                 if j < var:
                     raise ValueError("Inconsistent data on transposed array")
                     var = j
+
+    def advanced_interpolation(self):
+        z = [2600, 3150]
+        self.takeoff_roll = np.interp(self.weight, z, [self.takeoff_roll2, self.takeoff_roll])
+        self.takeoff_obs  = np.interp(self.weight, z, [self.takeoff_obs2,  self.takeoff_obs])
+
+class flight_params():
+    def __init__(self, empty_weight, empty_weight_cg, front_seat, front_seat_cg, rear_seat, rear_seat_cg, baggage, baggage_cg, fuel, fuel_cg, burn, runup, altimeter,  temperature, elevation=969,unit=False):
+        self.empty_weight = empty_weight
+        self.empty_weight_cg = empty_weight_cg
+        self.front_seat = front_seat
+        self.front_seat_cg = front_seat_cg
+        self.rear_seat = rear_seat
+        self.rear_seat_cg = rear_seat_cg
+        self.baggage = baggage
+        self.baggage_cg = baggage_cg
+        self.fuel = fuel
+        self.fuel_cg = fuel_cg
+        self.burn = burn
+        self.runup = runup
+        self.altitude = elevation
+        self.altimeter = altimeter
+        self.temperature = temperature  
+        if unit:
+            self.convertor()
+        self.weights()
+        self.conditions()
+        self.performance()
+
+    def convertor(self):
+        self.temperature = (self.temperature - 32) * 5.0/9.0
+
+    def weights(self):
+        moments = []
+        moments.append(self.empty_weight * self.empty_weight_cg)
+        moments.append(self.front_seat * self.front_seat_cg)
+        moments.append(self.rear_seat * self.rear_seat_cg)
+        moments.append(self.baggage * self.baggage_cg)
+        self.zero_fuel_weight = self.empty_weight + self.front_seat + self.rear_seat + self.baggage
+        self.zero_fuel_cg = sum(moments) / self.zero_fuel_weight
+        self.fuel_weight = self.fuel * 6.
+        moments.append(self.fuel_weight * self.fuel_cg)
+        self.ramp_weight = self.zero_fuel_weight + self.fuel_weight
+        self.ramp_cg = sum(moments) / self.ramp_weight
+        self.taxi_use = self.runup * 6.
+        self.takeoff_weight = self.ramp_weight - self.taxi_use
+        moments.append(-self.taxi_use * self.fuel_cg)
+        self.takeoff_cg = sum(moments) / self.takeoff_weight
+        self.fuel_burn = self.burn * 6.
+        self.landing_weight = self.takeoff_weight - self.fuel_burn
+        moments.append(-self.fuel_burn * self.fuel_cg)
+        self.landing_cg = sum(moments) / self.landing_weight
+        self.moments = moments
+    
+    def conditions(self):
+        self.pressure_alt = self.altitude + 1000 * (29.92 - self.altimeter)
+        self.density_alt = self.pressure_alt + (self.temperature - 13) * 120
+
+    def performance(self):
+        self.target_speed1 = 78 * np.sqrt(self.takeoff_weight / 3150)
+        self.target_speed2 = 78 * np.sqrt(self.landing_weight / 3150)
+        self.maneuvering_speed1 = 133 * np.sqrt(self.takeoff_weight / 3150)
+        self.maneuvering_speed2 = 133 * np.sqrt(self.landing_weight / 3150)
+        self.glide_speed1 = 100 * np.sqrt(self.takeoff_weight / 3150)
+        self.glide_speed2 = 100 * np.sqrt(self.landing_weight / 3150)
 

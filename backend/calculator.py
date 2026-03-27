@@ -4,7 +4,6 @@
 
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
-from tomlkit import value
 import bisect
 
 run_tests = False
@@ -941,7 +940,7 @@ class crosscountry():
         time = [0,1.2,2.6,4.0,5.6,7.3,9.2,11.4,13.8,16.7,20.1,24.3,29.9,38.0,53.2]
         fuel = [0,0.4,0.8,1.3,1.7,2.3,2.8,3.4,4.1,4.8,5.7,6.8,8.2,10.1,13.6]
         dist = [0,2,4,7,9,12,15,19,23,28,35,42,52,67,96]
-        
+
         self.climb_speed = np.interp(self.end, pa, climbspeed)
         self.rate_of_climb = np.interp(self.end, pa, rateofclimb)
         self.time_ = (np.interp(self.end, pa, time) - np.interp(self.start, pa, time) ) * deltaT

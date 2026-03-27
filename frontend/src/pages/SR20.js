@@ -13,7 +13,10 @@ const SR20 = () => {
   const [sr20Form, setsr20Form] = useState({
     pressure_value: '',
     temperature_value: '',
-    unit: 'C'
+    unit: 'C',
+    ac: false,
+    dryGrass: false,
+    wetGrass: false
   });
 
   const [sr20aform, setsr20aForm] = useState({
@@ -33,11 +36,26 @@ const SR20 = () => {
     temperature_value: '',
     altimeter_value: '',
     elevation_value: '',
-    unit: 'C'
+    unit: 'C',
+    ac: false,
+    dryGrass: false,
+    wetGrass: false
+  });
+
+  const [ccForm, setCcForm] = useState({
+    temperature: '',
+    pressure: '',
+    altimeter: '',
+    power: '',
+    start: '',
+    unit: 'C',
+    wheelPant: false,
+    ac: false
   });
 
   const [sr20Result, setSR20Result] = useState(null);
   const [sr20aResult, setSR20aResult] = useState(null);
+  const [ccResult, setCcResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSR20 = async (e) => {
@@ -116,6 +134,41 @@ const SR20 = () => {
     }
   };
 
+  const handleCrossCountry = async (e) => {
+    e.preventDefault();
+    const required = ['temperature', 'pressure', 'altimeter', 'power'];
+    for (const k of required) {
+      if (ccForm[k] === '') {
+        toast.error('Please fill in all required fields');
+        return;
+      }
+    }
+    try {
+      setLoading(true);
+      setCcResult(null);
+      const payload = {
+        temperature: parseFloat(ccForm.temperature),
+        pressure:    parseFloat(ccForm.pressure),
+        altimeter:   parseFloat(ccForm.altimeter),
+        power:       parseFloat(ccForm.power),
+        start:       ccForm.start !== '' ? parseFloat(ccForm.start) : 0,
+        unit:        ccForm.unit === 'F'
+      };
+      const response = await axios.post('/api/calculator/sr20-crosscountry', payload);
+      if (response.data.success) {
+        setCcResult(response.data.result);
+        toast.success('Cross-country computation successful!');
+      } else {
+        toast.error(response.data.message || 'Cross-country computation failed');
+      }
+    } catch (error) {
+      toast.error('Cross-country computation failed');
+      console.error('Cross-country error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.6, staggerChildren: 0.1 } }
@@ -150,7 +203,8 @@ const SR20 = () => {
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
               {[
                 { id: 'sr20',  label: 'SR20 Performance', icon: CalculatorIcon },
-                { id: 'sr20a', label: 'SR20 Advanced',     icon: CalculatorIcon }
+                { id: 'sr20a', label: 'SR20 Advanced',     icon: CalculatorIcon },
+                { id: 'cc',    label: 'SR20 Cruise',        icon: CalculatorIcon }
               ].map((tab) => (
                 <motion.button
                   key={tab.id}
@@ -233,6 +287,37 @@ const SR20 = () => {
                       </div>
                     </div>
 
+                    {/* Optional modifiers */}
+                    <div className="flex flex-wrap gap-6">
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20Form.ac}
+                          onChange={(e) => setsr20Form({ ...sr20Form, ac: e.target.checked })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Air Conditioning <span className="text-gray-500 text-sm">(+300 ft roll / +400 ft obs)</span></span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20Form.dryGrass}
+                          onChange={(e) => setsr20Form({ ...sr20Form, dryGrass: e.target.checked, wetGrass: false })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Dry Grass <span className="text-gray-500 text-sm">(+20% takeoff)</span></span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20Form.wetGrass}
+                          onChange={(e) => setsr20Form({ ...sr20Form, wetGrass: e.target.checked, dryGrass: false })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Wet Grass <span className="text-gray-500 text-sm">(+30% takeoff)</span></span>
+                      </label>
+                    </div>
+
                     <motion.button
                       whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       type="submit" disabled={loading}
@@ -258,27 +343,51 @@ const SR20 = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td className="px-4 py-2">Takeoff Roll</td>
-                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.takeoff_roll)}</td>
-                            </tr>
-                            <tr className="bg-gray-100">
-                              <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
-                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.takeoff_obs)}</td>
-                            </tr>
-                            <tr>
-                              <td className="px-4 py-2">Landing Roll</td>
-                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_roll)}</td>
-                            </tr>
-                            <tr className="bg-gray-100">
-                              <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
-                              <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_obs)}</td>
-                            </tr>
+                            {(() => {
+                              const grassMult = sr20Form.wetGrass ? 1.30 : sr20Form.dryGrass ? 1.20 : 1.0;
+                              const acRoll = sr20Form.ac ? 300 : 0;
+                              const acObs  = sr20Form.ac ? 400 : 0;
+                              const toRoll = Math.round((sr20Result.takeoff_roll + acRoll) * grassMult);
+                              const toObs  = Math.round((sr20Result.takeoff_obs  + acObs)  * grassMult);
+                              return (
+                                <>
+                                  <tr>
+                                    <td className="px-4 py-2">Takeoff Roll</td>
+                                    <td className="px-4 py-2 font-semibold">
+                                      {toRoll}
+                                      {(sr20Form.ac || sr20Form.dryGrass || sr20Form.wetGrass) && (
+                                        <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_roll)}</span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-gray-100">
+                                    <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
+                                    <td className="px-4 py-2 font-semibold">
+                                      {toObs}
+                                      {(sr20Form.ac || sr20Form.dryGrass || sr20Form.wetGrass) && (
+                                        <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_obs)}</span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="px-4 py-2">Landing Roll</td>
+                                    <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_roll)}</td>
+                                  </tr>
+                                  <tr className="bg-gray-100">
+                                    <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
+                                    <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_obs)}</td>
+                                  </tr>
+                                </>
+                              );
+                            })()}
                           </tbody>
                         </table>
                       </div>
                       <p className="text-gray-400 text-xs mt-3">
                         Values interpolated at {sr20Form.pressure_value} ft / {sr20Form.temperature_value} °{sr20Form.unit || 'C'}. Source: Cirrus SR20 POH performance tables.
+                      </p>
+                      <p className="text-gray-500 text-xs mt-2 italic">
+                        Headwind: subtract 10% per each 12 knots head wind; Tailwind: add 10% per each 2 knots of tail wind up to 10 knots.
                       </p>
                     </motion.div>
                   )}
@@ -478,6 +587,37 @@ const SR20 = () => {
                       </div>
                     </div>
 
+                    {/* Optional modifiers */}
+                    <div className="flex flex-wrap gap-6">
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20aform.ac}
+                          onChange={(e) => setsr20aForm({ ...sr20aform, ac: e.target.checked })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Air Conditioning <span className="text-gray-500 text-sm">(+300 ft roll / +400 ft obs)</span></span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20aform.dryGrass}
+                          onChange={(e) => setsr20aForm({ ...sr20aform, dryGrass: e.target.checked, wetGrass: false })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Dry Grass <span className="text-gray-500 text-sm">(+20% takeoff)</span></span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={sr20aform.wetGrass}
+                          onChange={(e) => setsr20aForm({ ...sr20aform, wetGrass: e.target.checked, dryGrass: false })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Wet Grass <span className="text-gray-500 text-sm">(+30% takeoff)</span></span>
+                      </label>
+                    </div>
+
                     <motion.button
                       whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       type="submit" disabled={loading}
@@ -603,22 +743,44 @@ const SR20 = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td className="px-4 py-2">Takeoff Roll</td>
-                                <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.takeoff_roll)}</td>
-                              </tr>
-                              <tr className="bg-gray-100">
-                                <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
-                                <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.takeoff_obs)}</td>
-                              </tr>
-                              <tr>
-                                <td className="px-4 py-2">Landing Roll</td>
-                                <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_roll)}</td>
-                              </tr>
-                              <tr className="bg-gray-100">
-                                <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
-                                <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_obs)}</td>
-                              </tr>
+                              {(() => {
+                                const grassMult = sr20aform.wetGrass ? 1.30 : sr20aform.dryGrass ? 1.20 : 1.0;
+                                const acRoll = sr20aform.ac ? 300 : 0;
+                                const acObs  = sr20aform.ac ? 400 : 0;
+                                const toRoll = Math.round((sr20aResult.performance.takeoff_roll + acRoll) * grassMult);
+                                const toObs  = Math.round((sr20aResult.performance.takeoff_obs  + acObs)  * grassMult);
+                                const modified = sr20aform.ac || sr20aform.dryGrass || sr20aform.wetGrass;
+                                return (
+                                  <>
+                                    <tr>
+                                      <td className="px-4 py-2">Takeoff Roll</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">
+                                        {toRoll}
+                                        {modified && (
+                                          <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_roll)}</span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr className="bg-gray-100">
+                                      <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">
+                                        {toObs}
+                                        {modified && (
+                                          <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_obs)}</span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className="px-4 py-2">Landing Roll</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_roll)}</td>
+                                    </tr>
+                                    <tr className="bg-gray-100">
+                                      <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_obs)}</td>
+                                    </tr>
+                                  </>
+                                );
+                              })()}
                             </tbody>
                           </table>
                         </div>
@@ -627,6 +789,242 @@ const SR20 = () => {
                           {' '}{sr20aResult.conditions.pressure_alt.toFixed(0)} ft PA /
                           {' '}{sr20aResult.conditions.oat_c.toFixed(1)} °C.
                           Landing at max gross. Source: Cirrus SR20 POH.
+                        </p>
+                        <p className="text-gray-500 text-xs mt-2 italic">
+                          Headwind: subtract 10% per each 12 knots head wind; Tailwind: add 10% per each 2 knots of tail wind up to 10 knots.
+                        </p>
+                      </div>
+
+                    </motion.div>
+                  )}
+                </motion.div>
+              </motion.div>
+            )}
+
+            {/* SR20 Cruise / Cross-Country Tab */}
+            {activeTab === 'cc' && (
+              <motion.div
+                key="cc"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="max-w-4xl mx-auto"
+              >
+                <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+                  <div className="flex items-center mb-6">
+                    <CalculatorIcon className="w-8 h-8 text-purple-400 mr-4" />
+                    <h2 className="text-3xl font-bold text-white">SR20 Cruise &amp; Climb</h2>
+                  </div>
+                  <p className="text-gray-400 mb-6 text-sm">
+                    Interpolated cruise performance (KTAS, GPH) and climb statistics from the Cirrus SR20 POH.
+                    Cruise altitude: 2,000–14,000 ft. Power: 45–94% BHP.
+                  </p>
+
+                  <form onSubmit={handleCrossCountry} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">OAT at Cruise Altitude</label>
+                        <input
+                          type="number" step="any" placeholder={ccForm.unit === 'F' ? 'e.g. 32' : 'e.g. 0'}
+                          value={ccForm.temperature}
+                          onChange={(e) => setCcForm({ ...ccForm, temperature: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Temperature Unit</label>
+                        <div className="flex">
+                          {['C', 'F'].map((u) => (
+                            <button
+                              key={u} type="button"
+                              onClick={() => setCcForm({ ...ccForm, unit: u })}
+                              className={`flex-1 py-3 font-semibold rounded-lg transition-all duration-200 ${
+                                ccForm.unit === u
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
+                                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                              } ${u === 'C' ? 'mr-2' : ''}`}
+                            >
+                              °{u}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Cruise Altitude (ft MSL)</label>
+                        <input
+                          type="number" step="any" placeholder="e.g. 8000"
+                          value={ccForm.pressure}
+                          onChange={(e) => setCcForm({ ...ccForm, pressure: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Altimeter Setting (inHg)</label>
+                        <input
+                          type="number" step="any" placeholder="e.g. 29.92"
+                          value={ccForm.altimeter}
+                          onChange={(e) => setCcForm({ ...ccForm, altimeter: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Power Setting (% BHP)</label>
+                        <input
+                          type="number" step="any" placeholder="e.g. 75"
+                          value={ccForm.power}
+                          onChange={(e) => setCcForm({ ...ccForm, power: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Departure Altitude (ft MSL)</label>
+                        <input
+                          type="number" step="any" placeholder="0"
+                          value={ccForm.start}
+                          onChange={(e) => setCcForm({ ...ccForm, start: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                      </div>
+
+                    </div>
+
+                    {/* Optional equipment */}
+                    <div className="flex flex-wrap gap-6">
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={ccForm.wheelPant}
+                          onChange={(e) => setCcForm({ ...ccForm, wheelPant: e.target.checked })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">No Wheel Pants <span className="text-gray-500 text-sm">(−10 kt)</span></span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={ccForm.ac}
+                          onChange={(e) => setCcForm({ ...ccForm, ac: e.target.checked })}
+                          className="w-5 h-5 rounded accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-gray-300 font-medium">Air Conditioning <span className="text-gray-500 text-sm">(−2 kt)</span></span>
+                      </label>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                      type="submit" disabled={loading}
+                      className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? (
+                        <ArrowPathIcon className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <><CalculatorIcon className="w-6 h-6 mr-2" />Compute</>
+                      )}
+                    </motion.button>
+                  </form>
+
+                  {ccResult && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 space-y-6">
+
+                      {/* Conditions */}
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-3">Cruise Conditions</h3>
+                        <div className="overflow-x-auto">
+                          <table className="table-auto w-full bg-white/90 rounded-lg text-black text-sm">
+                            <thead>
+                              <tr className="bg-purple-200">
+                                <th className="px-4 py-2 text-left">Parameter</th>
+                                <th className="px-4 py-2 text-right">Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="px-4 py-2">Pressure Altitude</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.pressure_altitude.toFixed(0)} ft</td>
+                              </tr>
+                              <tr className="bg-gray-100">
+                                <td className="px-4 py-2">ISA Deviation (ΔT)</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.delta_t > 0 ? '+' : ''}{ccResult.delta_t.toFixed(1)} °C</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Cruise Performance */}
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-3">Cruise Performance</h3>
+                        <div className="overflow-x-auto">
+                          <table className="table-auto w-full bg-white/90 rounded-lg text-black text-sm">
+                            <thead>
+                              <tr className="bg-purple-200">
+                                <th className="px-4 py-2 text-left">Metric</th>
+                                <th className="px-4 py-2 text-right">Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="px-4 py-2">True Airspeed (KTAS)</td>
+                                <td className="px-4 py-2 text-right font-bold text-purple-700">
+                                  {(ccResult.ktas - (ccForm.wheelPant ? 10 : 0) - (ccForm.ac ? 2 : 0)).toFixed(1)} kt
+                                  {(ccForm.wheelPant || ccForm.ac) && (
+                                    <span className="ml-2 text-gray-400 font-normal text-xs line-through">{ccResult.ktas.toFixed(1)} kt</span>
+                                  )}
+                                </td>
+                              </tr>
+                              <tr className="bg-gray-100">
+                                <td className="px-4 py-2">Fuel Flow (GPH)</td>
+                                <td className="px-4 py-2 text-right font-bold text-purple-700">{ccResult.gph.toFixed(2)} gal/hr</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Climb Statistics */}
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-3">Climb to Cruise Altitude</h3>
+                        <div className="overflow-x-auto">
+                          <table className="table-auto w-full bg-white/90 rounded-lg text-black text-sm">
+                            <thead>
+                              <tr className="bg-purple-200">
+                                <th className="px-4 py-2 text-left">Metric</th>
+                                <th className="px-4 py-2 text-right">Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="px-4 py-2">Rate of Climb (at cruise alt)</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.rate_of_climb.toFixed(0)} fpm</td>
+                              </tr>
+                              <tr className="bg-gray-100">
+                                <td className="px-4 py-2">Time to Climb</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.time_to_climb.toFixed(1)} min</td>
+                              </tr>
+                              <tr>
+                                <td className="px-4 py-2">Fuel to Climb</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.fuel_to_climb.toFixed(2)} gal</td>
+                              </tr>
+                              <tr className="bg-gray-100">
+                                <td className="px-4 py-2">Distance During Climb</td>
+                                <td className="px-4 py-2 text-right font-semibold">{ccResult.distance_to_climb.toFixed(1)} nm</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <p className="text-gray-400 text-xs mt-3">
+                          Climb stats from {ccForm.start !== '' ? ccForm.start : 0} ft to {ccForm.pressure} ft MSL. Source: Cirrus SR20 POH.
                         </p>
                       </div>
 

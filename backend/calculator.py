@@ -4,6 +4,8 @@
 
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
+from tomlkit import value
+import bisect
 
 run_tests = False
 
@@ -623,12 +625,13 @@ class material:
         else: raise TypeError("Wrong Input Parameters")
 
 class SR20Interpolator():
-    def __init__(self, pressure:float, temperature:float, unit:bool=False, advanced:bool=False, weight:float=3150.0):
+    def __init__(self, pressure:float, temperature:float, power:float=65, unit:bool=False, advanced:bool=False, weight:float=3150.0):
         self.pressure = pressure
         self.temperature = temperature
         self.unit = unit
         self.advanced = advanced
         self.weight = weight
+        self.power = power
         if unit:
             self.convertor()
         self.sr20()
@@ -773,7 +776,6 @@ class SR20Interpolator():
         f = RegularGridInterpolator((x, y), landing_obs, method="linear", bounds_error=False, fill_value=None)
         self.landing_obs = f([self.pressure, self.temperature])[0]
 
-
     def convertor(self):
         self.temperature = (self.temperature - 32) * 5.0/9.0
 
@@ -857,3 +859,101 @@ class flight_params():
         self.glide_speed1 = 100 * np.sqrt(self.takeoff_weight / 3150)
         self.glide_speed2 = 100 * np.sqrt(self.landing_weight / 3150)
 
+class crosscountry():
+    def __init__(self, temperature, pressure, altimeter, power, start:float=0, end:float=14000, unit:bool = False):
+        self.pressure = pressure
+        self.altimeter = altimeter
+        self.temperature = temperature 
+        self.start = start
+        self.end = end
+        if unit:
+            self.convertor()
+        self.power = power 
+        self.cruise()
+        self.climb()
+
+    def cruise(self):
+        pressure_altitude = self.pressure + 1000 * (29.92 - self.altimeter)
+        deltaT = self.temperature - (15. - pressure_altitude * 2.0 / 1000 )
+        y = [2000, 4000, 6000, 8000, 10000, 12000, 14000]
+
+        x = [[[94,86,81,77,72,67,62,58,53],[90,82,77,73,68,64,59,55,50],[85,78,73,69,65,61,56,52,48]],
+            [[88,80,76,71,66,61,57,52,47],[84,76,72,67,63,58,54,49,45],[80,73,68,64,60,55,51,47,42]],
+            [[82,75,70,65,60,56,51,46],[78,71,66,62,57,53,48,44],[74,68,63,59,55,50,46,42]],
+            [[76,70,65,60,55,50,45],[72,66,61,57,52,48,43],[69,63,58,54,50,45,41]],
+            [[71,65,60,55,50,45],[67,61,56,52,47,43],[69,63,58,54,50,45,41]],
+            [[66,60,55,50,45],[62,57,52,47,43],[59,54,49,45,40]],
+            [[61,55,50,45],[57,52,48,43],[54,50,45,41]]]
+        
+        ktas = [[[151,148,145,142,139,135,130,126,121],[156,151,148,144,140,136,132,127,121],[158,153,150,146,142,138,132,127,121]],
+                [[152,147,144,140,136,132,127,121,115],[155,150,146,142,138,133,128,122,115],[157,152,148,144,139,134,128,122,115]],
+                [[151,146,142,138,133,128,123,116],[154,148,144,140,135,129,123,116],[156,150,145,141,136,129,123,115]],
+                [[150,144,140,135,130,124,117],[152,146,142,137,131,124,117],[154,148,143,137,131,124,116]],
+                [[148,142,138,132,126,119],[150,144,139,133,126,118],[151,145,139,133,126,117]],
+                [[146,140,135,128,121],[147,141,135,128,120],[148,142,135,129,119]],
+                [[143,137,131,123],[144,138,131,123],[145,138,130,121]]]
+
+        gph = [[[16.5,14.9,14.2,13.5,13.3,12.5,11.7,11.0,10.2],[15.8,14.2,13.6,12.3,11.6,10.9,10.3,9.6,9.0],[15.2,13.7,11.5,10.9,10.3,9.7,9.1,8.5,8.0]],
+                [[15.6,14.1,13.4,13.0,12.2,11.4,10.6,9.9,9.1],[14.9,13.4,12.0,11.3,10.6,9.9,9.3,8.6,8.0],[14.4,11.2,10.6,10.,9.4,8.8,8.2,7.7,7.1]],
+                [[14.7,13.5,12.7,11.9,11.1,10.3,9.6,8.8],[14.1,11.7,11.0,10.3,9.7,9.0,8.4,7.7],[11.4,10.4,9.7,9.1,8.6,8.0,7.4,6.9]],
+                [[13.9,12.5,11.6,10.9,10.1,9.3,8.6],[11.9,10.8,10.1,9.4,8.8,8.1,7.5],[10.5,9.5,8.9,8.4,7.8,7.2,6.7]],
+                [[12.7,11.5,10.7,9.9,9.1,8.4],[11.9,10.8,10.1,9.4,8.8,8.1,7.5],[10.5,9.5,8.9,8.4,7.8,7.2,6.7]],
+                [[11.7,10.6,9.8,9.0,8.3],[10.1,9.2,8.5,7.9,7.2],[8.9,8.1,7.5,6.9,6.4]],
+                [[10.8,9.8,9.0,8.2],[9.3,8.5,7.8,7.1],[8.2,7.5,6.9,6.3]]] 
+        
+        alt_y = y
+        if pressure_altitude in alt_y:
+            i = alt_y.index(pressure_altitude)
+            j = i
+        else:
+            idx = bisect.bisect_left(alt_y, pressure_altitude)
+            i = idx - 1 if idx > 0 else 0
+            j = idx if idx < len(alt_y) else len(alt_y) - 1
+
+        if deltaT == 0:
+            t = 1
+            t2 = 1
+        elif deltaT == -30:
+            t = 0
+            t2 = 0
+        elif deltaT == 30:
+            t = 2
+            t2 = 2
+        else:
+            idx = bisect.bisect_left([-30, 0, 30], deltaT)
+            t = idx - 1 if idx > 0 else 0
+            t2 = idx if idx < 3 else 2
+
+        vx = np.array([alt_y[i], alt_y[j]])
+        ty = np.array([[-30, 0, 30][t], [-30, 0, 30][t2]])
+        f = self.crosscountry_interpolation(x[i][t], x[i][t2], x[j][t], x[j][t2], ktas[i][t], ktas[i][t2], ktas[j][t], ktas[j][t2])
+        self.ktas = np.interp(pressure_altitude, vx, [np.interp(deltaT, ty, f[0]), np.interp(deltaT, ty, f[1])])
+
+        f = self.crosscountry_interpolation(x[i][t], x[i][t2], x[j][t], x[j][t2], gph[i][t], gph[i][t2], gph[j][t], gph[j][t2])
+        self.gph = np.interp(pressure_altitude, vx, [np.interp(deltaT, ty, f[0]), np.interp(deltaT, ty, f[1])])
+
+    def climb(self):
+        deltaT = 1 + (self.temperature - (15. - self.pressure * 2.0 / 1000 )) / 100
+        
+        pa = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000]
+        climbspeed = [ 97,96,96,95,95,95,94,94,94,93,93,92,92,92,91]
+        rateofclimb = [864,807,750,693,636,579,522,465,408,351,294,237,180,123,66]
+        time = [0,1.2,2.6,4.0,5.6,7.3,9.2,11.4,13.8,16.7,20.1,24.3,29.9,38.0,53.2]
+        fuel = [0,0.4,0.8,1.3,1.7,2.3,2.8,3.4,4.1,4.8,5.7,6.8,8.2,10.1,13.6]
+        dist = [0,2,4,7,9,12,15,19,23,28,35,42,52,67,96]
+        
+        self.climb_speed = np.interp(self.end, pa, climbspeed)
+        self.rate_of_climb = np.interp(self.end, pa, rateofclimb)
+        self.time_ = (np.interp(self.end, pa, time) - np.interp(self.start, pa, time) ) * deltaT
+        self.fuel_ = (np.interp(self.end, pa, fuel) - np.interp(self.start, pa, fuel) ) * deltaT
+        self.distance_ = (np.interp(self.end, pa, dist) - np.interp(self.start, pa, dist) ) * deltaT
+
+    def crosscountry_interpolation(self, p1, p2, p3, p4, l1, l2, l3, l4):
+        a = np.interp(self.power, np.flip(p1), np.flip(l1))
+        b = np.interp(self.power, np.flip(p2), np.flip(l2))
+        c = np.interp(self.power, np.flip(p3), np.flip(l3))
+        d = np.interp(self.power, np.flip(p4), np.flip(l4))
+        return [[a,b], [c,d]]
+
+    def convertor(self):
+        self.temperature = (self.temperature - 32) * 5.0/9.0

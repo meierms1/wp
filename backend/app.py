@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.calculator import SR20Interpolator, flight_params, material, BaseConverter, GeneralConverter
+from backend.calculator import SR20Interpolator, flight_params, material, BaseConverter, GeneralConverter, crosscountry
 
 # Import finance functions with error handling
 try:
@@ -977,7 +977,41 @@ def app_sr20_advanced():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)}), 400
-    
+
+
+@app.route('/api/calculator/sr20-crosscountry', methods=['POST'])
+def app_sr20_crosscountry():
+    try:
+        data = request.get_json(silent=True) or {}
+        temperature = float(data['temperature'])
+        pressure    = float(data['pressure'])
+        altimeter   = float(data['altimeter'])
+        power       = float(data['power'])
+        start       = float(data.get('start', 0))
+        unit        = bool(data.get('unit', False))
+
+        cc = crosscountry(temperature, pressure, altimeter, power,
+                          start=start, end=pressure, unit=unit)
+        pressure_altitude = pressure + 1000 * (29.92 - altimeter)
+        delta_t = temperature - (15.0 - pressure_altitude * 2.0 / 1000)
+
+        result = {
+            'ktas':               round(float(cc.ktas), 1),
+            'gph':                round(float(cc.gph), 2),
+            'climb_speed':        round(float(cc.climb_speed), 1),
+            'rate_of_climb':      round(float(cc.rate_of_climb), 0),
+            'time_to_climb':      round(float(cc.time_), 1),
+            'fuel_to_climb':      round(float(cc.fuel_), 2),
+            'distance_to_climb':  round(float(cc.distance_), 1),
+            'pressure_altitude':  round(pressure_altitude, 0),
+            'delta_t':            round(delta_t, 1),
+        }
+        return jsonify({'success': True, 'result': result})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': str(e)}), 400
+
 
 # ==================== Auth JSON API Endpoints ====================
 @app.route('/api/auth/register', methods=['POST'])

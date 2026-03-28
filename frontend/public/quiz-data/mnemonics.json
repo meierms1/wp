@@ -1,0 +1,622 @@
+[
+    {
+        "id": "pave",
+        "acronym": "PAVE",
+        "title": "Pilot Risk Assessment",
+        "description": "A structured framework for identifying hazards before every flight.",
+        "color": "purple",
+        "letters": [
+            {
+                "letter": "P",
+                "word": "Pilot",
+                "description": "Assess your own fitness to fly before every flight.",
+                "subMnemonic": {
+                    "acronym": "IMSAFE",
+                    "title": "Personal Minimums Checklist",
+                    "description": "A self-assessment checklist to evaluate personal readiness.",
+                    "letters": [
+                        {
+                            "letter": "I",
+                            "word": "Illness",
+                            "description": "Am I suffering from any illness or symptoms that could affect performance?"
+                        },
+                        {
+                            "letter": "M",
+                            "word": "Medication",
+                            "description": "Am I taking any medication that could affect my judgement or performance?"
+                        },
+                        {
+                            "letter": "S",
+                            "word": "Stress",
+                            "description": "Am I under unusual psychological or emotional stress?"
+                        },
+                        {
+                            "letter": "A",
+                            "word": "Alcohol",
+                            "description": "Have I consumed alcohol within the last 8 hours? (8 hours bottle to throttle, <0.04% BAC)"
+                        },
+                        {
+                            "letter": "F",
+                            "word": "Fatigue",
+                            "description": "Am I adequately rested and alert? Fatigue is a leading cause of accidents."
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Eating / Emotion",
+                            "description": "Have I eaten properly? Am I emotionally stable?"
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "A",
+                "word": "Aircraft",
+                "description": "Is the aircraft airworthy and properly equipped for the planned flight?",
+                "subMnemonic": {
+                    "acronym": "DIE",
+                    "title": "Aircraft Airworthiness Check",
+                    "description": "Three key areas to verify before every flight: required Documents, current Inspections, and required Equipment.",
+                    "letters": [
+                        {
+                            "letter": "D",
+                            "word": "Documents",
+                            "description": "Must be displayed and visible in the aircraft at all times.",
+                            "subMnemonic": {
+                                "acronym": "ARROWPCS",
+                                "title": "Required Aircraft Documents",
+                                "description": "The specific documents that must be on board the aircraft at all times.",
+                                "letters": [
+                                    {
+                                        "letter": "A",
+                                        "word": "Airworthiness Certificate",
+                                        "description": "Proof that the aircraft meets safety standards and is approved for flight."
+                                    },
+                                    {
+                                        "letter": "R",
+                                        "word": "Registration Certificate",
+                                        "description": "Proof of ownership and registration with the FAA."
+                                    },
+                                    {
+                                        "letter": "R",
+                                        "word": "Radio Station License",
+                                        "description": "Required for international flights, not required for domestic US flights."
+                                    },
+                                    {
+                                        "letter": "O",
+                                        "word": "Operating Limitations",
+                                        "description": "Placards, POH, or AFM that specify the operating limits of the aircraft."
+                                    },
+                                    {
+                                        "letter": "W",
+                                        "word": "Weight & Balance",
+                                        "description": "Current weight and balance information for the aircraft."
+                                    },
+                                    {
+                                        "letter": "P",
+                                        "word": "Placards",
+                                        "description": "Required cockpit placards must be installed and visible (e.g., airspeed markings, no-smoking, emergency procedures)."
+                                    },
+                                    {
+                                        "letter": "C",
+                                        "word": "Compass",
+                                        "description": "Magnetic compass and its deviation placard must be installed and legible."
+                                    },
+                                    {
+                                        "letter": "S",
+                                        "word": "Supplemental",
+                                        "description": "Supplemental Flight Manual documents such as the G1000 Pilot's Guide for glass-cockpit avionics."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "letter": "I",
+                            "word": "Inspections",
+                            "description": "Verify all required FAA inspections are current before flight.",
+                            "subMnemonic": {
+                                "acronym": "AVIATES",
+                                "title": "Required Inspections",
+                                "description": "FAA-required inspection intervals that must all be current for legal flight.",
+                                "letters": [
+                                    {
+                                        "letter": "A",
+                                        "word": "Airworthiness Directives",
+                                        "description": "All applicable ADs must be complied with as issued by the FAA."
+                                    },
+                                    {
+                                        "letter": "V",
+                                        "word": "VOR (30 days)",
+                                        "description": "VOR accuracy must be verified within the preceding 30 days for IFR flight (14 CFR 91.171)."
+                                    },
+                                    {
+                                        "letter": "1",
+                                        "word": "100 Hours",
+                                        "description": "Required every 100 flight hours for aircraft operated for hire or used in flight instruction for hire."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Annual",
+                                        "description": "Required every 12 calendar months for all aircraft operated in the US (14 CFR 91.409)."
+                                    },
+                                    {
+                                        "letter": "T",
+                                        "word": "Transponder (24 mo)",
+                                        "description": "Transponder must be tested and inspected every 24 calendar months (14 CFR 91.413)."
+                                    },
+                                    {
+                                        "letter": "E",
+                                        "word": "ELT (12 mo)",
+                                        "description": "ELT battery must be replaced or recharged every 12 months and after cumulative use of 1 hour (14 CFR 91.207)."
+                                    },
+                                    {
+                                        "letter": "S",
+                                        "word": "Static / Pitot (24 mo)",
+                                        "description": "Pitot-static system and altimeter must be inspected every 24 calendar months for IFR operations (14 CFR 91.411)."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Equipment",
+                            "description": "Verify all required VFR equipment is installed and operational before flight.",
+                            "items": [
+                                {
+                                    "label": "Inoperative Equipment — 14 CFR 91.213(d)",
+                                    "detail": "If the aircraft has no MEL: determine whether the equipment is required by (1) the KOEL in the POH/AFM, (2) an Airworthiness Directive, (3) 14 CFR 91.205 for the intended operation, or (4) the airworthiness certificate. If it is NOT required by any of these, it may be deactivated or disabled, placarded INOPERATIVE, and the flight may proceed. If it IS required, the aircraft is unairworthy and cannot fly until repaired."
+                                }
+                            ],
+                            "subMnemonic": {
+                                "acronym": "ATOMATOFLAMES",
+                                "title": "Required Day VFR Equipment",
+                                "description": "Minimum required equipment for day VFR flight per 14 CFR 91.205(b).",
+                                "letters": [
+                                    {
+                                        "letter": "A",
+                                        "word": "Altimeter",
+                                        "description": "Sensitive pressure altimeter adjustable for barometric pressure."
+                                    },
+                                    {
+                                        "letter": "T",
+                                        "word": "Tachometer",
+                                        "description": "Required for each engine to monitor and record RPM."
+                                    },
+                                    {
+                                        "letter": "O",
+                                        "word": "Oil Pressure Gauge",
+                                        "description": "Required for each engine using a pressure oil system."
+                                    },
+                                    {
+                                        "letter": "M",
+                                        "word": "Magnetic Compass",
+                                        "description": "Primary direction-finding instrument; must include a deviation placard."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Airspeed Indicator",
+                                        "description": "Required to determine airspeed and monitor Vne, Vno, and Vs markings."
+                                    },
+                                    {
+                                        "letter": "T",
+                                        "word": "Temperature Gauge",
+                                        "description": "Coolant temperature gauge required for each liquid-cooled engine."
+                                    },
+                                    {
+                                        "letter": "O",
+                                        "word": "Oil Temperature Gauge",
+                                        "description": "Required for each air-cooled engine to monitor oil temperature."
+                                    },
+                                    {
+                                        "letter": "F",
+                                        "word": "Fuel Gauge",
+                                        "description": "Fuel quantity gauge required for each fuel tank in use."
+                                    },
+                                    {
+                                        "letter": "L",
+                                        "word": "Landing Gear Indicator",
+                                        "description": "Position indicator light required for aircraft with retractable landing gear."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Anti-Collision Lights",
+                                        "description": "Required on all aircraft certified after March 11, 1996."
+                                    },
+                                    {
+                                        "letter": "M",
+                                        "word": "Manifold Pressure Gauge",
+                                        "description": "Required for altitude engines and those with controllable-pitch propellers."
+                                    },
+                                    {
+                                        "letter": "E",
+                                        "word": "ELT",
+                                        "description": "Emergency Locator Transmitter required per 14 CFR 91.207 (with limited exceptions)."
+                                    },
+                                    {
+                                        "letter": "S",
+                                        "word": "Seatbelts",
+                                        "description": "Seat belts and shoulder harnesses required for each occupant; pilot must brief passengers."
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "V",
+                "word": "enVironment",
+                "description": "Evaluate all external environmental conditions that may affect your flight.",
+                "items": [
+                    {
+                        "label": "Weather",
+                        "detail": "Current, forecast, and en-route weather including winds, icing, turbulence, and visibility."
+                    },
+                    {
+                        "label": "Airspace",
+                        "detail": "Restricted areas, TFRs, special use airspace, and class of airspace along the route."
+                    },
+                    {
+                        "label": "Terrain & Obstacles",
+                        "detail": "Minimum safe altitudes, mountains, towers, and other obstructions."
+                    },
+                    {
+                        "label": "NOTAMs",
+                        "detail": "Notices to Air Missions affecting runways, navaids, and airspace along the route."
+                    },
+                    {
+                        "label": "Night / IMC",
+                        "detail": "Additional risks and requirements for night operations or instrument conditions."
+                    }
+                ],
+                "subMnemonic": {
+                    "acronym": "NWKRAFT",
+                    "title": "IFR Flight Planning Checklist",
+                    "description": "Pre-departure planning items required for cross-country and IFR flights.",
+                    "letters": [
+                        {
+                            "letter": "N",
+                            "word": "NOTAMs",
+                            "description": "Check NOTAMs for the departure airport, destination, alternate, and en-route airspace."
+                        },
+                        {
+                            "letter": "W",
+                            "word": "Weather",
+                            "description": "Obtain current and forecast weather along the entire route including winds, icing, turbulence, and visibility."
+                        },
+                        {
+                            "letter": "K",
+                            "word": "Known ATC Delays",
+                            "description": "Check for any ground delay programs, flow control initiatives, or known ATC congestion."
+                        },
+                        {
+                            "letter": "R",
+                            "word": "Runway Lengths",
+                            "description": "Verify adequate runway length and surface condition at destination and alternate airports."
+                        },
+                        {
+                            "letter": "A",
+                            "word": "Alternate Airport",
+                            "description": "Identify an alternate airport meeting IFR alternate minimums if required by regulations."
+                        },
+                        {
+                            "letter": "F",
+                            "word": "Fuel Requirements",
+                            "description": "Ensure enough fuel to reach destination, fly to alternate, plus 45 minutes at normal cruise speed."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Takeoff and Landing Distances",
+                            "description": "Calculate required distances based on aircraft performance charts, pressure altitude, temperature, and runway slope."
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "E",
+                "word": "External Pressures",
+                "description": "Identify and mitigate outside influences that may compromise your decision making.",
+                "items": [
+                    {
+                        "label": "Get-there-itis",
+                        "detail": "The hazardous attitude of pressing on to complete the flight despite warning signs."
+                    },
+                    {
+                        "label": "Schedule pressure",
+                        "detail": "External time pressure from meetings, connections, or commitments."
+                    },
+                    {
+                        "label": "Passenger expectations",
+                        "detail": "Pressure from passengers who are counting on you completing the flight."
+                    },
+                    {
+                        "label": "Financial pressure",
+                        "detail": "The cost of cancelling and finding alternative transportation."
+                    }
+                ],
+                "subMnemonic": {
+                    "acronym": "PPPPP",
+                    "title": "5 Ps",
+                    "description": "A structured in-flight risk management technique — reassess the 5 Ps at key decision points throughout the flight.",
+                    "letters": [
+                        {
+                            "letter": "P",
+                            "word": "Plan",
+                            "description": "Reassess the flight plan: route, weather, fuel, and destination conditions. Is the original plan still valid?"
+                        },
+                        {
+                            "letter": "P",
+                            "word": "Plane",
+                            "description": "Reassess the aircraft: fuel state, systems, and any abnormalities since departure."
+                        },
+                        {
+                            "letter": "P",
+                            "word": "Pilot",
+                            "description": "Reassess personal condition: fatigue, stress, situational awareness, and remaining proficiency."
+                        },
+                        {
+                            "letter": "P",
+                            "word": "Passenger",
+                            "description": "Consider passenger needs, comfort, and any pressure they may be placing on your decision making."
+                        },
+                        {
+                            "letter": "P",
+                            "word": "Programming",
+                            "description": "Verify avionics programming: GPS route, autopilot mode, and clearance inputs are correct and up to date."
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": "flaps",
+        "acronym": "FLAPS",
+        "title": "Night Flight",
+        "description": "Night flight requirements",
+        "color": "blue",
+        "letters": [
+            {
+                "letter": "F",
+                "word": "Fuses",
+                "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
+            },
+            {
+                "letter": "L",
+                "word": "Landing Light",
+                "description": "A landing light is required for aircraft operated for hire at night; recommended for all night operations."
+            },
+            {
+                "letter": "A",
+                "word": "Anti-Collision Lights",
+                "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
+            },
+            {
+                "letter": "P",
+                "word": "Position Lights",
+                "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
+            },
+            {
+                "letter": "S",
+                "word": "Source of Power",
+                "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
+            }
+        ]
+    },
+    {
+        "id": "procedures",
+        "acronym": "Procedures",
+        "title": "Emergencies, Go-Around & Spin Recovery",
+        "description": "Essential emergency and abnormal procedures every pilot must know by memory.",
+        "color": "green",
+        "letters": [
+            {
+                "letter": "E",
+                "word": "Emergency",
+                "description": "Engine failure or emergency — establish best glide, find a landing spot, run the checklist, declare emergency, then execute.",
+                "subMnemonic": {
+                    "acronym": "ABCDE",
+                    "title": "Emergency",
+                    "description": "Engine-out / emergency procedure.",
+                    "letters": [
+                        {
+                            "letter": "A",
+                            "word": "Airspeed (Best Glide)",
+                            "description": "Immediately pitch for best glide speed to maximize glide distance and time to troubleshoot."
+                        },
+                        {
+                            "letter": "B",
+                            "word": "Best Landing Spot",
+                            "description": "Select the best available landing area within gliding distance and begin maneuvering toward it."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Checklist",
+                            "description": "Run the emergency checklist for the applicable failure (engine restart, forced landing, etc.)."
+                        },
+                        {
+                            "letter": "D",
+                            "word": "Declare Emergency",
+                            "description": "Squawk 7700, transmit MAYDAY on 121.5 MHz or current frequency, and state position, altitude, and intentions."
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Execute",
+                            "description": "Commit to the landing — configure, brief passengers, and fly the approach to your chosen spot."
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "G",
+                "word": "Go Around",
+                "description": "Go-around procedure — 5 Cs.",
+                "subMnemonic": {
+                    "acronym": "CCCCC",
+                    "title": "Go Around (5 Cs)",
+                    "description": "5 Cs go-around procedure.",
+                    "letters": [
+                        {
+                            "letter": "C",
+                            "word": "Cram",
+                            "description": "Apply full throttle (cram in the power) immediately to arrest the descent."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Click",
+                            "description": "Retract flaps one increment (click the flap switch) to reduce drag while maintaining lift."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Clean",
+                            "description": "Once a positive rate of climb is established, retract remaining flaps and landing gear."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Climb",
+                            "description": "Establish climb attitude at Vy or departure climb speed, then climb to pattern altitude."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Call",
+                            "description": "Announce the go-around on the appropriate frequency (CTAF or tower) and state intentions."
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "S",
+                "word": "Spin Recovery",
+                "description": "Spin recovery procedure — PARE.",
+                "subMnemonic": {
+                    "acronym": "PARE",
+                    "title": "Spin Recovery",
+                    "description": "Spin recovery procedure.",
+                    "letters": [
+                        {
+                            "letter": "P",
+                            "word": "Power Idle",
+                            "description": "Reduce throttle to idle to minimize gyroscopic effects and reduce rotational energy."
+                        },
+                        {
+                            "letter": "A",
+                            "word": "Ailerons Neutral",
+                            "description": "Center the ailerons — do not use aileron input to stop the spin, as it can worsen rotation."
+                        },
+                        {
+                            "letter": "R",
+                            "word": "Rudder Full Opposite",
+                            "description": "Apply and hold full rudder opposite to the direction of spin rotation to stop yaw."
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Elevator Forward",
+                            "description": "Briskly push the elevator control forward to break the stall. Once rotation stops, recover from the dive."
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": "5hazardous",
+        "acronym": "5 Attitudes",
+        "title": "5 Hazardous Attitudes",
+        "description": "The five hazardous attitudes that lead to poor aeronautical decision making (ADM), and their antidotes.",
+        "color": "red",
+        "letters": [
+            {
+                "letter": "1",
+                "word": "Anti-authority",
+                "description": "Antidote: Follow the rules — they are usually right."
+            },
+            {
+                "letter": "2",
+                "word": "Impulsivity",
+                "description": "Antidote: Not so fast. Think first."
+            },
+            {
+                "letter": "3",
+                "word": "Invulnerability",
+                "description": "Antidote: It could happen to me."
+            },
+            {
+                "letter": "4",
+                "word": "Macho",
+                "description": "Antidote: Taking chances is foolish."
+            },
+            {
+                "letter": "5",
+                "word": "Resignation",
+                "description": "Antidote: I'm not helpless — I can make a difference."
+            }
+        ]
+    },
+    {
+        "id": "motor",
+        "acronym": "L4HAND",
+        "title": "Engine Information",
+        "description": "Key characteristics of the Lycoming IO-390 engine used in the Cirrus SR20.",
+        "color": "orange",
+        "letters": [
+            {
+                "letter": "L",
+                "word": "Lycoming IO-390",
+                "description": "Manufactured by Lycoming Engines. 'IO' stands for Injected, Opposed — fuel-injected, horizontally opposed design."
+            },
+            {
+                "letter": "4",
+                "word": "4 Cylinders",
+                "description": "Four-cylinder configuration producing approximately 210 horsepower at 2,700 RPM."
+            },
+            {
+                "letter": "H",
+                "word": "Horizontally Opposed",
+                "description": "Cylinders are arranged in two banks pointing horizontally away from each other, creating a low-profile, well-balanced engine."
+            },
+            {
+                "letter": "A",
+                "word": "Air Cooled",
+                "description": "Engine cooling is provided by airflow over the cylinder fins — no liquid coolant or radiator required."
+            },
+            {
+                "letter": "N",
+                "word": "Naturally Aspirated",
+                "description": "No turbocharger or supercharger; engine breathes ambient air and power output decreases with altitude."
+            },
+            {
+                "letter": "D",
+                "word": "Direct Drive",
+                "description": "The propeller is driven directly by the crankshaft — no reduction gearbox, keeping the design simple and lightweight."
+            }
+        ]
+    },
+    {
+        "id": "hypoxia",
+        "acronym": "HASH",
+        "title": "4 Types of Hypoxia",
+        "description": "The four types of hypoxia that can impair pilot performance. All result in insufficient oxygen at the cellular level but have different causes and treatments.",
+        "color": "red",
+        "letters": [
+            {
+                "letter": "H",
+                "word": "Hypoxic Hypoxia",
+                "description": "Caused by reduced partial pressure of oxygen at altitude. The most common type for pilots — above 10,000 ft MSL symptoms begin. Above 18,000 ft, time of useful consciousness drops sharply. Treatment: descend or use supplemental oxygen."
+            },
+            {
+                "letter": "A",
+                "word": "Anemic (Hypemic) Hypoxia",
+                "description": "Caused by a reduced oxygen-carrying capacity of the blood. Common causes include anemia, blood loss, and carbon monoxide poisoning (CO binds to hemoglobin 200× more readily than oxygen). Even small amounts of CO can dramatically reduce useful oxygen delivery. Treatment: remove source, fresh air, supplemental oxygen."
+            },
+            {
+                "letter": "S",
+                "word": "Stagnant Hypoxia",
+                "description": "Caused by poor or absent blood circulation, preventing oxygen from reaching the tissues. Causes include heart failure, shock, pulling positive G-forces (blood pools away from the brain), or a tourniquet. Treatment: address the circulation problem; G-suit and AGSM (anti-G straining maneuver) can help in high-G flight."
+            },
+            {
+                "letter": "H",
+                "word": "Histotoxic Hypoxia",
+                "description": "Caused by the inability of cells to use oxygen even when it is available. Common causes include alcohol and certain drugs (e.g., narcotics, cyanide) that poison the cellular oxygen-uptake mechanism. Supplemental oxygen does not help because the problem is at the cellular level, not the supply. Treatment: remove the toxic substance."
+            }
+        ]
+    }
+]

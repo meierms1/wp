@@ -1,0 +1,184 @@
+[
+  {
+    "id": "before-start",
+    "phase": "Before Start",
+    "color": "blue",
+    "items": [
+      "Remove caps pin and adjust placard",
+      "Put fuel selector to left tank",
+      "Verify parking brake is set",
+      "Turn on BAT 1 and BAT 2",
+      "Turn on Nav and Strobe Lights",
+      "Turn on avionics",
+      "Verify voltage is between 23 and 25 volts",
+      "Check MFD date is not expired",
+      "Announce passenger briefing is complete",
+      "Set fuel level in the MFD",
+      "Set weights and balance and press confirm",
+      "Set and verify 118.35 in COM 2",
+      "Listen to ATIS and take notes",
+      "Set altimeters with ATIS information",
+      "Turn avionics off",
+      "Check left, center, right — announce clear prop",
+      "Close the door",
+      "Announce and run the checklist"
+    ]
+  },
+  {
+    "id": "engine-start",
+    "phase": "Engine Start",
+    "color": "orange",
+    "items": [
+      "Insert key",
+      "Hold your brakes",
+      "Set power lever to one quarter",
+      "Prime mixture as required",
+      "Set mixture to cut off",
+      "Turn the key and push mixture to full rich",
+      "Verify oil pressure",
+      "Set RPM to 1200",
+      "Lean mixture",
+      "Set RPM to 1000",
+      "Turn Alternator 1 and 2 on",
+      "Turn avionics on",
+      "Verify volts is 28 and charging battery 1",
+      "Verify engine parameters",
+      "Fuel selector to right tank",
+      "Turn off the fuel pump",
+      "Set flaps to 50 percent",
+      "Check the autopilot",
+      "Check the trim",
+      "Set trim for takeoff",
+      "Box check of flight controls and rudder",
+      "Announce and run the checklist"
+    ]
+  },
+  {
+    "id": "taxi",
+    "phase": "Taxi",
+    "color": "green",
+    "items": [
+      "Release parking brake and turn landing light on",
+      "Start taxiing and check your brakes",
+      "Announce clear left, center, right",
+      "Check HSI turns with aircraft with adequate rate of turn indicated",
+      "Verify turn coordinator turns with rudder movement",
+      "Verify magnetic compass agrees with HSI",
+      "Verify zero airspeed and zero vertical speed",
+      "Verify attitude indicator is no more than 5 degrees"
+    ]
+  },
+  {
+    "id": "engine-runup",
+    "phase": "Engine Runup",
+    "color": "red",
+    "items": [
+      "Set parking brake and turn landing light off",
+      "Verify doors are latched",
+      "Set MFD to Engine page",
+      "Announce engine runup",
+      "Hold brakes",
+      "Set mixture full rich",
+      "Set RPM to 2200",
+      "Announce alternator check and turn landing light and pitot heat on",
+      "Check and announce voltage in green",
+      "Turn pitot heat and landing light off",
+      "Announce magneto check",
+      "Announce drop and differential",
+      "Announce full power check",
+      "Set power lever full — announce max RPM, should be more than 2600",
+      "Announce idle check",
+      "Power lever to idle — announce idle power, minimum 700 RPM",
+      "Set RPM to 1000",
+      "Announce and run checklist"
+    ]
+  },
+  {
+    "id": "before-takeoff",
+    "phase": "Before Takeoff",
+    "color": "purple",
+    "items": [
+      "Perform departure briefing",
+      "Confirm or set transponder 1200",
+      "Set altitude bug",
+      "Set runway heading",
+      "Turn fuel pump on",
+      "Confirm flaps are 50 percent",
+      "Turn off recirculation fan",
+      "Announce and run checklist"
+    ]
+  },
+  {
+    "id": "after-takeoff",
+    "phase": "After Takeoff",
+    "color": "blue",
+    "items": [
+      "Verify fuel pump is on",
+      "Verify climb power lever is full",
+      "Lean mixture as required",
+      "Verify and announce engine is in the green",
+      "Clean flaps above 85 knots and 200 feet AGL",
+      "Climb at 96 knots",
+      "Announce and run checklist"
+    ]
+  },
+  {
+    "id": "climb",
+    "phase": "Climb",
+    "color": "green",
+    "items": [
+      "Fuel pump stays on",
+      "Set climb speed to Vy, 105 knots",
+      "Climb power is full",
+      "Continue to adjust mixture to stay at the top of the green arc",
+      "Verify engine parameters are green"
+    ]
+  },
+  {
+    "id": "cruise",
+    "phase": "Cruise",
+    "color": "blue",
+    "items": [
+      "Level off and allow aircraft to accelerate to 120 knots",
+      "Lean mixture to the cyan line",
+      "Turn off fuel pump",
+      "Turn off landing light",
+      "Announce and run cruise checklist"
+    ]
+  },
+  {
+    "id": "descent",
+    "phase": "Descent",
+    "color": "orange",
+    "items": [
+      "Get destination weather",
+      "Set altimeters",
+      "Perform arrival briefing with landing plates",
+      "Turn landing lights and ice lights on",
+      "Check brake pressure and ask passenger to check theirs",
+      "Announce and run checklist"
+    ]
+  },
+  {
+    "id": "landing",
+    "phase": "Landing",
+    "color": "red",
+    "items": [
+      "Seatbelts on",
+      "Fuel pump on",
+      "Mixture as required",
+      "Disengage autopilot",
+      "Bring flaps to full"
+    ]
+  },
+  {
+    "id": "after-landing",
+    "phase": "After Landing",
+    "color": "purple",
+    "items": [
+      "Fuel pump off",
+      "Mixture lean for taxi",
+      "Flaps up"
+    ]
+  }
+]

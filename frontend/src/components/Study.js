@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import FlowsView from './FlowsView';
 
 const colorMap = {
   purple: { card: 'from-purple-600/30 to-purple-400/20 border-purple-400/30', badge: 'bg-purple-400/20 text-purple-200', letter: 'bg-purple-500/30 text-purple-200 border-purple-400/40', sub: 'bg-purple-500/10 border-purple-400/20', dot: 'bg-purple-400', active: 'bg-purple-500/20 border-purple-400/30' },
@@ -250,6 +251,7 @@ const Study = () => {
   const [metarsData, setMetarsData]       = useState(null);
   const [generalData, setGeneralData]     = useState(null);
   const [mnemonicsData, setMnemonicsData] = useState(null);
+  const [flowsData, setFlowsData]         = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedStudy, setSelectedStudy] = useState(null);
 
@@ -260,14 +262,16 @@ const Study = () => {
   const fetchStudyData = async () => {
     try {
       setLoading(true);
-      const [metarsRes, generalRes, mnemonicsRes] = await Promise.all([
+      const [metarsRes, generalRes, mnemonicsRes, flowsRes] = await Promise.all([
         axios.get('/quiz-data/pilot-metars.json'),
         axios.get('/quiz-data/pilot-general.json'),
         axios.get('/quiz-data/mnemonics.json'),
+        axios.get('/quiz-data/flows.json'),
       ]);
       setMetarsData(metarsRes.data);
       setGeneralData(generalRes.data);
       setMnemonicsData(mnemonicsRes.data);
+      setFlowsData(flowsRes.data);
     } catch (error) {
       console.error('Error loading study data:', error);
       toast.error('Failed to load study materials');
@@ -423,6 +427,20 @@ const Study = () => {
               Start Studying →
             </span>
           </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSelectedStudy('flows')}
+            className="group bg-gradient-to-br from-green-600/40 to-green-400/20 hover:from-green-600/60 hover:to-green-400/40 border border-green-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-green-300 mb-4 group-hover:text-green-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">Flows</h2>
+            <p className="text-green-200 mb-4">{flowsData ? `${flowsData.length} phases` : 'Loading...'}</p>
+            <span className="text-green-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
         </motion.div>
       ) : (
         <motion.div
@@ -439,6 +457,8 @@ const Study = () => {
 
           {selectedStudy === 'mnemonics' ? (
             <MnemonicsView data={mnemonicsData} />
+          ) : selectedStudy === 'flows' ? (
+            <FlowsView data={flowsData} />
           ) : (
             <StudyBox
               data={selectedStudy === 'metars' ? metarsData : generalData}

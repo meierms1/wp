@@ -618,5 +618,73 @@
                 "description": "Caused by the inability of cells to use oxygen even when it is available. Common causes include alcohol and certain drugs (e.g., narcotics, cyanide) that poison the cellular oxygen-uptake mechanism. Supplemental oxygen does not help because the problem is at the cellular level, not the supply. Treatment: remove the toxic substance."
             }
         ]
+    },
+     {
+        "id": "lost",
+        "acronym": "5Cs",
+        "title": "Lost in weather",
+        "description": "Steps to manage stress, locate landmarks, and secure assistance in case of getting lost in the weather.",
+        "color": "red",
+        "letters": [
+            {
+                "letter": "C",
+                "word": "Climb",
+                "description": "Gain altitude to increase radio range, improve visibility, and avoid terrain."
+            },
+            {
+                "letter": "C",
+                "word": "Circle",
+                "description": "Circle over spot to avoid getting further off-track."
+            },
+            {
+                "letter": "C",
+                "word": "Confess",
+                "description": "Admit to yourself and than to ATC that you are lost."
+            },
+            {
+                "letter": "C",
+                "word": "Communicate",
+                "description": "Call on a local frequency or 121.5 for assistance."
+            },
+            {
+                "letter": "C",
+                "word":"Comply",
+                "description":"Follow instructions from ATC"
+            }
+        ]
+    },
+    {
+        "id": "lost",
+        "acronym": "5Cs",
+        "title": "Go around",
+        "description": "Immediate response to failed landing.",
+        "color": "green",
+        "letters": [
+            {
+                "letter": "C",
+                "word": "Cram",
+                "description": "Apply full power smoothly."
+            },
+            {
+                "letter": "C",
+                "word": "Climb",
+                "description": "Establish positive rate, and then Vy."
+            },
+            {
+                "letter": "C",
+                "word": "Clean",
+                "description": "Bring flaps up."
+            },
+            {
+                "letter": "C",
+                "word": "Cool/Course",
+                "description": "Open Cowl flaps and/or turn to the proper heading."
+            },
+            {
+                "letter": "C",
+                "word":"Call/Click",
+                "description":"Notify ATC or Common"
+            }
+        ]
     }
 ]

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
+import SEO from './SEO';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { 
@@ -158,6 +159,11 @@ const Pilot = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-gray-900 dark:to-blue-900 py-20">
+      <SEO
+        title="Pilot Knowledge Quiz"
+        path="/pilot"
+        description="Aviation knowledge quiz by Maycon Meier — covering the phonetic alphabet, aircraft speeds, weight & balance, and emergency procedures for student pilots."
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

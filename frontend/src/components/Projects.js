@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import SEO from './SEO';
 import { FaGithub, FaExternalLinkAlt, FaFilePdf } from 'react-icons/fa';
 import {
   RocketLaunchIcon,
@@ -233,6 +234,11 @@ const Projects = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900 py-20">
+      <SEO
+        title="Projects"
+        path="/projects"
+        description="Engineering and software projects by Maycon Meier — including hydrogen-based iron reduction research, open-source simulation software, computer vision, and machine learning applications."
+      />
       {/* Add JSON-LD structured data for SEO */}
       <script
         type="application/ld+json"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import SEO from './SEO';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ClockIcon, TrophyIcon, FireIcon  } from '@heroicons/react/24/outline';
@@ -173,6 +174,11 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 dark:from-gray-900 dark:to-red-900 py-20">
+      <SEO
+        title="FIRE Quiz"
+        path="/quiz"
+        description="Test your financial independence and early retirement (FIRE) knowledge with Maycon Meier's interactive quiz covering investing, savings rates, and retirement planning."
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

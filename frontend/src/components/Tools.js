@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from './SEO';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { 
@@ -110,6 +111,11 @@ const Tools = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <SEO
+        title="Tools"
+        path="/tools"
+        description="Engineering and unit conversion tools by Maycon Meier — unit converter, material property lookup, and engineering calculators."
+      />
       <div className="container mx-auto px-4 py-20">
         <motion.div
           variants={containerVariants}

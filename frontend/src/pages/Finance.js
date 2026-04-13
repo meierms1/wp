@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
+import SEO from '../components/SEO';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -252,6 +253,11 @@ const Finance = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900">
+      <SEO
+        title="Finance Tools"
+        path="/finance"
+        description="Advanced finance tools by Maycon Meier — real-time stock analysis, portfolio tracker, FIRE calculator, and investment performance analytics."
+      />
       <div className="container mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

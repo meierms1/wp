@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import FlowsView from './FlowsView';
+import SEO from './SEO';
 
 const colorMap = {
   purple: { card: 'from-purple-600/30 to-purple-400/20 border-purple-400/30', badge: 'bg-purple-400/20 text-purple-200', letter: 'bg-purple-500/30 text-purple-200 border-purple-400/40', sub: 'bg-purple-500/10 border-purple-400/20', dot: 'bg-purple-400', active: 'bg-purple-500/20 border-purple-400/30' },
@@ -354,6 +355,11 @@ const Study = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 container-custom">
+      <SEO
+        title="Study Materials"
+        path="/study"
+        description="Aviation and FIRE study materials by Maycon Meier — mnemonics, METARs, aviation mnemonics (PAVE, IMSAFE, ICEFLAGS), procedures, and flashcards for student pilots."
+      />
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

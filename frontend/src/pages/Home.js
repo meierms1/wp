@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { TypeAnimation } from 'react-type-animation';
+import SEO from '../components/SEO';
 import {
   RocketLaunchIcon,
   CodeBracketIcon,
@@ -53,6 +54,10 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        path="/"
+        description="Personal portfolio of Maycon Meier — PhD researcher, software engineer, and data scientist. Explore finance tools, stock analysis, aviation quizzes, and engineering projects."
+      />
       {/* Hero Section */}
       <motion.section
         ref={heroRef}

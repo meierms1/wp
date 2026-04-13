@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Context Providers
 import { AuthProvider } from './contexts/AuthContext';
@@ -39,6 +40,7 @@ const LoadingSpinner = React.memo(() => (
 
 function App() {
   return (
+    <HelmetProvider>
     <ThemeProvider>
       <AuthProvider>
         <Router>
@@ -83,6 +85,7 @@ function App() {
         </Router>
       </AuthProvider>
     </ThemeProvider>
+    </HelmetProvider>
   );
 }
 

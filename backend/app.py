@@ -226,11 +226,11 @@ def add_security_headers(response):
         # Content Security Policy
         csp = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.plot.ly; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.plot.ly https://www.googletagmanager.com; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
-            "img-src 'self' data: https:; "
-            "connect-src 'self' https://api.polygon.io https://query1.finance.yahoo.com; "
+            "img-src 'self' data: https: https://www.google-analytics.com; "
+            "connect-src 'self' https://api.polygon.io https://query1.finance.yahoo.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; "
             "frame-ancestors 'none';"
         )
         response.headers['Content-Security-Policy'] = csp

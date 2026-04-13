@@ -30,3 +30,25 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       });
   });
 }
+
+// Report Core Web Vitals to Google Analytics
+function sendToGA(metric) {
+  if (window.gtag) {
+    window.gtag('event', metric.name, {
+      event_category: 'Web Vitals',
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      event_label: metric.id,
+      non_interaction: true,
+    });
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
+    onCLS(sendToGA);
+    onINP(sendToGA);
+    onFCP(sendToGA);
+    onLCP(sendToGA);
+    onTTFB(sendToGA);
+  });
+}

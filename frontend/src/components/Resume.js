@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from './SEO';
 import {
   DocumentArrowDownIcon,
   GlobeAltIcon,
@@ -189,6 +190,11 @@ const Resume = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-20">
+      <SEO
+        title="Resume"
+        path="/resume"
+        description="Resume of Maycon Meier — postdoctoral researcher at ASU, graduate researcher at CU, software developer, and data scientist. View work experience, skills, education, and publications."
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

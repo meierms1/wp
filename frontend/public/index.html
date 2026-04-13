@@ -13,6 +13,7 @@
   <meta name="keywords" content="portfolio, finance, stock analysis, investment tracking, web development, React, Flask, Python, unit converter, FIRE calculator" />
   <meta name="author" content="Maycon Meier" />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://meierms.com/" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -20,12 +21,39 @@
   <meta property="og:title" content="Maycon Meier - Personal Portfolio | Finance & Technology Platform" />
   <meta property="og:description" content="Personal portfolio featuring advanced finance tools, stock analysis, portfolio tracking, unit converters, and modern web development projects." />
   <meta property="og:site_name" content="Maycon Meier Portfolio" />
+  <meta property="og:image" content="https://meierms.com/logo512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content="https://meierms.com/" />
   <meta name="twitter:title" content="Maycon Meier - Personal Portfolio | Finance & Technology Platform" />
   <meta name="twitter:description" content="Personal portfolio featuring advanced finance tools, stock analysis, portfolio tracking, unit converters, and modern web development projects." />
+  <meta name="twitter:image" content="https://meierms.com/logo512.png" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Maycon Meier",
+    "url": "https://meierms.com",
+    "sameAs": [],
+    "jobTitle": "Software Engineer & PhD Researcher",
+    "description": "Personal portfolio featuring advanced finance tools, stock analysis, portfolio tracking, unit converters, and modern web development projects.",
+    "knowsAbout": ["React", "Flask", "Python", "C++", "Data Science", "Mechanical Engineering", "Finance"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Maycon Meier Portfolio",
+    "url": "https://meierms.com",
+    "description": "Personal portfolio featuring finance tools, stock analysis, portfolio tracking, and modern web development projects."
+  }
+  </script>
   
   <!-- Favicon and Icons -->
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
@@ -43,15 +71,13 @@
   <!-- Preload critical resources -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://api.example.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
   
   <!-- Load fonts with optimal display and reduced weight -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" fetchpriority="high">
   
   <!-- Performance optimizations -->
   <link rel="prefetch" href="/static/resume.pdf">
-  <link rel="preload" href="/static/css/main.css" as="style">
-  <link rel="prefetch" as="script" href="/static/js/main.js">
 </head>
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>

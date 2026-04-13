@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../components/SEO';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
@@ -181,6 +182,11 @@ const SR20 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <SEO
+        title="Cirrus SR20 Performance Calculator"
+        path="/sr20"
+        description="Cirrus SR20 performance calculator by Maycon Meier — takeoff and landing distance, weight & balance, and density altitude calculations for the SR20 aircraft."
+      />
       <div className="container mx-auto px-4 py-20">
         <motion.div
           variants={containerVariants}

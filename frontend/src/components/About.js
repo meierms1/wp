@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import SEO from './SEO';
 import { 
   UserIcon, 
   CodeBracketIcon, 
@@ -57,6 +58,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <SEO
+        title="About"
+        path="/about"
+        description="Learn about Maycon Meier — PhD in Mechanical Engineering, software developer, and data scientist with expertise in Python, React, Flask, C++, and machine learning."
+      />
       <div className="container mx-auto px-4 py-20">
         <motion.div
           variants={containerVariants}

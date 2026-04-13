@@ -686,5 +686,99 @@
                 "description":"Notify ATC or Common"
             }
         ]
+    },
+    {
+        "id": "iceflags",
+        "acronym": "ICEFLAGS",
+        "title": "Spatial Disorientation Illusions",
+        "description": "FAA-recognized mnemonic covering the primary vestibular and visual illusions that lead to spatial disorientation.",
+        "color": "blue",
+        "letters": [
+            {
+                "letter": "I",
+                "word": "Inversion",
+                "description": "An abrupt change from climb to level flight makes you feel like you are tumbling backward."
+            },
+            {
+                "letter": "C",
+                "word": "Coriolis",
+                "description": "Moving your head during a constant-rate turn creates a tumbling sensation."
+            },
+            {
+                "letter": "E",
+                "word": "Elevator",
+                "description": "Updrafts or vertical acceleration make you feel like you are in a climb, often causing you to push the nose down."
+            },
+            {
+                "letter": "F",
+                "word": "False Horizon",
+                "description": "Sloping clouds or obscured horizons cause you to misalign the aircraft with the true horizon."
+            },
+            {
+                "letter": "L",
+                "word": "Leans",
+                "description": "A slow-entry bank followed by a quick correction makes you feel like the plane is banking in the opposite direction."
+            },
+            {
+                "letter": "A",
+                "word": "Autokinesis",
+                "description": "Staring at a stationary light in the dark makes it appear to move."
+            },
+            {
+                "letter": "G",
+                "word": "Graveyard Spin/Spiral",
+                "description": "Failing to detect rotation in a spin causes you to feel like you are spinning the other way during recovery, leading to incorrect rudder inputs."
+            },
+            {
+                "letter": "S",
+                "word": "Somatogravic",
+                "description": "Rapid acceleration (like takeoff) feels like a nose-up pitch, while deceleration feels like a dive."
+            }
+        ]
+    }
+
+        {
+        "id": "NaWiHaFo",
+        "acronym": "NaWiHaFo",
+        "title": "Visual Illusions",
+        "description": "Optical Illusions.",
+        "color": "blue",
+        "letters": [
+            {
+                "letter": "N",
+                "word": "Narrow Runway",
+                "description": "A runway that appears narrower than it actually is can cause pilots to fly at a lower altitude than intended."
+            },
+            {
+                "letter": "S",
+                "word": "Sloped Runway",
+                "description": "Upslope runway can make you feel higher than you are, while downslope can make you feel lower, leading to incorrect altitude adjustments on approach."
+            },
+            {
+                "letter": "H",
+                "word": "Haze",
+                "description": "Haze can reduce visibility and create a false sense of distance, feels farther away than it actually is."
+            },
+            {
+                "letter": "F",
+                "word": "Fog",
+                "description": "Fog can make it feel like you are pitching up when you are actually descending, leading to a dangerous situation if not recognized and corrected."
+            },
+            {
+                "letter": "F",
+                "word": "Featureless terrain",
+                "description": "Feels Higher than you are."
+            },
+            {
+                "letter": "R",
+                "word": "Rain",
+                "description": "Rain can reduce visibility and create a false sense of distance, making it difficult to judge altitude and approach path."
+            },
+            {
+                "letter": "G",
+                "word": "Ground lights",
+                "description": "Lighted up roads, rail road, can be mistaken as a runway."
+            }
+        ]
     }
 ]

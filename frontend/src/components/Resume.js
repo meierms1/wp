@@ -91,6 +91,13 @@ const Resume = () => {
 
   const education = [
     {
+      degree: "Student Pilot",
+      institution: "United Aviate Academy",
+      website: "https://www.aviateacademy.com/",
+      period: "2026 - Present",
+      emphasis: "Currently pursuing a private pilot license with a focus on single-engine aircraft operations and safety procedures."
+    },
+    {
       degree: "PhD in Mechanical and Aerospace Engineering",
       institution: "University of Colorado",
       website: "https://www.uccs.edu",
@@ -143,16 +150,16 @@ const Resume = () => {
 
   const publications = [
     {
-      citation: "Meier M, Mohanta RK, Korobeinikov Y, Leick N, Sitaraman H, Seetharaman S, Ankit K; Tracking dendritic growth in hydrogen-based hematite reduction via computer vision. ChemRxiv (2025).",
-      link: "https://doi.org/10.26434/chemrxiv-2025-1dg68"
+      citation: "Meier M, Mohanta RK, Korobeinikov Y, Leick N, Sitaraman H, Seetharaman S, Ankit K; Tracking dendritic growth in hydrogen-based hematite reduction via computer vision. Materials Characterization (2025): 115493.",
+      link: "https://doi.org/10.1016/j.matchar.2025.115493"
     },
     {
-      citation: "B Runnels, V Agrawal, M Meier; The Alamo multiphysics solver for phase field simulations with strong-form mechanics and block structured adaptive mesh refinement. arXiv preprint (2025) arXiv:2503.08917",
-      link: "https://arxiv.org/abs/2503.08917"
+      citation: "B Runnels, V Agrawal, M Meier; The Alamo multiphysics solver for phase field simulations with strong-form mechanics and block structured adaptive mesh refinement. The Journal of Open Source Software 10.116 (2025): 8581",
+      link: "https://doi.org/10.21105/joss.08581"
     },
     {
-      citation: "EM Boyd, E Sandall, M Meier, JM Quinlan, B Runnels; A diffuse boundary method for phase boundaries in viscous compressible flow. arXiv preprint (2025) arXiv:2502.16053.",
-      link: "https://doi.org/10.48550/arXiv.2502.16053"
+      citation: "EM Boyd, E Sandall, M Meier, JM Quinlan, B Runnels; A diffuse boundary method for phase boundaries in viscous compressible flow. Journal of Computational Physics (2026): 114898.",
+      link: "https://doi.org/10.1016/j.jcp.2026.114898"
     },
     {
       citation: "Meier, M.; Schmidt, E.; Quinlan, J.; Runnels, B: Anisotropy of burn rates in solid composite propellants with phase field modeling. AIAA SciTech (2024):0214.",

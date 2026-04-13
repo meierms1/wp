@@ -5,6 +5,7 @@ Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 Flask-Mail==0.10.0
 Flask-Caching==2.3.0
+Flask-Compress==1.15
 
 # Forms and validation
 WTForms==3.1.2

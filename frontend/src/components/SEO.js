@@ -18,11 +18,11 @@ function SEO({
 }) {
   const fullTitle = title
     ? `${title} | Maycon Meier`
-    : 'Maycon Meier - Personal Portfolio | Finance & Technology Platform';
+    : 'Maycon Meier | Engineer, Researcher and Aviator';
 
   const fullDescription =
     description ||
-    'Personal portfolio of Maycon Meier featuring advanced finance tools, stock analysis, portfolio tracking, unit converters, and modern web development projects.';
+    'PhD researcher and full-stack developer. Explore finance tools, stock analysis, aviation quizzes, engineering calculators, and open-source projects.';
 
   const canonicalUrl = `${BASE_URL}${path}`;
 

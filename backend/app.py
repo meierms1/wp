@@ -33,6 +33,7 @@ from flask import Flask, request, redirect, abort, session, jsonify, send_from_d
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
+from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf import FlaskForm
@@ -121,9 +122,15 @@ if os.getenv('REDIS_URL'):
     })
 app.config.update(cache_config)
 
+# Compression (gzip/Brotli) for all text responses
+app.config['COMPRESS_REGISTER'] = True
+app.config['COMPRESS_LEVEL'] = 6  # balanced speed/size
+app.config['COMPRESS_MIN_SIZE'] = 500  # don't compress tiny responses
+
 # Initialize extensions
 db = SQLAlchemy(app)
 cache = Cache(app)
+compress = Compress(app)  # gzip/Brotli response compression
 
 # Initialize rate limiter for DDoS protection
 def get_limiter_storage():
@@ -151,6 +158,16 @@ app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB max request size
 # Track suspicious activity
 suspicious_ips = set()
 request_counts = {}
+
+# www → non-www canonical redirect (301)
+@app.before_request
+def redirect_www():
+    """Redirect www.meierms.com to meierms.com with a permanent 301."""
+    host = request.host
+    if host and host.startswith('www.'):
+        non_www = host[4:]
+        url = request.url.replace(f'://{host}', f'://{non_www}', 1)
+        return redirect(url, code=301)
 
 # Add IP-based request limiting middleware
 @app.before_request

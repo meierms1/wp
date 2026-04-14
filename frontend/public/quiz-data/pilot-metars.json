@@ -481,7 +481,42 @@
       "question_text": "What is FZRANO?",
       "correct_answer": "Freezing rain sensor not available",
       "explanation": "Indicates the freezing rain detection equipment is not functioning."
+    },
+
+    {
+      "id":81,
+      "question_text": "METAR CYHZ 291700Z 02023G34KT 1 1/4SM R14/4000V5500FT/N -SN BLSN BKN007 OVC020 M02/M03 A2958 RMK BLSN2SF5SC1 VIS VRB 3/4-13/4 SLP027",
+      "correct_answer": "METAR for Halifax Stanfield International Airport on the 29th at 1700Z, with a wind from 020 degrees at 23 knots gusting to 34 knots, visibility of 1 1/4 statute miles, variable runway visual range between 4000 and 5500 feet, light snow and blowing snow, broken clouds at 700 feet, overcast at 2000 feet, temperature -2°C, dew point -3°C, altimeter 29.58 inHg, sea-level pressure 1002.7 hPa.",
+      "explanation": "This METAR report provides detailed weather information for Halifax Stanfield International Airport, including wind, visibility, runway visual range, precipitation, cloud cover, temperature, dew point, and pressure."
+
+    },
+    {
+      "id":82,
+      "question_text": "KPUB 271334Z 26015G26KT 1 3/4SM R08R/ 6000VP6000FT +TSRA BR FEW011 BKN031 OVC043 06/04 A2978 RMK A02 PK WND 26026/1328 LTG DSNT SE AND S AND NW RAB22 TSB15 P0002 T00560039",
+      "correct_answer": "METAR for Pueblo Memorial Airport on the 27th at 1334Z, with a wind from 260 degrees at 15 knots gusting to 26 knots, visibility of 1 3/4 statute miles, variable runway visual range greater than 6000 feet, heavy thunderstorm rain and mist, few clouds at 1100 feet, broken clouds at 3100 feet, overcast at 4300 feet, temperature 6°C, dew point 4°C, altimeter 29.78 inHg, peak wind from 260 degrees at 26 knots at 1328Z, lightning distant southeast and south and northwest, rain amount 0.02 inches, temperature 5.6°C, dew point 3.9°C.",
+      "explanation": "This METAR report provides detailed weather information for Pueblo Memorial Airport, including wind, visibility, runway visual range, precipitation, cloud cover, temperature, dew point, altimeter setting, peak wind, lightning activity, and precipitation amount."
+    },
+    {
+      "id":83,
+      "question_text": "METAR KAPA 222153Z 30014G28KT 3/4SM +TSRAGR BR SCT009 BKN030CB BKN120 13/13 A3010 RMK A02 PK WND 13033/2116 RAB36GRB53 SLP137 PRESRR CONS LTGICCCCG OHD TS OHD MOV E GR 1/4 P0057 T01330133",
+      "correct_answer": "METAR for Centennial Airport on the 22nd at 2153Z, with a wind from 300 degrees at 14 knots gusting to 28 knots, visibility of 3/4 statute miles, heavy thunderstorm rain hail and mist, scattered clouds at 900 feet, broken cumulonimbus clouds at 3000 feet, broken clouds at 12000 feet, temperature 13°C, dew point 13°C, altimeter 30.10 inHg, peak wind from 130 degrees at 33 knots at 2116Z, rain amount 0.57 inches, temperature 13.3°C, dew point 13.3°C, sea-level pressure 1013.7 hPa, pressure rising rapidly, lightning in-cloud and cloud-to-ground, overhead thunderstorm, moving east with hail 1/4 inch in diameter.",
+      "explanation": "This METAR report provides detailed weather information for Centennial Airport, including wind, visibility, precipitation, cloud cover, temperature, dew point, altimeter setting, peak wind, rain amount, sea-level pressure, pressure trend, lightning activity, and hail size."
+    },
+    {"id":84, "question_text":"KAFF 141755Z AUTO 34017KT 1 3/4SM -UP OVC028 M00/M03 A3007 RMK AO2 PK WND 36027/26 SNE1655FZDZB12E13SNB13E25UPB25E29FZRAB29E30UPB30E31FZRAB31E46UPB46E47FZRAB47E48UPB48E49FZRAB49E52UPB52 SLP204 P0000 600000 T10041033 11004 21021 52016 $",
+     "correct_answer": "METAR for Flagstaff Pulliam Airport on the 14th at 1755Z, with an automated observation, wind from 340 degrees at 17 knots, visibility of 1 3/4 statute miles, light unknown precipitation, overcast clouds at 2800 feet, temperature 0°C, dew point -3°C, altimeter 30.07 inHg, peak wind from 360 degrees at 27 knots at 26 minutes past the hour, light freezing drizzle and snow with varying intensity, sea-level pressure 1020.4 hPa, no precipitation amount recorded, temperature 10.4°C, dew point 10.33°C.",
+     "explanation": "This METAR report provides detailed weather information for Flagstaff Pulliam Airport, including wind, visibility, precipitation type and intensity, cloud cover, temperature, dew point, altimeter setting, peak wind information, sea-level pressure, and temperature/dew point details."
+    },
+    {"id":85,
+      "question_text": "MYGF 012300Z 0200/0224 33050G100KT 1600 +TSRA BKN012CB BKN090 OVC200 FM021300 VRB80G200KT 800 +TSRA BKN009CB OVC050",
+      "correct_answer": "METAR for MYGF on the 1st at 2300Z, with a wind from 330 degrees at 50 knots gusting to 100 knots, visibility of 1600 meters, heavy thunderstorm rain, broken cumulonimbus clouds at 1200 feet, broken clouds at 9000 feet, overcast clouds at 20000 feet, from the 2nd at 1300Z variable wind at 80 knots gusting to 200 knots, visibility of 800 meters, heavy thunderstorm rain, broken cumulonimbus clouds at 900 feet, overcast clouds at 5000 feet.",
+      "explanation": "This METAR report provides detailed weather information for MYGF, including wind, visibility, precipitation, cloud cover, and changes in wind and visibility over time."
+    },
+    {"id":86, "question_text": "KPHX 260047Z 17037G61KT 0SM R07L/2800VP6000FT -TSRA +DS VV000 26/23 A2984 RMK AO2 PK WND 18061/0045 WSHFT 0027 RAB32 TSB33 OCNL LTGCG SE TS SE MOV NW P0000",
+     "correct_answer": "METAR for Phoenix Sky Harbor International Airport on the 26th at 0047Z, with a wind from 170 degrees at 37 knots gusting to 61 knots, visibility of 0 statute miles, runway 07L visual range 2800 feet variable up to 6000 feet, light thunderstorm rain, heavy dust storm, vertical visibility 0 feet, temperature 26°C, dew point 23°C, altimeter 29.84 inHg, peak wind from 180 degrees at 61 knots at 0045Z, wind shift at 0027Z, rain amount 0.32 inches, thunderstorm began at 0033Z, occasional lightning cloud-to-ground southeast, thunderstorm southeast moving northwest, no precipitation amount recorded.",
+     "explanation": "This METAR report provides detailed weather information for Phoenix Sky Harbor International Airport, including wind, visibility, runway visual range, precipitation, vertical visibility, temperature, dew point, altimeter setting, peak wind, wind shift, rain amount, thunderstorm activity, and lightning."
     }
+
+
 
   ]
 }

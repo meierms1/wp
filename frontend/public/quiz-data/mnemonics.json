@@ -653,40 +653,7 @@
             }
         ]
     },
-    {
-        "id": "lost",
-        "acronym": "5Cs",
-        "title": "Go around",
-        "description": "Immediate response to failed landing.",
-        "color": "green",
-        "letters": [
-            {
-                "letter": "C",
-                "word": "Cram",
-                "description": "Apply full power smoothly."
-            },
-            {
-                "letter": "C",
-                "word": "Climb",
-                "description": "Establish positive rate, and then Vy."
-            },
-            {
-                "letter": "C",
-                "word": "Clean",
-                "description": "Bring flaps up."
-            },
-            {
-                "letter": "C",
-                "word": "Cool/Course",
-                "description": "Open Cowl flaps and/or turn to the proper heading."
-            },
-            {
-                "letter": "C",
-                "word":"Call/Click",
-                "description":"Notify ATC or Common"
-            }
-        ]
-    },
+
     {
         "id": "iceflags",
         "acronym": "ICEFLAGS",
@@ -778,6 +745,77 @@
                 "letter": "G",
                 "word": "Ground lights",
                 "description": "Lighted up roads, rail road, can be mistaken as a runway."
+            }
+        ]
+    },
+    {
+        "id": "acid-report",
+        "acronym": "ACID",
+        "title": "Mandatory Reporting Requirements",
+        "description": "Covers the four categories of events pilots are legally required to report to the FAA or NTSB. Timeframes: 5 days (written incident report if NTSB requests), 10 days (written accident report), 30 days (address change), 60 days (DUI/drug conviction). NOTE: Both accidents AND serious incidents require IMMEDIATE NTSB notification under Part 830.5 — only accidents require the follow-up written report.",
+        "color": "red",
+        "letters": [
+            {
+                "letter": "A",
+                "word": "Accident (NTSB Part 830)",
+                "description": "Any occurrence associated with aircraft operation resulting in death, serious injury, or substantial aircraft damage. Requires IMMEDIATE notification to NTSB, followed by a written report within 10 days. Substantial damage does NOT include engine failure, bent fairings, dented skin, or worn tires."
+            },
+            {
+                "letter": "C",
+                "word": "Conviction / DUI / Drug offense (§61.15)",
+                "description": "Any motor vehicle action — arrest, conviction, or administrative action — related to alcohol (DUI/DWI) or drugs must be reported to the FAA Civil Aviation Security Division within 60 days. Failure to report is grounds for certificate suspension or revocation. A second offense within 3 years results in mandatory certificate action."
+            },
+            {
+                "letter": "I",
+                "word": "Incident (NTSB Part 830)",
+                "description": "Any occurrence other than an accident that affects or could affect safety. Divided into two types: (1) SERIOUS INCIDENTS — listed in Part 830.5 — require IMMEDIATE NTSB notification (same as accidents), but no written report unless NTSB requests one. (2) REGULAR INCIDENTS — no notification required; only a written report if NTSB specifically requests it within 5 days.",
+                "subMnemonic": {
+                    "acronym": "FITS-CD",
+                    "title": "Serious Incidents Requiring Immediate NTSB Notification (§830.5)",
+                    "description": "These serious incidents require IMMEDIATE notification to NTSB — same requirement as accidents — but do NOT require a written report unless NTSB asks.",
+                    "letters": [
+                        {
+                            "letter": "F",
+                            "word": "Flight control system malfunction or failure",
+                            "description": "Any in-flight malfunction or failure of the flight control system."
+                        },
+                        {
+                            "letter": "I",
+                            "word": "Incapacitation of required crew member",
+                            "description": "Any required flight crew member is unable to perform normal flight duties due to injury or illness."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Turbine engine component failure with debris escape",
+                            "description": "Failure of any internal turbine engine component that results in the escape of debris other than out the exhaust path."
+                        },
+                        {
+                            "letter": "S",
+                            "word": "Sustained loss of multiple systems (large aircraft)",
+                            "description": "For aircraft over 12,500 lbs: sustained loss of power from two or more engines, hydraulic system failure requiring reliance on sole remaining system, or in-flight emergency evacuation."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Collision in flight",
+                            "description": "Mid-air collision with another aircraft or object."
+                        },
+                        {
+                            "letter": "D",
+                            "word": "Damage to property over $25,000",
+                            "description": "Aircraft causes estimated damage of $25,000 or more to property other than the aircraft (repair cost or fair market value, whichever is less)."
+                        },
+                        {
+                            "letter": "F",
+                            "word": "Fire in flight",
+                            "description": "In-flight fire requiring emergency action."
+                        }
+                    ]
+                }
+            },
+            {
+                "letter": "D",
+                "word": "Domicile / Address change (§61.60)",
+                "description": "You must notify the FAA in writing within 30 days of a permanent change of mailing address. If you don't update your address, you are not current and cannot exercise certificate privileges — your certificate is still valid but you may not fly."
             }
         ]
     }

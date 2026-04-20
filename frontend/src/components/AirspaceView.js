@@ -333,7 +333,8 @@ const AirspaceView = ({ data }) => {
                     <p className="text-white/35 text-xs mb-2">{cls.weather_minimums.note}</p>
                     <WeatherBlock label="Day, < 1,200 AGL" vis={cls.weather_minimums.day_below_1200_agl.visibility} clouds={cls.weather_minimums.day_below_1200_agl.cloud_clearance} />
                     <WeatherBlock label="Night, < 1,200 AGL" vis={cls.weather_minimums.night_below_1200_agl.visibility} clouds={cls.weather_minimums.night_below_1200_agl.cloud_clearance} />
-                    <WeatherBlock label="Day or Night, 1,200–10,000 AGL" vis={cls.weather_minimums.day_1200_to_10000.visibility} clouds={cls.weather_minimums.day_1200_to_10000.cloud_clearance} />
+                    <WeatherBlock label="Day, 1,200–10,000 AGL" vis={cls.weather_minimums.day_1200_to_10000.visibility} clouds={cls.weather_minimums.day_1200_to_10000.cloud_clearance} />
+                    <WeatherBlock label="Night, 1,200–10,000 AGL" vis={cls.weather_minimums.night_1200_to_10000.visibility} clouds={cls.weather_minimums.night_1200_to_10000.cloud_clearance} />
                     <WeatherBlock label="At or above 10,000 MSL" vis={cls.weather_minimums.above_10000.visibility} clouds={cls.weather_minimums.above_10000.cloud_clearance} />
                   </div>
                 ) : (
@@ -425,6 +426,16 @@ const AirspaceView = ({ data }) => {
           </table>
         </div>
         <p className="text-white/20 text-xs mt-2 italic">* Class E above 10,000 MSL requires 5 SM vis and 1k/1k/1SM cloud clearance.</p>
+      </div>
+
+      {/* ── VFR Weather Minimums Chart ── */}
+      <div className="mt-8">
+        <h3 className="text-white/20 text-xs font-bold uppercase tracking-widest mb-1">VFR Weather Minimums</h3>
+        <img
+          src="/static/mins.webp"
+          alt="Memory aid for VFR Weather Minimums"
+          className="w-full rounded-xl border border-white/10"
+        />
       </div>
     </div>
   );

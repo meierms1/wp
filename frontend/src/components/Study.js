@@ -4,6 +4,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import FlowsView from './FlowsView';
+import AirspaceView from './AirspaceView';
+import WeatherView from './WeatherView';
 import SEO from './SEO';
 
 const colorMap = {
@@ -255,6 +257,8 @@ const Study = () => {
   const [generalData, setGeneralData]     = useState(null);
   const [mnemonicsData, setMnemonicsData] = useState(null);
   const [flowsData, setFlowsData]         = useState(null);
+  const [airspaceData, setAirspaceData]   = useState(null);
+  const [weatherData, setWeatherData]     = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedStudy, setSelectedStudy] = useState(null);
 
@@ -265,16 +269,20 @@ const Study = () => {
   const fetchStudyData = async () => {
     try {
       setLoading(true);
-      const [metarsRes, generalRes, mnemonicsRes, flowsRes] = await Promise.all([
+      const [metarsRes, generalRes, mnemonicsRes, flowsRes, airspaceRes, weatherRes] = await Promise.all([
         axios.get('/quiz-data/pilot-metars.json'),
         axios.get('/quiz-data/pilot-general.json'),
         axios.get('/quiz-data/mnemonics.json'),
         axios.get('/quiz-data/flows.json'),
+        axios.get('/quiz-data/airspace.json'),
+        axios.get('/quiz-data/weather.json'),
       ]);
       setMetarsData(metarsRes.data);
       setGeneralData(generalRes.data);
       setMnemonicsData(mnemonicsRes.data);
       setFlowsData(flowsRes.data);
+      setAirspaceData(airspaceRes.data);
+      setWeatherData(weatherRes.data);
     } catch (error) {
       console.error('Error loading study data:', error);
       toast.error('Failed to load study materials');
@@ -449,6 +457,34 @@ const Study = () => {
               Start Studying →
             </span>
           </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSelectedStudy('airspace')}
+            className="group bg-gradient-to-br from-orange-600/40 to-amber-400/20 hover:from-orange-600/60 hover:to-amber-400/40 border border-orange-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-orange-300 mb-4 group-hover:text-orange-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">Airspace</h2>
+            <p className="text-orange-200 mb-4">Classes A · B · C · D · E · G</p>
+            <span className="text-orange-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSelectedStudy('weather')}
+            className="group bg-gradient-to-br from-sky-600/40 to-blue-400/20 hover:from-sky-600/60 hover:to-blue-400/40 border border-sky-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-sky-300 mb-4 group-hover:text-sky-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">Weather</h2>
+            <p className="text-sky-200 mb-4">PHAK Ch. 11–12 · 12 topics</p>
+            <span className="text-sky-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
         </motion.div>
       ) : (
         <motion.div
@@ -467,6 +503,10 @@ const Study = () => {
             <MnemonicsView data={mnemonicsData} />
           ) : selectedStudy === 'flows' ? (
             <FlowsView data={flowsData} />
+          ) : selectedStudy === 'airspace' ? (
+            <AirspaceView data={airspaceData} />
+          ) : selectedStudy === 'weather' ? (
+            <WeatherView data={weatherData} />
           ) : (
             <StudyBox
               data={selectedStudy === 'metars' ? metarsData : generalData}

@@ -1,0 +1,255 @@
+[
+  {
+    "id": "A",
+    "name": "Class A",
+    "tagline": "The jet highway — IFR only, always",
+    "altRange": "18,000 MSL – FL600",
+    "altFloor": 18000,
+    "altCeiling": 60000,
+    "shape": "Covers the entire contiguous U.S., Alaska, Hawaii, and overlying U.S. airspace nationwide.",
+    "description": "Class A is the highest controlled airspace, used exclusively for IFR operations. All jets and turboprops cruise here under positive ATC control. VFR flight is completely prohibited. You'll be talking to Air Route Traffic Control Centers (ARTCCs) the entire time.",
+    "dimensions": {
+      "floor": "18,000 ft MSL",
+      "ceiling": "FL600 (60,000 ft MSL)",
+      "horizontal": "Contiguous U.S., Alaska, Hawaii, and overlying international airspace"
+    },
+    "vfr_permitted": false,
+    "clearance_required": true,
+    "clearance_details": "ATC IFR clearance required before entering. VFR operations are not permitted under any circumstances. File and activate an IFR flight plan before departure.",
+    "two_way_comm": "Required — maintained with ATC throughout the flight (ARTCCs)",
+    "transponder": "Mode C altitude-encoding transponder required",
+    "pilot_certificate": "Instrument Rating required",
+    "aircraft_equipment": [
+      "IFR-equipped aircraft",
+      "Transponder with Mode C encoder",
+      "Two-way radio",
+      "ADS-B Out (required)"
+    ],
+    "weather_minimums": {
+      "note": "IFR only — VFR weather minimums do not apply."
+    },
+    "entry_requirements": [
+      { "req": "File and activate an IFR flight plan", "icon": "📋" },
+      { "req": "Obtain ATC IFR clearance prior to entry", "icon": "🎯" },
+      { "req": "Instrument rating (required pilot certificate)", "icon": "🪪" },
+      { "req": "IFR-equipped aircraft", "icon": "✈️" },
+      { "req": "Transponder with Mode C operating", "icon": "📡" },
+      { "req": "Two-way radio contact with ARTCC throughout", "icon": "📻" }
+    ],
+    "fun_fact": "Above 18,000 MSL, all altimeters are set to 29.92 in Hg (standard pressure). You no longer say '25,000 feet' — you say 'Flight Level 250.' This eliminates altimeter setting errors that could cause altitude conflicts between aircraft.",
+    "regulation": "14 CFR 71.33 / 91.135"
+  },
+  {
+    "id": "B",
+    "name": "Class B",
+    "tagline": "Upside-down wedding cake — get that clearance",
+    "altRange": "Surface to ~10,000 MSL",
+    "altFloor": 0,
+    "altCeiling": 10000,
+    "shape": "Upside-down wedding cake: multiple concentric circular tiers, each with a higher floor as you move outward. Centered on the primary airport at major hubs (LAX, JFK, ORD, ATL, DFW).",
+    "description": "Class B surrounds the nation's busiest commercial airports. The tiered shape allows aircraft to transition underneath it. The key rule: you must hear the explicit words 'cleared into Class Bravo' — nothing else qualifies as entry clearance.",
+    "dimensions": {
+      "floor": "Surface at the primary airport, rising in steps outward",
+      "ceiling": "Typically 10,000 ft MSL (varies per individual airport)",
+      "horizontal": "Typically 10–30 nm radius in tiered rings. A 30 nm Mode C Veil extends beyond the boundary."
+    },
+    "vfr_permitted": true,
+    "clearance_required": true,
+    "clearance_details": "Explicit ATC clearance required — you must hear 'cleared into Class Bravo.' A response of 'N12345, standby' does NOT grant permission to enter. You must receive and read back the full clearance.",
+    "two_way_comm": "Required before and throughout operations within Class B",
+    "transponder": "Mode C required inside Class B and within the entire 30 nm Mode C Veil of the primary airport",
+    "pilot_certificate": "Private Pilot certificate minimum. Student pilots require a specific instructor endorsement for that Class B airport.",
+    "aircraft_equipment": [
+      "Two-way radio",
+      "Transponder with Mode C (within B and 30 nm veil)",
+      "ADS-B Out equipment (required)"
+    ],
+    "weather_minimums": {
+      "note": "Unique to Class B: no specific cloud distance requirement.",
+      "visibility": "3 statute miles",
+      "cloud_clearance": "Clear of clouds (no distance requirement)"
+    },
+    "entry_requirements": [
+      { "req": "Private Pilot certificate (or student with a specific Class B endorsement)", "icon": "🪪" },
+      { "req": "Explicit ATC clearance — must hear 'cleared into Class Bravo'", "icon": "🎯" },
+      { "req": "Transponder with Mode C operating", "icon": "📡" },
+      { "req": "ADS-B Out equipment", "icon": "📡" },
+      { "req": "3 SM visibility and clear of clouds (VFR)", "icon": "☁️" }
+    ],
+    "fun_fact": "The 30 nm Mode C Veil extends well beyond the charted Class B boundary. If you're within 30 nm of a Class B primary airport, you need a Mode C transponder — even if you never enter the B itself. This surprises many student pilots near large cities.",
+    "regulation": "14 CFR 71.41 / 91.131"
+  },
+  {
+    "id": "C",
+    "name": "Class C",
+    "tagline": "Talk before you enter — two-way comm is enough",
+    "altRange": "Surface to ~4,000 AGL",
+    "altFloor": 0,
+    "altCeiling": 4000,
+    "shape": "Two concentric circles: inner 5 nm ring (surface to 4,000 AGL) and outer 5–10 nm ring (1,200 AGL to 4,000 AGL). Depicted with solid magenta rings on sectional charts.",
+    "description": "Class C surrounds airports with an operational TRACON (Terminal Radar Approach Control). You don't need explicit clearance — just establish two-way communication with approach control before entering. But ATC must acknowledge your specific callsign, not just 'aircraft calling.'",
+    "dimensions": {
+      "floor": "Surface (inner 5 nm) / 1,200 AGL (outer 5–10 nm ring)",
+      "ceiling": "~4,000 ft AGL above the primary airport elevation",
+      "horizontal": "5 nm inner ring, 10 nm outer ring, plus an informal ~20 nm outer area (voluntary services)"
+    },
+    "vfr_permitted": true,
+    "clearance_required": false,
+    "clearance_details": "No explicit clearance needed — establish two-way communication before entering. CRITICAL: ATC must acknowledge your specific callsign. 'Aircraft calling, standby' (without your tail number) does NOT establish two-way comm. Wait until they use your N-number.",
+    "two_way_comm": "Must be established prior to entry — ATC must acknowledge your specific callsign",
+    "transponder": "Mode C required within Class C and within 10 nm of the primary airport up to 10,000 MSL",
+    "pilot_certificate": "No special certification required — student pilot OK",
+    "aircraft_equipment": [
+      "Two-way radio",
+      "Transponder with Mode C",
+      "ADS-B Out equipment (required)"
+    ],
+    "weather_minimums": {
+      "note": "Standard controlled airspace VFR minimums.",
+      "visibility": "3 statute miles",
+      "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+    },
+    "entry_requirements": [
+      { "req": "Establish two-way comm with approach control — ATC must use your callsign", "icon": "📻" },
+      { "req": "Transponder with Mode C operating", "icon": "📡" },
+      { "req": "ADS-B Out equipment", "icon": "📡" },
+      { "req": "3 SM visibility, 500/1,000/2,000 cloud clearance", "icon": "☁️" }
+    ],
+    "fun_fact": "Class C has an outer area extending to about 20 nm that isn't depicted on charts. ATC services are available there but participation is voluntary — you can opt in for radar advisories. Only within the two solid magenta rings is communication mandatory.",
+    "regulation": "14 CFR 71.51 / 91.130"
+  },
+  {
+    "id": "D",
+    "name": "Class D",
+    "tagline": "Towered airport — say hello before you enter",
+    "altRange": "Surface to ~2,500 AGL",
+    "altFloor": 0,
+    "altCeiling": 2500,
+    "shape": "Roughly circular, ~4–5 nm radius around a towered airport. Depicted with a dashed blue circle on sectional charts. Ceiling shown as [XX] in hundreds of feet MSL (e.g., [25] = 2,500 AGL).",
+    "description": "Class D surrounds airports with an operational control tower but no radar approach control. Entry is simple: talk to the tower before crossing the boundary. When the tower closes (part-time towers), Class D ceases to exist and reverts to Class E or G.",
+    "dimensions": {
+      "floor": "Surface",
+      "ceiling": "~2,500 ft AGL (shown on sectional as [XX] in hundreds of feet MSL)",
+      "horizontal": "Typically 4–5 nm radius, dashed blue circle on sectional charts"
+    },
+    "vfr_permitted": true,
+    "clearance_required": false,
+    "clearance_details": "No clearance required — just establish two-way communication with the tower before entering. Same callsign rule as Class C: ATC must acknowledge your specific tail number.",
+    "two_way_comm": "Must be established prior to entry — ATC must acknowledge your callsign",
+    "transponder": "Not specifically required for Class D — required only if overlying airspace (B, C, or Mode C Veil) mandates it",
+    "pilot_certificate": "No special certification required — student pilot OK",
+    "aircraft_equipment": [
+      "Two-way radio",
+      "Transponder if required by overlying airspace"
+    ],
+    "weather_minimums": {
+      "note": "Standard controlled airspace VFR minimums.",
+      "visibility": "3 statute miles",
+      "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+    },
+    "entry_requirements": [
+      { "req": "Establish two-way radio communication with the control tower before entry", "icon": "📻" },
+      { "req": "3 SM visibility, 500/1,000/2,000 from clouds", "icon": "☁️" }
+    ],
+    "fun_fact": "Always check tower hours. Part-time towers are common, and when the tower closes, Class D airspace ceases to exist. Check the Chart Supplement or sectional for tower operating hours — it completely changes your communication requirements after hours.",
+    "regulation": "14 CFR 71.61 / 91.129"
+  },
+  {
+    "id": "E",
+    "name": "Class E",
+    "tagline": "IFR protected, VFR free — the great middle layer",
+    "altRange": "700 or 1,200 AGL — 17,999 MSL (varies)",
+    "altFloor": 1200,
+    "altCeiling": 18000,
+    "shape": "Everything controlled that isn't A, B, C, or D. Exists nationwide at various floors: surface at some non-towered airports, 700 AGL (magenta vignette), 1,200 AGL (en-route), or 14,500 MSL in remote areas.",
+    "description": "Class E is the most common airspace in the country. Its primary purpose is to protect IFR traffic on airways and approaches. VFR pilots can fly through it freely without talking to anyone. The floor varies by location — reading sectional charts is key.",
+    "dimensions": {
+      "floor": "Varies: surface (some airports) / 700 AGL (magenta vignette) / 1,200 AGL (typical) / 14,500 MSL (remote areas)",
+      "ceiling": "17,999 ft MSL (the floor of Class A at 18,000)",
+      "horizontal": "Nationwide everywhere not covered by other classes, plus overlying domestic oceanic airspace"
+    },
+    "vfr_permitted": true,
+    "clearance_required": false,
+    "clearance_details": "VFR pilots need no clearance and no communication with ATC. IFR flights require ATC clearance (as always for IFR).",
+    "two_way_comm": "Not required for VFR flight. IFR flights must maintain ATC contact.",
+    "transponder": "Mode C required above 10,000 MSL (except within 2,500 AGL of terrain). Also required in Mode C Veil areas.",
+    "pilot_certificate": "No special certification required — student pilot OK",
+    "aircraft_equipment": [
+      "Transponder with Mode C above 10,000 MSL",
+      "ADS-B Out above 10,000 MSL and in designated Class E airspace at airports"
+    ],
+    "weather_minimums": {
+      "note": "Different minimums above and below 10,000 MSL.",
+      "below_10000": {
+        "visibility": "3 statute miles",
+        "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+      },
+      "above_10000": {
+        "visibility": "5 statute miles",
+        "cloud_clearance": "1,000 ft below / 1,000 ft above / 1 SM horizontal"
+      }
+    },
+    "entry_requirements": [
+      { "req": "No specific entry requirements for VFR flight", "icon": "✅" },
+      { "req": "Meet VFR weather minimums for the altitude", "icon": "☁️" },
+      { "req": "Mode C transponder required above 10,000 MSL", "icon": "📡" },
+      { "req": "ADS-B Out required above 10,000 MSL (and other designated areas)", "icon": "📡" }
+    ],
+    "fun_fact": "A magenta vignette (fading border) on a sectional means Class E starts at 700 AGL — it protects instrument approaches. A solid blue border means 1,200 AGL. No vignette at all? Class G all the way up until the en-route E structure begins.",
+    "regulation": "14 CFR 71.71 / 91.127"
+  },
+  {
+    "id": "G",
+    "name": "Class G",
+    "tagline": "Uncontrolled — fly free, see and avoid",
+    "altRange": "Surface to Class E floor (~0–1,200 AGL)",
+    "altFloor": 0,
+    "altCeiling": 1200,
+    "shape": "Everything that isn't A, B, C, D, or E. Typically the lowest-altitude airspace — 0 to 1,200 AGL in most rural areas, 0 to 700 AGL near instrument approach airports. No chart designation — you identify it by elimination.",
+    "description": "Class G is completely uncontrolled airspace. ATC provides no separation services here. No clearance, no communication, no transponder required. Most low-altitude rural flying happens here. Just meet the weather minimums — which are the most permissive of any airspace.",
+    "dimensions": {
+      "floor": "Surface (ground level or water)",
+      "ceiling": "The floor of Class E above (typically 700 or 1,200 AGL; up to 14,500 MSL in remote western areas)",
+      "horizontal": "Everywhere below the floor of Class E — primarily rural and remote areas"
+    },
+    "vfr_permitted": true,
+    "clearance_required": false,
+    "clearance_details": "No clearance required. No ATC contact required. This is truly uncontrolled airspace — see and avoid applies fully. Simply meet the weather minimums.",
+    "two_way_comm": "Not required",
+    "transponder": "Not specifically required (unless within a Mode C Veil or other airspace requiring one)",
+    "pilot_certificate": "Student pilot OK (with appropriate solo endorsements)",
+    "aircraft_equipment": [
+      "No specific equipment requirements for VFR flight"
+    ],
+    "weather_minimums": {
+      "note": "Most permissive minimums in the NAS — vary by altitude and day/night.",
+      "day_below_1200_agl": {
+        "visibility": "1 statute mile",
+        "cloud_clearance": "Clear of clouds"
+      },
+      "night_below_1200_agl": {
+        "visibility": "3 statute miles",
+        "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+      },
+      "day_1200_to_10000": {
+        "visibility": "1 statute mile",
+        "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+      },
+      "night_1200_to_10000": {
+        "visibility": "3 statute miles",
+        "cloud_clearance": "500 ft below / 1,000 ft above / 2,000 ft horizontal"
+      },
+      "above_10000": {
+        "visibility": "5 statute miles",
+        "cloud_clearance": "1,000 ft below / 1,000 ft above / 1 SM horizontal"
+      }
+    },
+    "entry_requirements": [
+      { "req": "No communication, clearance, or transponder required (check for Mode C Veil exceptions)", "icon": "✅" },
+      { "req": "Day, < 1,200 AGL: 1 SM visibility, clear of clouds", "icon": "☀️" },
+      { "req": "Night, < 1,200 AGL: 3 SM visibility, 500/1,000/2,000 from clouds", "icon": "🌙" }
+    ],
+    "fun_fact": "Class G isn't 'designated' anywhere — it's defined as what remains after all other classes are removed. You won't find a single 'G' label on any sectional chart. You identify it purely by process of elimination: if nothing else covers it, it's G.",
+    "regulation": "14 CFR 91.126"
+  }
+]

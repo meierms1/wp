@@ -1,0 +1,607 @@
+[
+  {
+    "id": "atmosphere",
+    "name": "Atmosphere",
+    "emoji": "🌍",
+    "color": "blue",
+    "tagline": "The ocean of air — layers, composition, ISA",
+    "keyStats": [
+      { "label": "SL Temp (ISA)", "value": "15°C / 59°F" },
+      { "label": "SL Pressure", "value": "29.92 in Hg" },
+      { "label": "Lapse Rate", "value": "2°C / 1,000 ft" },
+      { "label": "Tropopause", "value": "~36,000 ft" }
+    ],
+    "sections": [
+      {
+        "title": "Atmospheric Layers (surface → space)",
+        "rows": [
+          { "label": "Troposphere", "info": "Surface to ~36,000 ft · all weather occurs here · temperature decreases at 2°C/1,000 ft" },
+          { "label": "Tropopause", "info": "Thin boundary at ~36,000 ft · temperature stops decreasing · jet stream located here" },
+          { "label": "Stratosphere", "info": "~36,000–160,000 ft · very stable · temperature constant then rises due to ozone absorption" },
+          { "label": "Above stratosphere", "info": "Mesosphere, thermosphere, exosphere — no operational aviation significance" }
+        ]
+      },
+      {
+        "title": "Composition",
+        "rows": [
+          { "label": "Nitrogen (N₂)", "info": "78% of dry atmosphere — inert, not consumed by combustion" },
+          { "label": "Oxygen (O₂)", "info": "21% — required for combustion and respiration" },
+          { "label": "Other", "info": "1% — argon, CO₂, water vapor, trace gases" }
+        ]
+      },
+      {
+        "title": "International Standard Atmosphere (ISA)",
+        "rows": [
+          { "label": "Sea Level Temperature", "info": "15°C (59°F) — decreases 2°C per 1,000 ft to tropopause" },
+          { "label": "Sea Level Pressure", "info": "29.92 in Hg / 1013.25 hPa — decreases approximately 1 in Hg per 1,000 ft" },
+          { "label": "Speed of Sound", "info": "661 KTAS at MSL — decreases with altitude due to lower temperature" },
+          { "label": "Standard Day", "info": "All aircraft performance data is based on ISA — real conditions nearly always differ" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pressure",
+    "name": "Pressure",
+    "emoji": "📊",
+    "color": "indigo",
+    "tagline": "Highs, lows, altimetry, density altitude",
+    "keyStats": [
+      { "label": "Std Pressure MSL", "value": "29.92 in Hg" },
+      { "label": "Per 1,000 ft ↑", "value": "−1 in Hg approx" },
+      { "label": "High/Low alt setting", "value": "High → Low = lower than indicated" },
+      { "label": "Density Alt", "value": "Pressure alt + temp correction" }
+    ],
+    "sections": [
+      {
+        "title": "High & Low Pressure Systems",
+        "rows": [
+          { "label": "High Pressure (H)", "info": "Descending/sinking air · diverges from center · clockwise circulation (NH) · generally fair weather" },
+          { "label": "Low Pressure (L)", "info": "Rising air · converges at center · counterclockwise (NH) · clouds, precipitation, bad weather" },
+          { "label": "Pressure Gradient", "info": "Rate of pressure change over distance · closely-spaced isobars = stronger winds" },
+          { "label": "Isobars", "info": "Lines of equal pressure on surface analysis charts · wind flows nearly parallel to them" }
+        ]
+      },
+      {
+        "title": "Altimetry",
+        "rows": [
+          { "label": "Altimeter Setting", "info": "Adjusts altimeter to local sea-level pressure so indicated altitude matches actual MSL altitude" },
+          { "label": "\"High to Low Look Out Below\"", "info": "Flying from high to low pressure without updating altimeter: aircraft is lower than indicated" },
+          { "label": "Pressure Altitude", "info": "Altitude indicated with altimeter set to 29.92 in Hg · used for all aircraft performance tables" },
+          { "label": "Class A Operation", "info": "All aircraft set 29.92 above 18,000 MSL — FL altitudes eliminate setting differences" }
+        ]
+      },
+      {
+        "title": "Density Altitude",
+        "hazard": "caution",
+        "rows": [
+          { "label": "Definition", "info": "Pressure altitude corrected for non-standard temperature · the altitude the aircraft 'thinks' it's at" },
+          { "label": "Increases with", "info": "↑ temperature, ↑ field elevation, ↑ humidity" },
+          { "label": "Effect on performance", "info": "Reduced engine power, reduced prop efficiency, longer takeoff roll, reduced climb rate" },
+          { "label": "Hot/High/Humid (Triple H)", "info": "Density altitude can far exceed field elevation — performance charts are mandatory, not optional" },
+          { "label": "Rule of thumb", "info": "Density alt rises ~120 ft per °C above ISA (roughly)" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "temperature",
+    "name": "Temperature",
+    "emoji": "🌡",
+    "color": "amber",
+    "tagline": "Heat transfer, lapse rates, and inversions",
+    "keyStats": [
+      { "label": "Std Lapse Rate", "value": "2°C / 1,000 ft" },
+      { "label": "Dry Adiabatic (DALR)", "value": "3°C / 1,000 ft" },
+      { "label": "Moist Adiabatic (SALR)", "value": "~1.5°C / 1,000 ft" },
+      { "label": "Inversion", "value": "Temp increases with altitude" }
+    ],
+    "sections": [
+      {
+        "title": "Heat Transfer Mechanisms",
+        "rows": [
+          { "label": "Radiation", "info": "Energy from sun heats earth's surface directly" },
+          { "label": "Conduction", "info": "Transfer through direct contact — surface heats adjacent air molecules" },
+          { "label": "Convection", "info": "Vertical movement of air transporting heat — thermals, columns of rising air" },
+          { "label": "Advection", "info": "Horizontal transport of heat (or cold) via moving air masses" }
+        ]
+      },
+      {
+        "title": "Lapse Rates",
+        "rows": [
+          { "label": "Environmental (ELR)", "info": "Actual temperature change measured in the existing atmosphere — varies by day and location" },
+          { "label": "Dry Adiabatic (DALR)", "info": "3°C / 1,000 ft — unsaturated parcel cools at this rate as it rises" },
+          { "label": "Moist/Saturated Adiabatic (SALR)", "info": "~1.5°C / 1,000 ft — saturated parcel releases latent heat, cools slower" },
+          { "label": "Standard (ISA)", "info": "2°C / 1,000 ft — average used for navigation, altimeter settings, performance data" }
+        ]
+      },
+      {
+        "title": "Temperature Inversions",
+        "hazard": "caution",
+        "rows": [
+          { "label": "Definition", "info": "Temperature increases with altitude — opposite of normal · creates very stable layer" },
+          { "label": "Effect on aircraft", "info": "Wind shear often present at the top · visibility can be poor below (trapped smoke/haze)" },
+          { "label": "Radiation Inversion", "info": "Forms overnight via surface cooling · clear sky + calm wind + moist air = fog in valleys" },
+          { "label": "Subsidence Inversion", "info": "Sinking air in high-pressure centers warms adiabatically · caps convection, traps pollutants" },
+          { "label": "Frontal Inversion", "info": "Warm air riding over cold at frontal boundary — ceiling and visibility change at inversion level" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "moisture",
+    "name": "Moisture & Clouds",
+    "emoji": "☁️",
+    "color": "sky",
+    "tagline": "Humidity, dew point, cloud families, precipitation",
+    "keyStats": [
+      { "label": "Cloud Base (AGL)", "value": "(T − Td) × 400 ft" },
+      { "label": "Fog likely when spread", "value": "< 4°F (2°C)" },
+      { "label": "High clouds", "value": "16,500 – 45,000 ft" },
+      { "label": "Low clouds", "value": "Surface – 6,500 ft" }
+    ],
+    "sections": [
+      {
+        "title": "Moisture Basics",
+        "rows": [
+          { "label": "Relative Humidity", "info": "Ratio of actual moisture to maximum possible at that temperature — expressed as %" },
+          { "label": "Dew Point", "info": "Temperature to which air must cool (at constant pressure) to become saturated and begin condensing" },
+          { "label": "T/Td Spread", "info": "Temperature minus dew point — smaller spread means more moisture; < 4°F = fog or low cloud risk" },
+          { "label": "Condensation Nuclei", "info": "Tiny particles (dust, sea salt, smoke) that water vapor condenses on to form cloud droplets" }
+        ]
+      },
+      {
+        "title": "Cloud Families",
+        "rows": [
+          { "label": "High (16,500–45,000 ft)", "info": "Cirrus (Ci), Cirrostratus (Cs), Cirrocumulus (Cc) · ice crystals only · no significant precipitation" },
+          { "label": "Middle (6,500–23,000 ft)", "info": "Altostratus (As), Altocumulus (Ac) · mixed ice and water · light precipitation possible" },
+          { "label": "Low (surface–6,500 ft)", "info": "Stratus (St), Stratocumulus (Sc), Nimbostratus (Ns) · liquid water · steady rain/drizzle from Ns" },
+          { "label": "Vertical development", "info": "Cumulus (Cu), Cumulonimbus (Cb) · span multiple levels · indicate instability · Cb = thunderstorm" }
+        ]
+      },
+      {
+        "title": "Cloud Name Prefixes/Suffixes",
+        "rows": [
+          { "label": "Cumulus", "info": "Heaped/puffy — unstable air, vertical development" },
+          { "label": "Stratus", "info": "Layered/sheet — stable air, horizontal development" },
+          { "label": "Cirrus", "info": "High, wispy ice crystals — prefix for high clouds" },
+          { "label": "Nimbus", "info": "Rain-bearing — Nimbostratus (steady) or Cumulonimbus (convective)" },
+          { "label": "Alto", "info": "Middle level prefix — Altostratus, Altocumulus" }
+        ]
+      },
+      {
+        "title": "Precipitation Types",
+        "rows": [
+          { "label": "Drizzle", "info": "Drops < 0.5 mm · from stratus clouds · significantly reduces visibility" },
+          { "label": "Rain / Showers", "info": "Rain: steady from Ns · Showers: intermittent from Cb/Cu — start/stop abruptly" },
+          { "label": "Freezing Rain / Drizzle", "info": "Supercooled drops freeze on contact — severe icing hazard for aircraft" },
+          { "label": "Snow", "info": "Ice crystals — reduces visibility · accumulates on surfaces" },
+          { "label": "Hail", "info": "Ice pellets formed in thunderstorm updrafts — can extend 2+ nm from storm" },
+          { "label": "Virga", "info": "Precipitation that evaporates before reaching the ground — visible streamers from cloud base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fog",
+    "name": "Fog",
+    "emoji": "🌫",
+    "color": "slate",
+    "tagline": "Five types — same result, different causes",
+    "keyStats": [
+      { "label": "Fog definition", "value": "Visibility < ¼ SM" },
+      { "label": "Mist", "value": "¼ – ⅝ SM visibility" },
+      { "label": "Spread for fog risk", "value": "T/Td spread < 4°F" },
+      { "label": "Types", "value": "5 main types" }
+    ],
+    "sections": [
+      {
+        "title": "Radiation Fog",
+        "rows": [
+          { "label": "Conditions", "info": "Clear sky + calm/light winds (< 5 kt) + moist surface air + nighttime radiational cooling" },
+          { "label": "Location", "info": "Valleys and low areas — cold dense air drains downslope · thickest near sunrise" },
+          { "label": "Dissipation", "info": "Burns off after sunrise from the top down · may lift to low stratus layer first" }
+        ]
+      },
+      {
+        "title": "Advection Fog",
+        "rows": [
+          { "label": "Conditions", "info": "Warm moist air moves horizontally over a colder surface and cools to dew point" },
+          { "label": "Location", "info": "Common on Pacific coast, Great Lakes, coastal areas year-round" },
+          { "label": "Key difference", "info": "Requires wind (unlike radiation) · can be extensive and persistent for days · forms day or night" }
+        ]
+      },
+      {
+        "title": "Upslope Fog",
+        "rows": [
+          { "label": "Conditions", "info": "Moist air forced up terrain slope and cools adiabatically to its dew point" },
+          { "label": "Location", "info": "East slopes of Rockies, Appalachians — requires easterly wind flow uphill" }
+        ]
+      },
+      {
+        "title": "Steam Fog (Arctic Sea Smoke)",
+        "rows": [
+          { "label": "Conditions", "info": "Cold, dry air moves over warm water — water evaporates and condenses immediately above the surface" },
+          { "label": "Location", "info": "Lakes and coastal areas in fall/winter — appears as steam rising" },
+          { "label": "Hazard", "info": "Associated with low-level turbulence and icing conditions" }
+        ]
+      },
+      {
+        "title": "Frontal (Precipitation) Fog",
+        "rows": [
+          { "label": "Conditions", "info": "Warm rain falls through sub-freezing air ahead of a warm/stationary front · evaporates and saturates cold air below" },
+          { "label": "Extent", "info": "Widespread and persistent · serious IFR hazard along warm or stationary fronts for hundreds of miles" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stability",
+    "name": "Stability",
+    "emoji": "⚖️",
+    "color": "green",
+    "tagline": "What resists vertical motion — or what triggers explosive convection",
+    "keyStats": [
+      { "label": "Stable clouds", "value": "Stratus, fog, steady precip" },
+      { "label": "Unstable clouds", "value": "Cumulus, CB, showers" },
+      { "label": "DALR", "value": "3°C / 1,000 ft (dry)" },
+      { "label": "Unstable if", "value": "ELR > DALR" }
+    ],
+    "sections": [
+      {
+        "title": "Stability States",
+        "rows": [
+          { "label": "Absolutely Stable", "info": "ELR < SALR · rising parcel always cooler than surroundings · resists all vertical motion" },
+          { "label": "Conditionally Unstable", "info": "SALR < ELR < DALR · stable when unsaturated, unstable once saturated · most common state" },
+          { "label": "Absolutely Unstable", "info": "ELR > DALR · parcel always warmer than environment — uncontrolled violent convection" }
+        ]
+      },
+      {
+        "title": "Lifting Mechanisms",
+        "rows": [
+          { "label": "Orographic", "info": "Air forced over terrain · windward side: clouds and precip · lee side: warming and drying (foehn/chinook)" },
+          { "label": "Frontal", "info": "Dense cold air undercuts warm air mass · forces warm air upward along frontal slope" },
+          { "label": "Convective", "info": "Surface heating creates thermals — columns of rising warm air · peak in afternoon" },
+          { "label": "Convergence", "info": "Surface winds from different directions converge, forcing air aloft · common in low pressure centers" }
+        ]
+      },
+      {
+        "title": "Stability Indicators",
+        "rows": [
+          { "label": "Stable signs", "info": "Stratus clouds · steady widespread precipitation · smooth air · reduced visibility (haze/smoke trapped below inversion)" },
+          { "label": "Unstable signs", "info": "Growing towering Cu (TCu) · cumulonimbus · showery precipitation · excellent visibility · turbulent air" },
+          { "label": "Developing instability", "info": "Cumulus bases lowering and tops rising through the day → afternoon thunderstorm risk" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thunderstorms",
+    "name": "Thunderstorms",
+    "emoji": "⛈",
+    "color": "red",
+    "tagline": "Never penetrate — always avoid by 20 nm",
+    "keyStats": [
+      { "label": "Avoid by", "value": "20 nm horizontal" },
+      { "label": "Requirements", "value": "Moisture + Lift + Instability" },
+      { "label": "Microburst", "value": "Up to 6,000 fpm down" },
+      { "label": "Hail can extend", "value": "2+ nm from storm" }
+    ],
+    "sections": [
+      {
+        "title": "Formation Requirements (all 3 needed)",
+        "rows": [
+          { "label": "Moisture", "info": "Sufficient water vapor — maritime tropical (mT) air masses are primary fuel" },
+          { "label": "Lifting Force", "info": "Frontal, orographic, convective, or convergence lifting to initiate vertical development" },
+          { "label": "Instability", "info": "Unstable atmosphere that allows a lifted parcel to continue rising on its own" }
+        ]
+      },
+      {
+        "title": "Life Cycle Stages",
+        "rows": [
+          { "label": "1. Cumulus Stage", "info": "Updrafts only · cloud building rapidly · no lightning or precipitation yet" },
+          { "label": "2. Mature Stage", "info": "Most intense · updrafts AND downdrafts coexist · lightning · heavy precipitation · hail · most dangerous" },
+          { "label": "3. Dissipating Stage", "info": "Downdrafts dominate · rain tapering · anvil may persist · can still be severe near mature cells nearby" }
+        ]
+      },
+      {
+        "title": "Types",
+        "rows": [
+          { "label": "Air Mass (Single-Cell)", "info": "Local surface heating · isolated · short-lived (< 1 hr) · peaks late afternoon" },
+          { "label": "Frontal / Squall Line", "info": "Along or ahead of cold fronts · fast-moving · severe weather · extensive coverage" },
+          { "label": "Orographic", "info": "Forced lifting over mountains · can be stationary relative to terrain" },
+          { "label": "Supercell", "info": "Long-lived rotating storm · produces largest hail, strongest tornadoes, extreme winds" },
+          { "label": "Embedded (Squall Line)", "info": "Hidden inside stratiform clouds · no visual warning · detected by radar or PIREP only — most dangerous to encounter" }
+        ]
+      },
+      {
+        "title": "Hazards",
+        "hazard": "danger",
+        "rows": [
+          { "label": "Severe Turbulence", "info": "Extends up to 20 nm from storm in clear air · severe to extreme intensity" },
+          { "label": "Hail", "info": "Can fall 2+ nm from visible cloud edge · clear air above — no visual warning" },
+          { "label": "Microbursts", "info": "Intense concentrated downdraft (up to 6,000 fpm) · severe wind shear on approach below 1,000 ft AGL" },
+          { "label": "Lightning", "info": "Strikes aircraft directly · induced electrical surges damage avionics and fuel systems" },
+          { "label": "Low-Level Wind Shear", "info": "Sudden airspeed loss on approach — if you gain airspeed then lose it rapidly, go around immediately" },
+          { "label": "Structural Icing", "info": "Severe icing in updraft regions at −0°C to −20°C · supercooled large drops above that" },
+          { "label": "Tornadoes", "info": "Most violent weather phenomenon · especially from supercell thunderstorms" }
+        ]
+      },
+      {
+        "title": "Avoidance Rules",
+        "hazard": "caution",
+        "rows": [
+          { "label": "Horizontal avoidance", "info": "At least 20 nm from any active thunderstorm · hail and CAT extend well beyond visible cloud" },
+          { "label": "Never fly under the anvil", "info": "Hail, severe turbulence, and downbursts occur beneath the anvil of active cells" },
+          { "label": "Never penetrate a CB", "info": "There is no safe thunderstorm — avoid any cumulonimbus of any intensity" },
+          { "label": "Microbursts", "info": "Maximum intensity at 100–300 ft AGL · wet or dry (dry microbursts are invisible) · radius 1–2 nm · last 5–15 min" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "icing",
+    "name": "Icing",
+    "emoji": "🧊",
+    "color": "cyan",
+    "tagline": "Structural and carburetor — both kill performance",
+    "keyStats": [
+      { "label": "Structural icing", "value": "Visible moisture + ≤ 0°C OAT" },
+      { "label": "Peak hazard zone", "value": "0°C to −20°C" },
+      { "label": "Carb ice range", "value": "−7°C to +21°C" },
+      { "label": "Carb temp drop", "value": "15–25°C in venturi" }
+    ],
+    "sections": [
+      {
+        "title": "Structural Icing — Requirements",
+        "hazard": "danger",
+        "rows": [
+          { "label": "Both conditions required", "info": "Visible moisture (cloud, rain, drizzle, fog) AND OAT at or below 0°C (32°F)" },
+          { "label": "Most hazardous range", "info": "0°C to −20°C where supercooled large drops (SLD) exist in greatest concentration" },
+          { "label": "Above −40°C", "info": "All water has frozen to ice crystals — risk greatly reduced; aircraft can fly through without accumulation" }
+        ]
+      },
+      {
+        "title": "Types of Structural Ice",
+        "rows": [
+          { "label": "Clear Ice", "info": "Large supercooled drops freeze slowly — smooth, hard, transparent · heaviest accumulation · most dangerous · hardest to shed" },
+          { "label": "Rime Ice", "info": "Small drops freeze instantly — rough, opaque, white, brittle · lighter than clear · less lift disruption but still dangerous" },
+          { "label": "Mixed Ice", "info": "Combination of both — irregular shape, rough surface, difficult to remove · common in clouds with varying drop sizes" }
+        ]
+      },
+      {
+        "title": "Effects on Aircraft",
+        "hazard": "danger",
+        "rows": [
+          { "label": "Lift loss", "info": "Disrupts smooth airflow over wing — ½ inch of clear ice can reduce lift by 30% or more" },
+          { "label": "Drag increase", "info": "Rough surface dramatically increases parasite drag" },
+          { "label": "Weight", "info": "Ice adds hundreds of pounds rapidly — reduces useful load and climb performance" },
+          { "label": "Control loss", "info": "Ice on control surfaces reduces effectiveness and may cause flutter or airframe damage" },
+          { "label": "Pitot/static blockage", "info": "Iced pitot tube → erroneous/stuck airspeed; iced static port → erroneous altimeter + VSI" }
+        ]
+      },
+      {
+        "title": "Carburetor Icing",
+        "hazard": "caution",
+        "rows": [
+          { "label": "How it forms", "info": "Fuel vaporization + venturi effect drops temperature 15–25°C · ice forms on throttle plate and venturi" },
+          { "label": "Conditions", "info": "OAT −7°C to +21°C (20°F–70°F) + high relative humidity · can form in clear air" },
+          { "label": "Symptom (fixed-pitch)", "info": "Unexplained RPM decrease" },
+          { "label": "Symptom (constant-speed)", "info": "Manifold pressure drop with no RPM change" },
+          { "label": "Treatment", "info": "Apply FULL carburetor heat · engine may run rough briefly as ice melts — this is normal, wait for RPM to recover" },
+          { "label": "Prevention", "info": "Use carb heat during low power (descent), in high humidity, near dew point · check POH placard for guidance" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "turbulence",
+    "name": "Turbulence",
+    "emoji": "💨",
+    "color": "orange",
+    "tagline": "Thermals, shear, mountains, clear air — always report PIREPs",
+    "keyStats": [
+      { "label": "Intensities", "value": "Light / Mod / Severe / Extreme" },
+      { "label": "CAT location", "value": "Near jet stream, no visual cue" },
+      { "label": "Mountain wave extent", "value": "100s of nm downwind" },
+      { "label": "Lenticular clouds", "value": "Mark wave crests (not the rotor)" }
+    ],
+    "sections": [
+      {
+        "title": "Intensities",
+        "rows": [
+          { "label": "Light", "info": "Slight erratic changes in altitude/attitude · occupants may feel slight strain against seatbelts" },
+          { "label": "Moderate", "info": "Similar to light but more intense · aircraft fully controllable · unsecured items displaced" },
+          { "label": "Severe", "info": "Large abrupt changes · possible brief loss of control · occupants forced hard against restraints · injury possible" },
+          { "label": "Extreme", "info": "Aircraft practically impossible to control · structural damage likely · very rare" }
+        ]
+      },
+      {
+        "title": "Types & Causes",
+        "rows": [
+          { "label": "Convective (Thermal)", "info": "Solar heating creates rising/sinking columns · below and near cumulus clouds · peaks in afternoon" },
+          { "label": "Mechanical", "info": "Wind flowing over rough terrain, buildings, trees · intensity increases with wind speed" },
+          { "label": "Wind Shear", "info": "Abrupt change in wind speed/direction over short distance · near fronts, inversions, jet stream" },
+          { "label": "Mountain Wave", "info": "Standing wave in lee of mountains · rotor zone extremely turbulent · can persist 100s of nm downwind" },
+          { "label": "Clear Air (CAT)", "info": "No visual cue · near jet stream, tropopause · fast and sudden · abrupt changes alert crew" },
+          { "label": "Wake Turbulence", "info": "Wingtip vortices from large aircraft · descend and move upwind · stay above and upwind of large aircraft flight path" }
+        ]
+      },
+      {
+        "title": "Mountain Wave — Details",
+        "hazard": "caution",
+        "rows": [
+          { "label": "Lenticular (ACSL) clouds", "info": "Stationary lens-shaped clouds at wave crests — they mark the wave, NOT where the turbulence is worst" },
+          { "label": "Rotor zone", "info": "In the lee below wave crest — extremely severe/extreme turbulence · can break up aircraft" },
+          { "label": "Cap cloud", "info": "Clouds over mountain peak — air is accelerating through; severe turbulence and icing" },
+          { "label": "Extent", "info": "Wave can reach 5× mountain height and extend hundreds of nm downwind" },
+          { "label": "Conditions for formation", "info": "Wind 20+ kt perpendicular to ridge · wind speed increases with altitude · stable layer above mountain top" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wind",
+    "name": "Wind",
+    "emoji": "🌬",
+    "color": "teal",
+    "tagline": "Global circulation, jet stream, and local effects",
+    "keyStats": [
+      { "label": "Jet stream speed", "value": "100–200+ kt" },
+      { "label": "Jet stream altitude", "value": "30,000–40,000 ft" },
+      { "label": "Friction layer", "value": "Surface to ~2,000 AGL" },
+      { "label": "Coriolis (NH)", "value": "Deflects wind right" }
+    ],
+    "sections": [
+      {
+        "title": "Global Circulation",
+        "rows": [
+          { "label": "Coriolis Effect", "info": "Earth's rotation deflects moving air — right in Northern Hemisphere, left in Southern Hemisphere" },
+          { "label": "Trade Winds", "info": "Northeast (NH) / Southeast (SH) surface winds · 0°–30° latitude · toward the ITCZ" },
+          { "label": "Westerlies", "info": "Prevailing surface westerlies 30°–60° latitude — U.S. weather moves west to east because of this" },
+          { "label": "Polar Easterlies", "info": "Cold dry air flows from poles toward 60° latitude" }
+        ]
+      },
+      {
+        "title": "Jet Streams",
+        "rows": [
+          { "label": "Polar Jet", "info": "Strongest jet · 30,000–40,000 ft · average 100–200 kt · meanders N-S with seasons · affects most U.S. flight plans" },
+          { "label": "Subtropical Jet", "info": "Weaker · 25,000–35,000 ft · more stable location year-round" },
+          { "label": "CAT risk", "info": "Severe turbulence near jet core edges — especially where wind shear is greatest" },
+          { "label": "Navigation", "info": "Ride the jet tailwind eastbound · avoid or route around westbound to save fuel and time" }
+        ]
+      },
+      {
+        "title": "Surface Wind Effects",
+        "rows": [
+          { "label": "Friction layer", "info": "Surface to ~2,000 AGL — friction slows wind speed and causes backing (counterclockwise direction shift in NH)" },
+          { "label": "Wind shear through friction layer", "info": "Significant speed and direction change from runway to 2,000 AGL — critical for takeoff/landing performance" }
+        ]
+      },
+      {
+        "title": "Local Wind Effects",
+        "rows": [
+          { "label": "Sea Breeze", "info": "Daytime — land heats faster than water → low pressure onshore → cool sea air flows inland" },
+          { "label": "Land Breeze", "info": "Nighttime — land cools faster → cool air drains seaward · typically gentler than sea breeze" },
+          { "label": "Valley/Mountain Breeze", "info": "Anabatic (day): valley heats → air rises up slopes · Katabatic (night): cool air drains down into valleys" },
+          { "label": "Chinook / Santa Ana", "info": "Dry warm downslope winds — can gust violently at terrain base, cause fire risk, significant low-level turbulence" }
+        ]
+      },
+      {
+        "title": "Wind Shear",
+        "hazard": "caution",
+        "rows": [
+          { "label": "Definition", "info": "Any abrupt change in wind speed or direction over a short distance — horizontal or vertical" },
+          { "label": "Low-level wind shear (LLWS)", "info": "Most critical — below 2,000 ft AGL on approach or departure · from fronts, thunderstorms, inversions" },
+          { "label": "Microburst wind shear", "info": "Headwind → downdraft → tailwind in sequence on approach = rapidly decreasing performance" },
+          { "label": "Recovery", "info": "Immediate full power, pitch up, escape the shear — do not try to salvage the approach" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fronts",
+    "name": "Air Masses & Fronts",
+    "emoji": "🗺",
+    "color": "purple",
+    "tagline": "Boundaries between air masses drive most NAS weather",
+    "keyStats": [
+      { "label": "Cold front slope", "value": "1:50 to 1:100" },
+      { "label": "Warm front slope", "value": "1:100 to 1:200" },
+      { "label": "IFR for days", "value": "Warm & stationary fronts" },
+      { "label": "Fast cold front", "value": "Narrow, severe, clears fast" }
+    ],
+    "sections": [
+      {
+        "title": "Air Mass Classification",
+        "rows": [
+          { "label": "cA / cP (continental Arctic/Polar)", "info": "Cold, dry, stable · originates over land (Canada/Alaska) · clear weather but cold" },
+          { "label": "mP (maritime Polar)", "info": "Cool, moist · from N. Pacific or N. Atlantic · stratus, drizzle, low ceilings on coasts" },
+          { "label": "cT (continental Tropical)", "info": "Hot, dry, unstable · from SW U.S. / Mexico desert in summer · good visibility but high density altitude" },
+          { "label": "mT (maritime Tropical)", "info": "Warm, moist, unstable · from Gulf/Caribbean · primary thunderstorm fuel for U.S. · poor visibility in haze" }
+        ]
+      },
+      {
+        "title": "Cold Front",
+        "rows": [
+          { "label": "Structure", "info": "Cold dense air wedges under warmer air · steep slope (1:50 to 1:100) · fast-moving" },
+          { "label": "Weather (fast-moving)", "info": "Narrow squall line of CB, heavy showers, thunderstorms · severe but brief · excellent visibility after passage" },
+          { "label": "Weather (slow-moving)", "info": "Broader area of clouds and precipitation · embedded CB · worse than fast fronts for IFR" },
+          { "label": "After passage", "info": "Temperature drops sharply · pressure rises · winds veer clockwise (NH) · visibility improves dramatically" }
+        ]
+      },
+      {
+        "title": "Warm Front",
+        "rows": [
+          { "label": "Structure", "info": "Warm air overrides slower cold air · gradual slope (1:100 to 1:200) · extensive cloud deck ahead" },
+          { "label": "Cloud sequence (250+ nm ahead)", "info": "Cirrus → Cirrostratus (halo) → Altostratus → Nimbostratus — ceiling lowers progressively" },
+          { "label": "Weather below", "info": "Steady widespread precipitation for hundreds of miles · low ceilings · poor visibility · IFR for extended periods" },
+          { "label": "Freezing rain hazard", "info": "Warm rain falls through sub-freezing air below front — severe widespread icing at all altitudes below the frontal slope" },
+          { "label": "After passage", "info": "Temperature rises · humidity remains high · visibility may still be limited in haze and low stratus" }
+        ]
+      },
+      {
+        "title": "Stationary, Occluded & Dry Line",
+        "rows": [
+          { "label": "Stationary Front", "info": "Movement < 5 kt · IFR conditions can persist for days over a large area — the worst scenario for VFR planning" },
+          { "label": "Occluded Front (Cold Type)", "info": "Fast cold front catches warm front · complex weather extending through the troposphere" },
+          { "label": "Dry Line", "info": "Not a temperature boundary — moisture boundary in the Great Plains · explosive thunderstorm trigger (not on most charts)" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "products",
+    "name": "Weather Products",
+    "emoji": "📡",
+    "color": "emerald",
+    "tagline": "Know your sources — from METAR to Convective SIGMET",
+    "keyStats": [
+      { "label": "METAR interval", "value": "Hourly + SPECI" },
+      { "label": "TAF valid period", "value": "24–30 hours" },
+      { "label": "SIGMET valid", "value": "4 hr (6 hr convective)" },
+      { "label": "AIRMET valid", "value": "6 hours" }
+    ],
+    "sections": [
+      {
+        "title": "Current / Observed Conditions",
+        "rows": [
+          { "label": "METAR", "info": "Aviation Routine Weather Report · issued hourly · surface obs at airports (wind, vis, sky, temp, dewpoint, altimeter)" },
+          { "label": "SPECI", "info": "Special METAR issued when significant change occurs (below IFR minimums, wind shift, precip onset, etc.)" },
+          { "label": "AWOS / ASOS", "info": "Automated stations · continuous reporting · some require pilot-only input (AWSS) · verify via Notam for outages" },
+          { "label": "PIREP (UA / UUA)", "info": "Pilot Reports · UA = routine · UUA = urgent · only real-time source of in-flight weather across many routes — file them" }
+        ]
+      },
+      {
+        "title": "Forecasts",
+        "rows": [
+          { "label": "TAF", "info": "Terminal Aerodrome Forecast · 24–30 hr window · within 5 SM radius of airport · issued 4×/day" },
+          { "label": "GFA (Graphical Forecast for Aviation)", "info": "Replaces FA for CONUS · graphical depiction of clouds, precip, turbulence, icing · 12-hr forecasts" },
+          { "label": "Winds and Temps Aloft (FB)", "info": "Forecast winds/temps at 3,000–53,000 ft at multiple stations · issued 4×/day · essential for fuel planning" },
+          { "label": "Prog Charts", "info": "12/24/36/48-hr surface/upper-level forecast · isobars, fronts, pressure systems" }
+        ]
+      },
+      {
+        "title": "Advisories & Warnings",
+        "hazard": "caution",
+        "rows": [
+          { "label": "SIGMET (WS)", "info": "Significant Met Info · non-convective · covers severe/extreme turbulence, severe icing, volcanic ash, sand storms · 4-hr valid" },
+          { "label": "Convective SIGMET (WST)", "info": "Thunderstorm activity · issued hourly or special · always valid for all aircraft · supersedes all other convective advisories" },
+          { "label": "AIRMET Sierra (WA)", "info": "IFR conditions (ceilings < 1,000 ft / vis < 3 SM) and/or mountain obscuration · 6-hr valid · critical for VFR flight" },
+          { "label": "AIRMET Tango (WA)", "info": "Moderate turbulence, sustained surface winds > 30 kt, low-level wind shear · 6-hr valid" },
+          { "label": "AIRMET Zulu (WA)", "info": "Moderate icing and freezing levels · 6-hr valid" },
+          { "label": "CWA (Center Weather Advisory)", "info": "Issued by ARTCCs for imminent or existing weather within 2 hrs · highly localized and specific · very useful in-flight" }
+        ]
+      },
+      {
+        "title": "Radar, Tools & Imagery",
+        "rows": [
+          { "label": "NEXRAD Radar", "info": "National Doppler radar network · shows precipitation intensity (dBZ) and type · foundation of weather avoidance" },
+          { "label": "ADS-B / FIS-B Datalink", "info": "Delivers NEXRAD to cockpit for free via ADS-B In · ALWAYS 5–20 minutes delayed — NOT for direct storm avoidance" },
+          { "label": "Satellite Imagery", "info": "Visible (daytime) and IR (day/night) · IR shows cloud-top temperatures from which cloud heights are estimated" },
+          { "label": "Skew-T / Sounding", "info": "Upper-air analysis · shows actual lapse rates, freezing levels, wind shear by altitude, CB potential (CAPE, LI)" }
+        ]
+      }
+    ]
+  }
+]

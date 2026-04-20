@@ -441,11 +441,48 @@
     },
     {
         "id": "procedures",
-        "acronym": "Procedures",
-        "title": "Emergencies, Go-Around & Spin Recovery",
+        "acronym": "PROCEDURES",
+        "title": "Lost, Emergencies, Go-Around & Spin Recovery",
         "description": "Essential emergency and abnormal procedures every pilot must know by memory.",
         "color": "green",
         "letters": [
+            {
+                "letter": "L",
+                "word": "Lost",
+                "description": "Steps to manage stress, locate landmarks, and secure assistance in case of getting lost in the weather.",
+                "subMnemonic": {
+                    "acronym": "5Cs",
+                    "title": "Lost in weather",
+                    "description": "Steps to manage stress, locate landmarks, and secure assistance in case of getting lost in the weather.",
+                    "letters": [
+                        {
+                            "letter": "C",
+                            "word": "Climb",
+                            "description": "Gain altitude to increase radio range, improve visibility, and avoid terrain."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Circle",
+                            "description": "Circle over spot to avoid getting further off-track."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Confess",
+                            "description": "Confess to yourself and others that you are lost and need assistance."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Communicate",
+                            "description": "Call on a local frequency or 121.5 MHz for assistance."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Comply",
+                            "description": "Comply with ATC instructions and procedures"
+                        }
+                    ]
+                }
+            },
             {
                 "letter": "E",
                 "word": "Emergency",
@@ -556,10 +593,10 @@
     },
     {
         "id": "5hazardous",
-        "acronym": "5 Attitudes",
+        "acronym": "5ATTITUDES",
         "title": "5 Hazardous Attitudes",
         "description": "The five hazardous attitudes that lead to poor aeronautical decision making (ADM), and their antidotes.",
-        "color": "red",
+        "color": "orange",
         "letters": [
             {
                 "letter": "1",
@@ -627,76 +664,58 @@
             }
         ]
     },
+       
+
     {
-        "id": "hypoxia",
-        "acronym": "HASH",
-        "title": "4 Types of Hypoxia",
-        "description": "The four types of hypoxia that can impair pilot performance. All result in insufficient oxygen at the cellular level but have different causes and treatments.",
-        "color": "red",
+        "id": "NaWiHaFo",
+        "acronym": "NaWiHaFo",
+        "title": "Visual Illusions",
+        "description": "Optical Illusions.",
+        "color": "blue",
         "letters": [
             {
-                "letter": "H",
-                "word": "Hypoxic Hypoxia",
-                "description": "Caused by reduced partial pressure of oxygen at altitude. The most common type for pilots — above 10,000 ft MSL symptoms begin. Above 18,000 ft, time of useful consciousness drops sharply. Treatment: descend or use supplemental oxygen."
-            },
-            {
-                "letter": "A",
-                "word": "Anemic (Hypemic) Hypoxia",
-                "description": "Caused by a reduced oxygen-carrying capacity of the blood. Common causes include anemia, blood loss, and carbon monoxide poisoning (CO binds to hemoglobin 200× more readily than oxygen). Even small amounts of CO can dramatically reduce useful oxygen delivery. Treatment: remove source, fresh air, supplemental oxygen."
+                "letter": "N",
+                "word": "Narrow Runway",
+                "description": "A runway that appears narrower than it actually is can cause pilots to fly at a lower altitude than intended."
             },
             {
                 "letter": "S",
-                "word": "Stagnant Hypoxia",
-                "description": "Caused by poor or absent blood circulation, preventing oxygen from reaching the tissues. Causes include heart failure, shock, pulling positive G-forces (blood pools away from the brain), or a tourniquet. Treatment: address the circulation problem; G-suit and AGSM (anti-G straining maneuver) can help in high-G flight."
+                "word": "Sloped Runway",
+                "description": "Upslope runway can make you feel higher than you are, while downslope can make you feel lower, leading to incorrect altitude adjustments on approach."
             },
             {
                 "letter": "H",
-                "word": "Histotoxic Hypoxia",
-                "description": "Caused by the inability of cells to use oxygen even when it is available. Common causes include alcohol and certain drugs (e.g., narcotics, cyanide) that poison the cellular oxygen-uptake mechanism. Supplemental oxygen does not help because the problem is at the cellular level, not the supply. Treatment: remove the toxic substance."
+                "word": "Haze",
+                "description": "Haze can reduce visibility and create a false sense of distance, feels farther away than it actually is."
+            },
+            {
+                "letter": "F",
+                "word": "Fog",
+                "description": "Fog can make it feel like you are pitching up when you are actually descending, leading to a dangerous situation if not recognized and corrected."
+            },
+            {
+                "letter": "F",
+                "word": "Featureless terrain",
+                "description": "Feels Higher than you are."
+            },
+            {
+                "letter": "R",
+                "word": "Rain",
+                "description": "Rain can reduce visibility and create a false sense of distance, making it difficult to judge altitude and approach path."
+            },
+            {
+                "letter": "G",
+                "word": "Ground lights",
+                "description": "Lighted up roads, rail road, can be mistaken as a runway."
             }
         ]
     },
-     {
-        "id": "lost",
-        "acronym": "5Cs",
-        "title": "Lost in weather",
-        "description": "Steps to manage stress, locate landmarks, and secure assistance in case of getting lost in the weather.",
-        "color": "red",
-        "letters": [
-            {
-                "letter": "C",
-                "word": "Climb",
-                "description": "Gain altitude to increase radio range, improve visibility, and avoid terrain."
-            },
-            {
-                "letter": "C",
-                "word": "Circle",
-                "description": "Circle over spot to avoid getting further off-track."
-            },
-            {
-                "letter": "C",
-                "word": "Confess",
-                "description": "Admit to yourself and than to ATC that you are lost."
-            },
-            {
-                "letter": "C",
-                "word": "Communicate",
-                "description": "Call on a local frequency or 121.5 for assistance."
-            },
-            {
-                "letter": "C",
-                "word":"Comply",
-                "description":"Follow instructions from ATC"
-            }
-        ]
-    },
-
     {
         "id": "iceflags",
         "acronym": "ICEFLAGS",
         "title": "Spatial Disorientation Illusions",
         "description": "FAA-recognized mnemonic covering the primary vestibular and visual illusions that lead to spatial disorientation.",
-        "color": "blue",
+        "color": "yellow",
         "letters": [
             {
                 "letter": "I",
@@ -740,48 +759,32 @@
             }
         ]
     },
-
     {
-        "id": "NaWiHaFo",
-        "acronym": "NaWiHaFo",
-        "title": "Visual Illusions",
-        "description": "Optical Illusions.",
-        "color": "blue",
+        "id": "hypoxia",
+        "acronym": "HASH",
+        "title": "4 Types of Hypoxia",
+        "description": "The four types of hypoxia that can impair pilot performance. All result in insufficient oxygen at the cellular level but have different causes and treatments.",
+        "color": "red",
         "letters": [
             {
-                "letter": "N",
-                "word": "Narrow Runway",
-                "description": "A runway that appears narrower than it actually is can cause pilots to fly at a lower altitude than intended."
+                "letter": "H",
+                "word": "Hypoxic Hypoxia",
+                "description": "Caused by reduced partial pressure of oxygen at altitude. The most common type for pilots — above 10,000 ft MSL symptoms begin. Above 18,000 ft, time of useful consciousness drops sharply. Treatment: descend or use supplemental oxygen."
+            },
+            {
+                "letter": "A",
+                "word": "Anemic (Hypemic) Hypoxia",
+                "description": "Caused by a reduced oxygen-carrying capacity of the blood. Common causes include anemia, blood loss, and carbon monoxide poisoning (CO binds to hemoglobin 200× more readily than oxygen). Even small amounts of CO can dramatically reduce useful oxygen delivery. Treatment: remove source, fresh air, supplemental oxygen."
             },
             {
                 "letter": "S",
-                "word": "Sloped Runway",
-                "description": "Upslope runway can make you feel higher than you are, while downslope can make you feel lower, leading to incorrect altitude adjustments on approach."
+                "word": "Stagnant Hypoxia",
+                "description": "Caused by poor or absent blood circulation, preventing oxygen from reaching the tissues. Causes include heart failure, shock, pulling positive G-forces (blood pools away from the brain), or a tourniquet. Treatment: address the circulation problem; G-suit and AGSM (anti-G straining maneuver) can help in high-G flight."
             },
             {
                 "letter": "H",
-                "word": "Haze",
-                "description": "Haze can reduce visibility and create a false sense of distance, feels farther away than it actually is."
-            },
-            {
-                "letter": "F",
-                "word": "Fog",
-                "description": "Fog can make it feel like you are pitching up when you are actually descending, leading to a dangerous situation if not recognized and corrected."
-            },
-            {
-                "letter": "F",
-                "word": "Featureless terrain",
-                "description": "Feels Higher than you are."
-            },
-            {
-                "letter": "R",
-                "word": "Rain",
-                "description": "Rain can reduce visibility and create a false sense of distance, making it difficult to judge altitude and approach path."
-            },
-            {
-                "letter": "G",
-                "word": "Ground lights",
-                "description": "Lighted up roads, rail road, can be mistaken as a runway."
+                "word": "Histotoxic Hypoxia",
+                "description": "Caused by the inability of cells to use oxygen even when it is available. Common causes include alcohol and certain drugs (e.g., narcotics, cyanide) that poison the cellular oxygen-uptake mechanism. Supplemental oxygen does not help because the problem is at the cellular level, not the supply. Treatment: remove the toxic substance."
             }
         ]
     },

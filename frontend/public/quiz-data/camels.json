@@ -1,0 +1,108 @@
+{
+  "maneuvers": [
+    { "id": "po_stall",    "name": "Power On Stall",    "abbr": "PO Stall",    "context": "Simulates takeoff",   "group": "stall",      "emoji": "🛫" },
+    { "id": "pf_stall",    "name": "Power Off Stall",   "abbr": "PF Stall",    "context": "Simulates landing",  "group": "stall",      "emoji": "🛬" },
+    { "id": "slow_flight", "name": "Slow Flight",       "abbr": "Slow Flt",    "context": "Edge of control",    "group": "stall",      "emoji": "🐢" },
+    { "id": "steep_turns", "name": "Steep Turns",       "abbr": "Steep Turns", "context": "45° bank",           "group": "maneuver",   "emoji": "🌀" },
+    { "id": "rectangle",   "name": "Rectangle Course",  "abbr": "Rectangle",   "context": "Ground reference",   "group": "ground_ref", "emoji": "🔲" },
+    { "id": "tap",         "name": "Turn Around Point", "abbr": "TAP",         "context": "Ground reference",   "group": "ground_ref", "emoji": "🔄" },
+    { "id": "s_turns",     "name": "S-Turns",           "abbr": "S-Turns",     "context": "Ground reference",   "group": "ground_ref", "emoji": "〰️" }
+  ],
+  "groupLabels": {
+    "stall":     "Stalls & Slow Flight",
+    "maneuver":  "Maneuvers",
+    "ground_ref": "Ground Reference"
+  },
+  "rows": [
+    {
+      "letter": "C",
+      "label": "Configuration",
+      "description": "Flaps · ESP · Fuel pump",
+      "groupColors": { "1": "amber", "2": "orange", "3": "slate", "4": "emerald" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "ESP off\nFlaps 50%\nFuel pump ON",  "group": 1 },
+        { "maneuver": "pf_stall",    "value": "ESP off\nFlaps 100%\nFuel pump ON", "group": 2 },
+        { "maneuver": "slow_flight", "value": "ESP off\nFlaps 100%\nFuel pump ON", "group": 2 },
+        { "maneuver": "steep_turns", "value": "ESP off\nFlaps up\nFuel pump ON",   "group": 3 },
+        { "maneuver": "rectangle",   "value": "ESP on\nFlaps up\nFuel pump ON",    "group": 4 },
+        { "maneuver": "tap",         "value": "ESP on\nFlaps up\nFuel pump ON",    "group": 4 },
+        { "maneuver": "s_turns",     "value": "ESP on\nFlaps up\nFuel pump ON",    "group": 4 }
+      ]
+    },
+    {
+      "letter": "A",
+      "label": "Airspeed",
+      "description": "Entry speed (KIAS)",
+      "groupColors": { "1": "red", "2": "rose", "3": "cyan", "4": "purple", "5": "blue" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "78 KIAS",             "group": 1 },
+        { "maneuver": "pf_stall",    "value": "78 KIAS\n(hold descent)", "group": 2 },
+        { "maneuver": "slow_flight", "value": "Vs + 10 KIAS",        "group": 3 },
+        { "maneuver": "steep_turns", "value": "120 KIAS",            "group": 4 },
+        { "maneuver": "rectangle",   "value": "100 KIAS",            "group": 5 },
+        { "maneuver": "tap",         "value": "100 KIAS",            "group": 5 },
+        { "maneuver": "s_turns",     "value": "100 KIAS",            "group": 5 }
+      ]
+    },
+    {
+      "letter": "M",
+      "label": "Min. Altitude",
+      "description": "Entry altitude AGL",
+      "groupColors": { "1": "sky", "2": "green" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "2,000 ft AGL",     "group": 1 },
+        { "maneuver": "pf_stall",    "value": "2,000 ft AGL",     "group": 1 },
+        { "maneuver": "slow_flight", "value": "2,000 ft AGL",     "group": 1 },
+        { "maneuver": "steep_turns", "value": "2,000 ft AGL",     "group": 1 },
+        { "maneuver": "rectangle",   "value": "600–1,000 ft AGL", "group": 2 },
+        { "maneuver": "tap",         "value": "600–1,000 ft AGL", "group": 2 },
+        { "maneuver": "s_turns",     "value": "600–1,000 ft AGL", "group": 2 }
+      ]
+    },
+    {
+      "letter": "E",
+      "label": "Engine",
+      "description": "Engine parameters",
+      "groupColors": { "1": "indigo" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "Within limits", "group": 1 },
+        { "maneuver": "pf_stall",    "value": "Within limits", "group": 1 },
+        { "maneuver": "slow_flight", "value": "Within limits", "group": 1 },
+        { "maneuver": "steep_turns", "value": "Within limits", "group": 1 },
+        { "maneuver": "rectangle",   "value": "Within limits", "group": 1 },
+        { "maneuver": "tap",         "value": "Within limits", "group": 1 },
+        { "maneuver": "s_turns",     "value": "Within limits", "group": 1 }
+      ]
+    },
+    {
+      "letter": "L",
+      "label": "Landmark",
+      "description": "Visual reference point",
+      "groupColors": { "1": "indigo" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "Find one", "group": 1 },
+        { "maneuver": "pf_stall",    "value": "Find one", "group": 1 },
+        { "maneuver": "slow_flight", "value": "Find one", "group": 1 },
+        { "maneuver": "steep_turns", "value": "Find one", "group": 1 },
+        { "maneuver": "rectangle",   "value": "Find one", "group": 1 },
+        { "maneuver": "tap",         "value": "Find one", "group": 1 },
+        { "maneuver": "s_turns",     "value": "Find one", "group": 1 }
+      ]
+    },
+    {
+      "letter": "S",
+      "label": "Clearing Turns",
+      "description": "Pre-maneuver visual scan",
+      "groupColors": { "1": "indigo" },
+      "cells": [
+        { "maneuver": "po_stall",    "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "pf_stall",    "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "slow_flight", "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "steep_turns", "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "rectangle",   "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "tap",         "value": "Two 90°\nor one 180°", "group": 1 },
+        { "maneuver": "s_turns",     "value": "Two 90°\nor one 180°", "group": 1 }
+      ]
+    }
+  ]
+}

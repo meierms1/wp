@@ -430,7 +430,7 @@ const AirspaceView = ({ data }) => {
 
       {/* ── VFR Weather Minimums Chart ── */}
       <div className="mt-8">
-        <h3 className="text-white/20 text-xs font-bold uppercase tracking-widest mb-1">VFR Weather Minimums</h3>
+        <h3 className="text-white/20 text-xs font-bold uppercase tracking-widest mb-3">VFR Weather Minimums</h3>
         <img
           src="/static/mins.webp"
           alt="Memory aid for VFR Weather Minimums"

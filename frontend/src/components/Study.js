@@ -6,6 +6,7 @@ import { BookOpenIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/reac
 import FlowsView from './FlowsView';
 import AirspaceView from './AirspaceView';
 import WeatherView from './WeatherView';
+import CamelsView from './CamelsView';
 import SEO from './SEO';
 
 const colorMap = {
@@ -259,6 +260,7 @@ const Study = () => {
   const [flowsData, setFlowsData]         = useState(null);
   const [airspaceData, setAirspaceData]   = useState(null);
   const [weatherData, setWeatherData]     = useState(null);
+  const [camelsData, setCamelsData]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedStudy, setSelectedStudy] = useState(null);
 
@@ -269,13 +271,14 @@ const Study = () => {
   const fetchStudyData = async () => {
     try {
       setLoading(true);
-      const [metarsRes, generalRes, mnemonicsRes, flowsRes, airspaceRes, weatherRes] = await Promise.all([
+      const [metarsRes, generalRes, mnemonicsRes, flowsRes, airspaceRes, weatherRes, camelsRes] = await Promise.all([
         axios.get('/quiz-data/pilot-metars.json'),
         axios.get('/quiz-data/pilot-general.json'),
         axios.get('/quiz-data/mnemonics.json'),
         axios.get('/quiz-data/flows.json'),
         axios.get('/quiz-data/airspace.json'),
         axios.get('/quiz-data/weather.json'),
+        axios.get('/quiz-data/camels.json'),
       ]);
       setMetarsData(metarsRes.data);
       setGeneralData(generalRes.data);
@@ -283,6 +286,7 @@ const Study = () => {
       setFlowsData(flowsRes.data);
       setAirspaceData(airspaceRes.data);
       setWeatherData(weatherRes.data);
+      setCamelsData(camelsRes.data);
     } catch (error) {
       console.error('Error loading study data:', error);
       toast.error('Failed to load study materials');
@@ -485,6 +489,20 @@ const Study = () => {
               Start Studying →
             </span>
           </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSelectedStudy('camels')}
+            className="group bg-gradient-to-br from-amber-600/40 to-yellow-400/20 hover:from-amber-600/60 hover:to-yellow-400/40 border border-amber-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-amber-300 mb-4 group-hover:text-amber-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">CAMELS</h2>
+            <p className="text-amber-200 mb-4">SR20 maneuver requirements · 7 maneuvers</p>
+            <span className="text-amber-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
         </motion.div>
       ) : (
         <motion.div
@@ -507,6 +525,8 @@ const Study = () => {
             <AirspaceView data={airspaceData} />
           ) : selectedStudy === 'weather' ? (
             <WeatherView data={weatherData} />
+          ) : selectedStudy === 'camels' ? (
+            <CamelsView data={camelsData} />
           ) : (
             <StudyBox
               data={selectedStudy === 'metars' ? metarsData : generalData}

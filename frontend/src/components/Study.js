@@ -107,11 +107,11 @@ const MnemonicsView = ({ data }) => {
                 </span>
                 <div className="flex-1 min-w-0">
                   <span className="text-white font-bold text-base">{l.word}</span>
-                  {l.subMnemonic && (
-                    <span className={`ml-3 text-xs font-bold px-2 py-0.5 rounded-full ${c.badge}`}>
-                      → {l.subMnemonic.acronym}
+                  {(l.subMnemonics || (l.subMnemonic ? [l.subMnemonic] : [])).map((sm, smi) => (
+                    <span key={smi} className={`ml-3 text-xs font-bold px-2 py-0.5 rounded-full ${c.badge}`}>
+                      → {sm.acronym}
                     </span>
-                  )}
+                  ))}
                 </div>
                 <ChevronDownIcon className={`w-5 h-5 text-white/40 flex-shrink-0 transition-transform duration-200 ${isActive ? 'rotate-180' : ''}`} />
               </button>
@@ -141,18 +141,18 @@ const MnemonicsView = ({ data }) => {
                         </ul>
                       )}
 
-                      {/* Sub-mnemonic */}
-                      {l.subMnemonic && (
-                        <div className="rounded-xl bg-black/20 border border-white/10 overflow-hidden">
+                      {/* Sub-mnemonic(s) */}
+                      {(l.subMnemonics || (l.subMnemonic ? [l.subMnemonic] : [])).map((sm, mi) => (
+                        <div key={mi} className="rounded-xl bg-black/20 border border-white/10 overflow-hidden">
                           <div className="flex flex-wrap gap-2 items-center px-4 py-3 border-b border-white/10">
-                            {l.subMnemonic.acronym.split('').map((ch, i) => (
+                            {sm.acronym.split('').map((ch, i) => (
                               <span key={i} className={`w-8 h-8 flex items-center justify-center rounded-lg font-black text-sm border ${c.letter}`}>{ch}</span>
                             ))}
-                            <span className="text-white/45 text-xs ml-1">{l.subMnemonic.title}</span>
+                            <span className="text-white/45 text-xs ml-1">{sm.title}</span>
                           </div>
                           <div className="divide-y divide-white/5">
-                            {l.subMnemonic.letters.map((sl, sli) => {
-                              const subKey = `${li}-${sli}`;
+                            {sm.letters.map((sl, sli) => {
+                              const subKey = `${li}-${mi}-${sli}`;
                               const subOpen = activeSubLetter === subKey;
                               return (
                                 <div key={sli}>
@@ -164,9 +164,9 @@ const MnemonicsView = ({ data }) => {
                                     <div className="flex-1 min-w-0">
                                       <div className="text-white/90 text-sm font-semibold">
                                         {sl.word}
-                                        {sl.subMnemonic && (
-                                          <span className={`ml-2 text-xs font-bold px-1.5 py-0.5 rounded-full ${c.badge}`}>→ {sl.subMnemonic.acronym}</span>
-                                        )}
+                                        {(sl.subMnemonics || (sl.subMnemonic ? [sl.subMnemonic] : [])).map((ssm, ssmi) => (
+                                          <span key={ssmi} className={`ml-2 text-xs font-bold px-1.5 py-0.5 rounded-full ${c.badge}`}>→ {ssm.acronym}</span>
+                                        ))}
                                       </div>
                                       <AnimatePresence>
                                         {subOpen && sl.description && (
@@ -183,24 +183,25 @@ const MnemonicsView = ({ data }) => {
                                     <ChevronDownIcon className={`w-3.5 h-3.5 text-white/30 flex-shrink-0 mt-1 transition-transform duration-150 ${subOpen ? 'rotate-180' : ''}`} />
                                   </button>
 
-                                  {/* Sub-sub-mnemonic */}
+                                  {/* Sub-sub-mnemonic(s) */}
                                   <AnimatePresence>
-                                    {subOpen && sl.subMnemonic && (
+                                    {subOpen && (sl.subMnemonics || (sl.subMnemonic ? [sl.subMnemonic] : [])).length > 0 && (
                                       <motion.div
                                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
                                         className="overflow-hidden"
                                       >
-                                        <div className="mx-4 mb-3 rounded-xl bg-black/20 border border-white/10 overflow-hidden">
+                                        {(sl.subMnemonics || (sl.subMnemonic ? [sl.subMnemonic] : [])).map((ssm, ssmi) => (
+                                        <div key={ssmi} className="mx-4 mb-3 rounded-xl bg-black/20 border border-white/10 overflow-hidden">
                                           <div className="flex flex-wrap gap-1.5 items-center px-3 py-2 border-b border-white/10">
-                                            {sl.subMnemonic.acronym.split('').map((ch, i) => (
+                                            {ssm.acronym.split('').map((ch, i) => (
                                               <span key={i} className={`w-6 h-6 flex items-center justify-center rounded font-black text-xs border ${c.letter}`}>{ch}</span>
                                             ))}
-                                            <span className="text-white/40 text-xs ml-1">{sl.subMnemonic.title}</span>
+                                            <span className="text-white/40 text-xs ml-1">{ssm.title}</span>
                                           </div>
                                           <div className="divide-y divide-white/5">
-                                            {sl.subMnemonic.letters.map((ssl, ssli) => {
-                                              const subSubKey = `${li}-${sli}-${ssli}`;
+                                            {ssm.letters.map((ssl, ssli) => {
+                                              const subSubKey = `${li}-${mi}-${sli}-${ssmi}-${ssli}`;
                                               const subSubOpen = activeSubSubLetter === subSubKey;
                                               return (
                                                 <button key={ssli} onClick={() => toggleSubSub(subSubKey)}
@@ -227,6 +228,7 @@ const MnemonicsView = ({ data }) => {
                                             })}
                                           </div>
                                         </div>
+                                        ))}
                                       </motion.div>
                                     )}
                                   </AnimatePresence>
@@ -235,7 +237,7 @@ const MnemonicsView = ({ data }) => {
                             })}
                           </div>
                         </div>
-                      )}
+                      ))}
                     </div>
                   </motion.div>
                 )}

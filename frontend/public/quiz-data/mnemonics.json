@@ -166,7 +166,45 @@
                                     "detail": "If the aircraft has no MEL: determine whether the equipment is required by (1) the KOEL in the POH/AFM, (2) an Airworthiness Directive, (3) 14 CFR 91.205 for the intended operation, or (4) the airworthiness certificate. If it is NOT required by any of these, it may be deactivated or disabled, placarded INOPERATIVE, and the flight may proceed. If it IS required, the aircraft is unairworthy and cannot fly until repaired."
                                 }
                             ],
-                            "subMnemonic": {
+                                                        "subMnemonics": [
+{
+                                "acronym":"RAKETS",
+                                "title":"Required Flow for evaluating Inoperative Equipment",
+                                "description":"A structured flow for evaluating if an inoperative equipment is needed.",
+                                "letters":[
+                                    {
+                                        "letter": "R",
+                                        "word": "Regulation 91.213",
+                                        "description": "Determine if the equipment is required by regulations or the aircraft's documentation."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Airworthiness Directives (ADs)",
+                                        "description": "Check if the equipment is required by any applicable Airworthiness Directives."
+                                    },
+                                    {
+                                        "letter": "K",
+                                        "word": "KOEL — Kinds of Operations Equipment List",
+                                        "description": "Check if the equipment is listed in the KOEL for the intended operation."
+                                    },
+                                    {
+                                        "letter": "E",
+                                        "word": "Equipment List in POH/AFM",
+                                        "description": "Check if the equipment is listed in the aircraft's POH/AFM."
+                                    },
+                                    {
+                                        "letter": "T",
+                                        "word": "TCDS — Type Certificate Data Sheet",
+                                        "description": "Check if the equipment is required by the Type Certificate Data Sheet."
+                                    },
+                                    {
+                                        "letter": "S",
+                                        "word": "Safe?",
+                                        "description": "1. Determine it is not required; 2. Remove or Deactivate; 3. Placard Inoperative; 4. PIC Decision to Fly."
+                                    }
+                                ]
+                            },
+{
                                 "acronym": "ATOMATOFLAMES",
                                 "title": "Required Day VFR Equipment",
                                 "description": "Minimum required equipment for day VFR flight per 14 CFR 91.205(b).",
@@ -237,7 +275,40 @@
                                         "description": "Seat belts and shoulder harnesses required for each occupant; pilot must brief passengers."
                                     }
                                 ]
+                            },
+{
+                                "acronym": "FLAPS",
+                                "title": "Required Night VFR Equipment",
+                                "description": "Additional equipment required for night VFR flight per 14 CFR 91.205(c).",
+                                "letters": [
+                                    {
+                                        "letter": "F",
+                                        "word": "Fuses",
+                                        "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
+                                    },
+                                    {
+                                        "letter": "L",
+                                        "word": "Landing Light",
+                                        "description": "A landing light is required for aircraft operated for hire at night; recommended for all night operations."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Anti-Collision Lights",
+                                        "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
+                                    },
+                                    {
+                                        "letter": "P",
+                                        "word": "Position Lights",
+                                        "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
+                                    },
+                                    {
+                                        "letter": "S",
+                                        "word": "Source of Power",
+                                        "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
+                                    }
+                                ]
                             }
+                            ]
                         }
                     ]
                 }
@@ -365,40 +436,6 @@
                         }
                     ]
                 }
-            }
-        ]
-    },
-    {
-        "id": "flaps",
-        "acronym": "FLAPS",
-        "title": "Night Flight",
-        "description": "Night flight requirements",
-        "color": "blue",
-        "letters": [
-            {
-                "letter": "F",
-                "word": "Fuses",
-                "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
-            },
-            {
-                "letter": "L",
-                "word": "Landing Light",
-                "description": "A landing light is required for aircraft operated for hire at night; recommended for all night operations."
-            },
-            {
-                "letter": "A",
-                "word": "Anti-Collision Lights",
-                "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
-            },
-            {
-                "letter": "P",
-                "word": "Position Lights",
-                "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
-            },
-            {
-                "letter": "S",
-                "word": "Source of Power",
-                "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
             }
         ]
     },
@@ -818,96 +855,6 @@
                 "description": "You must notify the FAA in writing within 30 days of a permanent change of mailing address. If you don't update your address, you are not current and cannot exercise certificate privileges — your certificate is still valid but you may not fly."
             }
         ]
-    },
-    {
-        "id": "rackets",
-        "acronym": "RACKETS",
-        "title": "Inoperative Equipment Airworthiness Check (§91.213)",
-        "description": "Use RACKETS to determine if you can legally fly with an inoperative piece of equipment. Work through each step in order — if any step says the item is required and cannot be deferred, the aircraft is NOT airworthy. This process applies when the aircraft does NOT have a Minimum Equipment List (MEL). If a MEL exists, use it instead. Reference: 14 CFR §91.213(d).",
-        "color": "orange",
-        "letters": [
-            {
-                "letter": "R",
-                "word": "Regulations — 14 CFR §91.205 and applicable FARs",
-                "description": "Check all applicable regulations to see if the equipment is required for the kind of operation you intend to fly. The primary regulation is §91.205, which lists required equipment for VFR day, VFR night, and IFR flight. Other applicable regulations include §91.207 (ELT), §91.209 (aircraft lights), §91.211 (supplemental oxygen), §91.215 (transponder), and §91.225 (ADS-B). If a regulation requires the item and it is inoperative, the aircraft is NOT airworthy for that operation — unless you can change the kind of operation (e.g., fly day VFR instead of night VFR).",
-                "subMnemonic": {
-                    "acronym": "ATOMATOFLAMES",
-                    "title": "§91.205 Required Equipment — VFR Day",
-                    "description": "Minimum equipment required for VFR day flight under §91.205(b).",
-                    "letters": [
-                        { "letter": "A", "word": "Airspeed indicator", "description": "Required for all VFR flight." },
-                        { "letter": "T", "word": "Tachometer (for each engine)", "description": "Required for all VFR flight." },
-                        { "letter": "O", "word": "Oil pressure gauge", "description": "Required for each engine using a pressure system." },
-                        { "letter": "M", "word": "Magnetic direction indicator (compass)", "description": "Required for all VFR flight." },
-                        { "letter": "A", "word": "Altimeter", "description": "Required for all VFR flight." },
-                        { "letter": "T", "word": "Temperature gauge (for liquid-cooled engines)", "description": "Required for liquid-cooled engines." },
-                        { "letter": "O", "word": "Oil temperature gauge", "description": "Required for each air-cooled engine." },
-                        { "letter": "F", "word": "Fuel gauge indicating quantity", "description": "Required for each fuel tank." },
-                        { "letter": "L", "word": "Landing gear position indicators (if retractable)", "description": "Required for retractable gear aircraft." },
-                        { "letter": "A", "word": "Anti-collision light system", "description": "Required for aircraft certified after March 11, 1996. Older aircraft require it for night VFR." },
-                        { "letter": "M", "word": "Manifold pressure gauge (for altitude engines)", "description": "Required for each altitude engine." },
-                        { "letter": "E", "word": "ELT (Emergency Locator Transmitter)", "description": "Required per §91.207. Must be operational — not included in ATOMATOFLAMES per some versions but required by regulation." },
-                        { "letter": "S", "word": "Seat belts / Safety belts", "description": "Required for each occupant. Shoulder harnesses required for front seats in aircraft manufactured after 1978." }
-                    ]
-                }
-            },
-            {
-                "letter": "A",
-                "word": "Airworthiness Directives (ADs)",
-                "description": "Check whether any Airworthiness Directive mandates the equipment to be operational. ADs are legally binding and issued by the FAA under 14 CFR Part 39. They can be recurring (require action at specific intervals) or one-time. If an AD requires the equipment to be functional and it is inoperative, the aircraft is NOT airworthy, period — there is no exception. The responsibility to comply rests with the owner/operator under §91.403. HOW TO CHECK: (1) Open the aircraft maintenance logbooks (airframe, engine, propeller). (2) Search for AD compliance entries — recurring ADs will show the next due date or interval (hours/calendar). (3) Cross-reference using the FAA AD database at rgl.faa.gov — search by aircraft make, model, and serial number to get a full list of applicable ADs. (4) For each applicable AD, determine whether it relates to the inoperative equipment and whether the compliance deadline has been met. (5) If any AD requires that equipment to be operational and it is inoperative — STOP. The aircraft is not airworthy and cannot fly until the AD is complied with by a certificated mechanic."
-            },
-            {
-                "letter": "C",
-                "word": "Certificate — Kinds of Operations & Operating Limitations",
-                "description": "Check the aircraft's operating certificate and its operating limitations, which are found in the FAA-approved Airplane Flight Manual (AFM) or Pilot's Operating Handbook (POH). The aircraft's airworthiness certificate authorizes specific kinds of operations (Normal, Utility, Acrobatic, etc.). The operating limitations section of the AFM may prohibit flight with certain equipment inoperative. If the AFM/POH explicitly prohibits flight with the item inoperative, the aircraft is NOT airworthy. HOW TO CHECK: (1) Open the POH/AFM — it is a required onboard document. (2) Go to Section 2 (Limitations): look for any limitation that references the inoperative equipment by name. (3) Go to Section 7 (Airplane & Systems Descriptions) or the Equipment List appendix to confirm the item is installed equipment. (4) Check Section 9 (Supplements): if the equipment has a Supplemental Flight Manual (e.g., for a GPS or autopilot), open it and look for its own Limitations section — supplements carry the same legal weight as the base AFM. (5) Verify all required cockpit placards related to the equipment are present and legible. (6) If any of these sources explicitly states the item must be operational and it is not — STOP. The aircraft does not conform to its operating limitations and is NOT airworthy."
-            },
-            {
-                "letter": "K",
-                "word": "KOEL — Kinds of Operations Equipment List",
-                "description": "The Kinds of Operations Equipment List (KOEL) is found in the FAA-approved AFM/POH for many modern aircraft. It explicitly lists every piece of equipment and whether it is required for: VFR day, VFR night, IFR day, IFR night, and other operations. If your aircraft has a KOEL and the inoperative item is marked as required for your intended kind of operation, you CANNOT fly. The KOEL is the most specific authority on what is required for each type of flight. Not all aircraft have a KOEL — older aircraft may only have the equipment list with no operational breakdown."
-            },
-            {
-                "letter": "E",
-                "word": "Equipment List — Manufacturer's Equipment List",
-                "description": "Check the manufacturer's equipment list, which is part of the FAA-approved AFM or Type Certificate Data Sheet. This list documents all equipment installed on the aircraft. If an item is on the equipment list as required (sometimes marked with an asterisk or designated as required equipment) and it is inoperative, the aircraft may not be airworthy. This step also involves checking whether the item is structural or mechanical in nature — some equipment can be physically removed and a placard placed in its location if it is not required by the previous steps."
-            },
-            {
-                "letter": "T",
-                "word": "TCDS — Type Certificate Data Sheet",
-                "description": "The Type Certificate Data Sheet (TCDS) is issued by the FAA and defines the certification basis of the aircraft — weight limits, engine types approved, required equipment for airworthiness, and operational data. It is the foundational certification document. If the TCDS requires specific equipment and it is not operational, the aircraft does not conform to its type certificate and is NOT airworthy. The TCDS is available for free on the FAA website for every certified aircraft. Some equipment listed in the TCDS may be mandatory for the aircraft to retain its airworthiness certificate."
-            },
-            {
-                "letter": "S",
-                "word": "Safe? — Is the Flight Safe with this Item Inoperative?",
-                "description": "The final and most important question: even if the inoperative item passes all the above checks (not required by regs, ADs, KOEL, equipment list, or TCDS), does it pose a safety risk for this specific flight? The PIC has final authority and RESPONSIBILITY under §91.3. You must determine that the inoperative equipment does not create a hazard. If the item is NOT required by any of the above checks, you may still fly, but you MUST: (1) placard the inoperative item as INOPERATIVE, (2) determine the item is not a safety hazard, and (3) have the item deferred per §91.213(d). The item must either be removed from the aircraft or deactivated and placarded, and a maintenance record entry is not required by the pilot but is good practice.",
-                "subMnemonic": {
-                    "acronym": "§91.213(d) Procedure",
-                    "title": "Steps to Legally Defer Inoperative Equipment (No MEL)",
-                    "description": "If the item is NOT required by R-A-C-K-E-T and is not a safety hazard, follow these steps to legally defer the equipment and fly the aircraft.",
-                    "letters": [
-                        {
-                            "letter": "1",
-                            "word": "Determine it is not required",
-                            "description": "Confirm the item is not required by regulations (§91.205), ADs, KOEL, equipment list, or TCDS for the intended operation."
-                        },
-                        {
-                            "letter": "2",
-                            "word": "Remove or deactivate",
-                            "description": "The inoperative equipment must either be removed from the aircraft OR deactivated (circuit breaker pulled, fuse removed, etc.) so it cannot be inadvertently used."
-                        },
-                        {
-                            "letter": "3",
-                            "word": "Placard it INOPERATIVE",
-                            "description": "Place an INOPERATIVE placard on or adjacent to the item so the crew is aware. This is a legal requirement — you cannot simply ignore the inoperative item."
-                        },
-                        {
-                            "letter": "4",
-                            "word": "PIC determines safe for flight",
-                            "description": "The Pilot-in-Command makes the final determination that the aircraft is safe to fly with the item inoperative for the specific flight and conditions. This determination is the PIC's legal responsibility under §91.3."
-                        }
-                    ]
-                }
-            }
-        ]
     }
+    
 ]

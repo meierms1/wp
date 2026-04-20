@@ -7,8 +7,8 @@
     "tagline": "The ocean of air — layers, composition, ISA",
     "keyStats": [
       { "label": "SL Temp (ISA)", "value": "15°C / 59°F" },
-      { "label": "SL Pressure", "value": "29.92 in Hg" },
-      { "label": "Lapse Rate", "value": "2°C / 1,000 ft" },
+      { "label": "SL Pressure", "value": "29.92 in Hg / 1013.25 hPa" },
+      { "label": "Lapse Rate", "value": "2°C per 1,000 ft" },
       { "label": "Tropopause", "value": "~36,000 ft" }
     ],
     "sections": [
@@ -67,7 +67,8 @@
         "rows": [
           { "label": "Altimeter Setting", "info": "Adjusts altimeter to local sea-level pressure so indicated altitude matches actual MSL altitude" },
           { "label": "\"High to Low Look Out Below\"", "info": "Flying from high to low pressure without updating altimeter: aircraft is lower than indicated" },
-          { "label": "Pressure Altitude", "info": "Altitude indicated with altimeter set to 29.92 in Hg · used for all aircraft performance tables" },
+          { "label": "Pressure Altitude", "info": "Altitude indicated with altimeter set to 29.92 in Hg · Std datum plane · used for all aircraft performance tables" },
+          { "label": "Pressure Altitude Equations", "info": "PA = Field Elevation + (29.92 - Altimeter Setting) * 1000" },
           { "label": "Class A Operation", "info": "All aircraft set 29.92 above 18,000 MSL — FL altitudes eliminate setting differences" }
         ]
       },
@@ -77,6 +78,7 @@
         "rows": [
           { "label": "Definition", "info": "Pressure altitude corrected for non-standard temperature · the altitude the aircraft 'thinks' it's at" },
           { "label": "Increases with", "info": "↑ temperature, ↑ field elevation, ↑ humidity" },
+          { "label": "Equation", "info": "DA = PA + [120 * (OAT - ISA Temp at elevation)]" },
           { "label": "Effect on performance", "info": "Reduced engine power, reduced prop efficiency, longer takeoff roll, reduced climb rate" },
           { "label": "Hot/High/Humid (Triple H)", "info": "Density altitude can far exceed field elevation — performance charts are mandatory, not optional" },
           { "label": "Rule of thumb", "info": "Density alt rises ~120 ft per °C above ISA (roughly)" }
@@ -135,7 +137,7 @@
     "color": "sky",
     "tagline": "Humidity, dew point, cloud families, precipitation",
     "keyStats": [
-      { "label": "Cloud Base (AGL)", "value": "(T − Td) × 400 ft" },
+      { "label": "Cloud Base (AGL)", "value": "(Temp − Dew) / 4.4 * 1000 ft" },
       { "label": "Fog likely when spread", "value": "< 4°F (2°C)" },
       { "label": "High clouds", "value": "16,500 – 45,000 ft" },
       { "label": "Low clouds", "value": "Surface – 6,500 ft" }
@@ -189,8 +191,8 @@
     "color": "slate",
     "tagline": "Five types — same result, different causes",
     "keyStats": [
-      { "label": "Fog definition", "value": "Visibility < ¼ SM" },
-      { "label": "Mist", "value": "¼ – ⅝ SM visibility" },
+      { "label": "Fog definition", "value": "Visibility < 5/8 SM" },
+      { "label": "Mist", "value": "5/8 – 6 SM visibility" },
       { "label": "Spread for fog risk", "value": "T/Td spread < 4°F" },
       { "label": "Types", "value": "5 main types" }
     ],
@@ -200,7 +202,8 @@
         "rows": [
           { "label": "Conditions", "info": "Clear sky + calm/light winds (< 5 kt) + moist surface air + nighttime radiational cooling" },
           { "label": "Location", "info": "Valleys and low areas — cold dense air drains downslope · thickest near sunrise" },
-          { "label": "Dissipation", "info": "Burns off after sunrise from the top down · may lift to low stratus layer first" }
+          { "label": "Dissipation", "info": "Burns off after sunrise from the top down · may lift to low stratus layer first" },
+          {"label": "Note", "info": "It is the cold ground bringing air temperature above it down to dew point."}
         ]
       },
       {
@@ -219,7 +222,7 @@
         ]
       },
       {
-        "title": "Steam Fog (Arctic Sea Smoke)",
+        "title": "Steam Fog (evaporation fog)",
         "rows": [
           { "label": "Conditions", "info": "Cold, dry air moves over warm water — water evaporates and condenses immediately above the surface" },
           { "label": "Location", "info": "Lakes and coastal areas in fall/winter — appears as steam rising" },
@@ -244,14 +247,14 @@
     "keyStats": [
       { "label": "Stable clouds", "value": "Stratus, fog, steady precip" },
       { "label": "Unstable clouds", "value": "Cumulus, CB, showers" },
-      { "label": "DALR", "value": "3°C / 1,000 ft (dry)" },
-      { "label": "Unstable if", "value": "ELR > DALR" }
+      { "label": "Dry Adiabatic Lapse Rate (DALR)", "value": "3°C / 1,000 ft (dry)" },
+      { "label": "Unstable if", "value": "ELR (actual) > DALR" }
     ],
     "sections": [
       {
         "title": "Stability States",
         "rows": [
-          { "label": "Absolutely Stable", "info": "ELR < SALR · rising parcel always cooler than surroundings · resists all vertical motion" },
+          { "label": "Absolutely Stable", "info": "ELR < SALR (Saturated Adiabatic Lapse Rate) · rising parcel always cooler than surroundings · resists all vertical motion" },
           { "label": "Conditionally Unstable", "info": "SALR < ELR < DALR · stable when unsaturated, unstable once saturated · most common state" },
           { "label": "Absolutely Unstable", "info": "ELR > DALR · parcel always warmer than environment — uncontrolled violent convection" }
         ]
@@ -280,7 +283,7 @@
     "name": "Thunderstorms",
     "emoji": "⛈",
     "color": "red",
-    "tagline": "Never penetrate — always avoid by 20 nm",
+    "tagline": "Never enter — always avoid by 20 nm",
     "keyStats": [
       { "label": "Avoid by", "value": "20 nm horizontal" },
       { "label": "Requirements", "value": "Moisture + Lift + Instability" },
@@ -322,7 +325,7 @@
           { "label": "Hail", "info": "Can fall 2+ nm from visible cloud edge · clear air above — no visual warning" },
           { "label": "Microbursts", "info": "Intense concentrated downdraft (up to 6,000 fpm) · severe wind shear on approach below 1,000 ft AGL" },
           { "label": "Lightning", "info": "Strikes aircraft directly · induced electrical surges damage avionics and fuel systems" },
-          { "label": "Low-Level Wind Shear", "info": "Sudden airspeed loss on approach — if you gain airspeed then lose it rapidly, go around immediately" },
+          { "label": "Low-Level Wind Shear", "info": "Sudden airspeed loss on approach - React immediately to maintain control." },
           { "label": "Structural Icing", "info": "Severe icing in updraft regions at −0°C to −20°C · supercooled large drops above that" },
           { "label": "Tornadoes", "info": "Most violent weather phenomenon · especially from supercell thunderstorms" }
         ]
@@ -333,7 +336,7 @@
         "rows": [
           { "label": "Horizontal avoidance", "info": "At least 20 nm from any active thunderstorm · hail and CAT extend well beyond visible cloud" },
           { "label": "Never fly under the anvil", "info": "Hail, severe turbulence, and downbursts occur beneath the anvil of active cells" },
-          { "label": "Never penetrate a CB", "info": "There is no safe thunderstorm — avoid any cumulonimbus of any intensity" },
+          { "label": "Never enter a CB", "info": "There is no safe thunderstorm — avoid any cumulonimbus of any intensity" },
           { "label": "Microbursts", "info": "Maximum intensity at 100–300 ft AGL · wet or dry (dry microbursts are invisible) · radius 1–2 nm · last 5–15 min" }
         ]
       }
@@ -385,7 +388,7 @@
         "hazard": "caution",
         "rows": [
           { "label": "How it forms", "info": "Fuel vaporization + venturi effect drops temperature 15–25°C · ice forms on throttle plate and venturi" },
-          { "label": "Conditions", "info": "OAT −7°C to +21°C (20°F–70°F) + high relative humidity · can form in clear air" },
+          { "label": "Conditions", "info": "OAT −7°C to +21°C (20°F to 70°F) + high relative humidity · can form in clear air" },
           { "label": "Symptom (fixed-pitch)", "info": "Unexplained RPM decrease" },
           { "label": "Symptom (constant-speed)", "info": "Manifold pressure drop with no RPM change" },
           { "label": "Treatment", "info": "Apply FULL carburetor heat · engine may run rough briefly as ice melts — this is normal, wait for RPM to recover" },
@@ -568,7 +571,7 @@
         "rows": [
           { "label": "METAR", "info": "Aviation Routine Weather Report · issued hourly · surface obs at airports (wind, vis, sky, temp, dewpoint, altimeter)" },
           { "label": "SPECI", "info": "Special METAR issued when significant change occurs (below IFR minimums, wind shift, precip onset, etc.)" },
-          { "label": "AWOS / ASOS", "info": "Automated stations · continuous reporting · some require pilot-only input (AWSS) · verify via Notam for outages" },
+          { "label": "ATIS / AWOS / ASOS", "info": "Automated stations · continuous reporting · some require pilot-only input (AWSS) · verify via Notam for outages" },
           { "label": "PIREP (UA / UUA)", "info": "Pilot Reports · UA = routine · UUA = urgent · only real-time source of in-flight weather across many routes — file them" }
         ]
       },
@@ -585,12 +588,21 @@
         "title": "Advisories & Warnings",
         "hazard": "caution",
         "rows": [
-          { "label": "SIGMET (WS)", "info": "Significant Met Info · non-convective · covers severe/extreme turbulence, severe icing, volcanic ash, sand storms · 4-hr valid" },
-          { "label": "Convective SIGMET (WST)", "info": "Thunderstorm activity · issued hourly or special · always valid for all aircraft · supersedes all other convective advisories" },
           { "label": "AIRMET Sierra (WA)", "info": "IFR conditions (ceilings < 1,000 ft / vis < 3 SM) and/or mountain obscuration · 6-hr valid · critical for VFR flight" },
           { "label": "AIRMET Tango (WA)", "info": "Moderate turbulence, sustained surface winds > 30 kt, low-level wind shear · 6-hr valid" },
           { "label": "AIRMET Zulu (WA)", "info": "Moderate icing and freezing levels · 6-hr valid" },
+          { "label": "SIGMET (WS)", "info": "Significant Met Info · non-convective · covers severe/extreme turbulence, severe icing, volcanic ash, sand storms · 4-hr valid" },
+          { "label": "Convective SIGMET (WST)", "info": "Thunderstorm activity · issued hourly or special · always valid for all aircraft · supersedes all other convective advisories" },
           { "label": "CWA (Center Weather Advisory)", "info": "Issued by ARTCCs for imminent or existing weather within 2 hrs · highly localized and specific · very useful in-flight" }
+        ]
+      },
+      {
+        "title": "Weather Information Sources",
+        "rows": [
+          { "label": "National Weather Service (NWS)", "info": "Provides weather forecasts, warnings, and other meteorological information for the United States." },
+          { "label": "Flight Service Station (FSS)", "info": "Initial contact on 122.2 or 1-800-992-7433 | Standard, Outlook, and Abbreviated Briefings available." },
+          { "label": "Aviation Weather Center (AWC)", "info": "aviationweather.gov for radar, satellite, METAR, TAFs, and GFA tools." },
+          { "label": "Flight Information Service-Broadcast (FIS-B)", "info": "Provides weather and aeronautical information to aircraft equipped with ADS-B In." }
         ]
       },
       {

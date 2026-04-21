@@ -166,8 +166,8 @@ const Resume = () => {
       link: "https://doi.org/10.2514/6.2024-0214"
     },
     {
-      citation: "Meier, M.; Runnels, B: A fully-coupled mechanics and regression model for deflagration of solid composite propellants with realistic microstructure. Submitted to CMAME (2024).",
-      link: "https://doi.org/10.31224/3413"
+      citation: "Meier, M.; Runnels, B: Finite kinematics diffuse interface mechanics coupled to solid composite propellant deflagration. Computer Methods in Applied Mechanics and Engineering 427 (2024): 117040.",
+      link: "https://doi.org/10.1016/j.cma.2024.117040"
     },
     {
       citation: "Meier, M.; Schmidt, E.; Quinlan, J.; Runnels, B: Diffuse interface method for solid composite propellant ignition and regression. Combustion and Flame 259 (2024), 113120, ISSN: 0010-2180.",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import FlowsView from './FlowsView';
 import AirspaceView from './AirspaceView';
 import WeatherView from './WeatherView';
 import CamelsView from './CamelsView';
+import AerodynamicsView from './AerodynamicsView';
 import SEO from './SEO';
 
 const colorMap = {
@@ -254,44 +255,34 @@ const MnemonicsView = ({ data }) => {
 };
 
 const Study = () => {
-  const [metarsData, setMetarsData]       = useState(null);
-  const [generalData, setGeneralData]     = useState(null);
-  const [mnemonicsData, setMnemonicsData] = useState(null);
-  const [flowsData, setFlowsData]         = useState(null);
-  const [airspaceData, setAirspaceData]   = useState(null);
-  const [weatherData, setWeatherData]     = useState(null);
-  const [camelsData, setCamelsData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedStudy, setSelectedStudy] = useState(null);
+  const [sectionData, setSectionData]       = useState({});
+  const [sectionLoading, setSectionLoading] = useState(false);
+  const [selectedStudy, setSelectedStudy]   = useState(null);
 
-  useEffect(() => {
-    fetchStudyData();
-  }, []);
+  const FILE_MAP = {
+    metars:       '/quiz-data/pilot-metars.json',
+    general:      '/quiz-data/pilot-general.json',
+    mnemonics:    '/quiz-data/mnemonics.json',
+    flows:        '/quiz-data/flows.json',
+    airspace:     '/quiz-data/airspace.json',
+    weather:      '/quiz-data/weather.json',
+    camels:       '/quiz-data/camels.json',
+    aerodynamics: '/quiz-data/aerodynamics.json',
+  };
 
-  const fetchStudyData = async () => {
+  const handleSelectStudy = async (key) => {
+    setSelectedStudy(key);
+    if (sectionData[key]) return; // already loaded
+    setSectionLoading(true);
     try {
-      setLoading(true);
-      const [metarsRes, generalRes, mnemonicsRes, flowsRes, airspaceRes, weatherRes, camelsRes] = await Promise.all([
-        axios.get('/quiz-data/pilot-metars.json'),
-        axios.get('/quiz-data/pilot-general.json'),
-        axios.get('/quiz-data/mnemonics.json'),
-        axios.get('/quiz-data/flows.json'),
-        axios.get('/quiz-data/airspace.json'),
-        axios.get('/quiz-data/weather.json'),
-        axios.get('/quiz-data/camels.json'),
-      ]);
-      setMetarsData(metarsRes.data);
-      setGeneralData(generalRes.data);
-      setMnemonicsData(mnemonicsRes.data);
-      setFlowsData(flowsRes.data);
-      setAirspaceData(airspaceRes.data);
-      setWeatherData(weatherRes.data);
-      setCamelsData(camelsRes.data);
-    } catch (error) {
-      console.error('Error loading study data:', error);
+      const res = await axios.get(FILE_MAP[key]);
+      setSectionData(prev => ({ ...prev, [key]: res.data }));
+    } catch (err) {
+      console.error('Failed to load section:', err);
       toast.error('Failed to load study materials');
+      setSelectedStudy(null);
     } finally {
-      setLoading(false);
+      setSectionLoading(false);
     }
   };
 
@@ -354,19 +345,6 @@ const Study = () => {
     </motion.div>
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-24 pb-16 container-custom">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mb-4"></div>
-            <p className="text-white text-lg">Loading study materials...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen pt-24 pb-16 container-custom">
       <SEO
@@ -394,55 +372,43 @@ const Study = () => {
           animate={{ opacity: 1 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto"
         >
-          {metarsData && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedStudy('metars')}
-              className="group bg-gradient-to-br from-blue-600/40 to-blue-400/20 hover:from-blue-600/60 hover:to-blue-400/40 border border-blue-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
-            >
-              <BookOpenIcon className="w-12 h-12 text-blue-300 mb-4 group-hover:text-blue-200 transition-colors" />
-              <h2 className="text-2xl font-bold text-white mb-2">
-                {metarsData.category_name || 'METAR Study'}
-              </h2>
-              <p className="text-blue-200 mb-4">
-                {metarsData.questions?.length || 0} items
-              </p>
-              <span className="text-blue-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
-                Start Studying →
-              </span>
-            </motion.button>
-          )}
-
-          {generalData && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedStudy('general')}
-              className="group bg-gradient-to-br from-blue-600/40 to-blue-400/20 hover:from-blue-600/60 hover:to-blue-400/40 border border-blue-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
-            >
-              <BookOpenIcon className="w-12 h-12 text-blue-300 mb-4 group-hover:text-blue-200 transition-colors" />
-              <h2 className="text-2xl font-bold text-white mb-2">
-                {generalData.category_name || 'General Knowledge'}
-              </h2>
-              <p className="text-blue-200 mb-4">
-                {generalData.questions?.length || 0} items
-              </p>
-              <span className="text-blue-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
-                Start Studying →
-              </span>
-            </motion.button>
-          )}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelectStudy('metars')}
+            className="group bg-gradient-to-br from-blue-600/40 to-blue-400/20 hover:from-blue-600/60 hover:to-blue-400/40 border border-blue-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-blue-300 mb-4 group-hover:text-blue-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">METAR Study</h2>
+            <p className="text-blue-200 mb-4">METAR decoding · 40+ questions</p>
+            <span className="text-blue-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
 
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedStudy('mnemonics')}
+            onClick={() => handleSelectStudy('general')}
+            className="group bg-gradient-to-br from-blue-600/40 to-blue-400/20 hover:from-blue-600/60 hover:to-blue-400/40 border border-blue-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-blue-300 mb-4 group-hover:text-blue-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">General Knowledge</h2>
+            <p className="text-blue-200 mb-4">Regulations, systems, weather · 50+ questions</p>
+            <span className="text-blue-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelectStudy('mnemonics')}
             className="group bg-gradient-to-br from-purple-600/40 to-purple-400/20 hover:from-purple-600/60 hover:to-purple-400/40 border border-purple-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
           >
             <BookOpenIcon className="w-12 h-12 text-purple-300 mb-4 group-hover:text-purple-200 transition-colors" />
             <h2 className="text-2xl font-bold text-white mb-2">Mnemonics</h2>
-            <p className="text-purple-200 mb-4">{mnemonicsData ? `${mnemonicsData.length} acronyms` : 'Loading...'}</p>
+            <p className="text-purple-200 mb-4">PAVE, IMSAFE, ICEFLAGS · 15+ acronyms</p>
             <span className="text-purple-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
               Start Studying →
             </span>
@@ -451,12 +417,12 @@ const Study = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedStudy('flows')}
+            onClick={() => handleSelectStudy('flows')}
             className="group bg-gradient-to-br from-green-600/40 to-green-400/20 hover:from-green-600/60 hover:to-green-400/40 border border-green-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
           >
             <BookOpenIcon className="w-12 h-12 text-green-300 mb-4 group-hover:text-green-200 transition-colors" />
             <h2 className="text-2xl font-bold text-white mb-2">Flows</h2>
-            <p className="text-green-200 mb-4">{flowsData ? `${flowsData.length} phases` : 'Loading...'}</p>
+            <p className="text-green-200 mb-4">SR20 cockpit flows · 4 phases</p>
             <span className="text-green-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
               Start Studying →
             </span>
@@ -465,7 +431,7 @@ const Study = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedStudy('airspace')}
+            onClick={() => handleSelectStudy('airspace')}
             className="group bg-gradient-to-br from-orange-600/40 to-amber-400/20 hover:from-orange-600/60 hover:to-amber-400/40 border border-orange-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
           >
             <BookOpenIcon className="w-12 h-12 text-orange-300 mb-4 group-hover:text-orange-200 transition-colors" />
@@ -479,7 +445,7 @@ const Study = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedStudy('weather')}
+            onClick={() => handleSelectStudy('weather')}
             className="group bg-gradient-to-br from-sky-600/40 to-blue-400/20 hover:from-sky-600/60 hover:to-blue-400/40 border border-sky-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
           >
             <BookOpenIcon className="w-12 h-12 text-sky-300 mb-4 group-hover:text-sky-200 transition-colors" />
@@ -493,13 +459,27 @@ const Study = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedStudy('camels')}
+            onClick={() => handleSelectStudy('camels')}
             className="group bg-gradient-to-br from-amber-600/40 to-yellow-400/20 hover:from-amber-600/60 hover:to-yellow-400/40 border border-amber-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
           >
             <BookOpenIcon className="w-12 h-12 text-amber-300 mb-4 group-hover:text-amber-200 transition-colors" />
             <h2 className="text-2xl font-bold text-white mb-2">CAMELS</h2>
             <p className="text-amber-200 mb-4">SR20 maneuver requirements · 7 maneuvers</p>
             <span className="text-amber-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelectStudy('aerodynamics')}
+            className="group bg-gradient-to-br from-indigo-600/40 to-violet-400/20 hover:from-indigo-600/60 hover:to-violet-400/40 border border-indigo-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-indigo-300 mb-4 group-hover:text-indigo-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">Aerodynamics & Maneuvers</h2>
+            <p className="text-indigo-200 mb-4">PHAK Ch. 4–5 · AFH maneuvers · 12 topics</p>
+            <span className="text-indigo-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
               Start Studying →
             </span>
           </motion.button>
@@ -517,20 +497,26 @@ const Study = () => {
             ← Back to Selection
           </motion.button>
 
-          {selectedStudy === 'mnemonics' ? (
-            <MnemonicsView data={mnemonicsData} />
+          {sectionLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-400"></div>
+            </div>
+          ) : selectedStudy === 'mnemonics' ? (
+            <MnemonicsView data={sectionData.mnemonics} />
           ) : selectedStudy === 'flows' ? (
-            <FlowsView data={flowsData} />
+            <FlowsView data={sectionData.flows} />
           ) : selectedStudy === 'airspace' ? (
-            <AirspaceView data={airspaceData} />
+            <AirspaceView data={sectionData.airspace} />
           ) : selectedStudy === 'weather' ? (
-            <WeatherView data={weatherData} />
+            <WeatherView data={sectionData.weather} />
           ) : selectedStudy === 'camels' ? (
-            <CamelsView data={camelsData} />
+            <CamelsView data={sectionData.camels} />
+          ) : selectedStudy === 'aerodynamics' ? (
+            <AerodynamicsView data={sectionData.aerodynamics} />
           ) : (
             <StudyBox
-              data={selectedStudy === 'metars' ? metarsData : generalData}
-              title={selectedStudy === 'metars' ? metarsData.category_name : generalData.category_name}
+              data={sectionData[selectedStudy]}
+              title={sectionData[selectedStudy]?.category_name || (selectedStudy === 'metars' ? 'METAR Study' : 'General Knowledge')}
               icon={BookOpenIcon}
             />
           )}

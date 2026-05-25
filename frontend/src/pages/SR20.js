@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
   CalculatorIcon,
-  ArrowPathIcon
+  ArrowPathIcon,
+  BookOpenIcon
 } from '@heroicons/react/24/outline';
+import MnemonicsQuiz from '../components/MnemonicsQuiz';
 
 const SR20 = () => {
   const [activeTab, setActiveTab] = useState('sr20');
@@ -58,6 +60,18 @@ const SR20 = () => {
   const [sr20aResult, setSR20aResult] = useState(null);
   const [ccResult, setCcResult] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [mnemonicsData,    setMnemonicsData]    = useState(null);
+  const [mnemonicsLoading, setMnemonicsLoading] = useState(false);
+
+  useEffect(() => {
+    if (activeTab !== 'mnemonicsQuiz' || mnemonicsData) return;
+    setMnemonicsLoading(true);
+    axios.get('/quiz-data/mnemonics.json')
+      .then(res => setMnemonicsData(res.data))
+      .catch(() => toast.error('Failed to load mnemonics'))
+      .finally(() => setMnemonicsLoading(false));
+  }, [activeTab, mnemonicsData]);
 
   const handleSR20 = async (e) => {
     e.preventDefault();
@@ -208,9 +222,10 @@ const SR20 = () => {
           <motion.div variants={itemVariants} className="flex justify-center mb-12">
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
               {[
-                { id: 'sr20',  label: 'SR20 Performance', icon: CalculatorIcon },
-                { id: 'sr20a', label: 'SR20 Advanced',     icon: CalculatorIcon },
-                { id: 'cc',    label: 'SR20 Cruise',        icon: CalculatorIcon }
+                { id: 'sr20',          label: 'SR20 Performance', icon: CalculatorIcon },
+                { id: 'sr20a',         label: 'SR20 Advanced',    icon: CalculatorIcon },
+                { id: 'cc',            label: 'SR20 Cruise',      icon: CalculatorIcon },
+                { id: 'mnemonicsQuiz', label: 'Mnemonics Quiz',   icon: BookOpenIcon   }
               ].map((tab) => (
                 <motion.button
                   key={tab.id}
@@ -1035,6 +1050,31 @@ const SR20 = () => {
                       </div>
 
                     </motion.div>
+                  )}
+                </motion.div>
+              </motion.div>
+            )}
+
+            {/* Mnemonics Quiz Tab */}
+            {activeTab === 'mnemonicsQuiz' && (
+              <motion.div
+                key="mnemonicsQuiz"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+              >
+                <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+                  <div className="flex items-center mb-6">
+                    <BookOpenIcon className="w-8 h-8 text-purple-400 mr-4" />
+                    <h2 className="text-3xl font-bold text-white">Mnemonics Quiz</h2>
+                  </div>
+                  {mnemonicsLoading ? (
+                    <div className="flex justify-center py-16">
+                      <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-purple-400" />
+                    </div>
+                  ) : (
+                    <MnemonicsQuiz data={mnemonicsData} onBack={() => setActiveTab('sr20')} />
                   )}
                 </motion.div>
               </motion.div>

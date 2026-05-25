@@ -193,6 +193,20 @@ const WeatherView = ({ data }) => {
               })}
             </div>
 
+            {/* Topic image */}
+            {topic.image && (
+              <div className="mt-4 mb-2">
+                <img
+                  src={topic.image.src}
+                  alt={topic.image.alt}
+                  className="w-full rounded-xl border border-white/10"
+                />
+                {topic.image.caption && (
+                  <p className="text-white/25 text-xs mt-2 italic text-center">{topic.image.caption}</p>
+                )}
+              </div>
+            )}
+
             {/* Collapse/expand all */}
             <div className="flex gap-3 mt-4 mb-8">
               <button

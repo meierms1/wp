@@ -10,7 +10,7 @@
                 "letter": "P",
                 "word": "Pilot",
                 "description": "Assess your own fitness to fly before every flight.",
-                "subMnemonic": {
+                "subMnemonics": {
                     "acronym": "IMSAFE",
                     "title": "Personal Minimums Checklist",
                     "description": "A self-assessment checklist to evaluate personal readiness.",
@@ -44,6 +44,38 @@
                             "letter": "E",
                             "word": "Eating / Emotion",
                             "description": "Have I eaten properly? Am I emotionally stable?"
+                        }
+                    ]
+                },
+                {
+                    "acronym":"PRIME",
+                    "title":"Pilot Documents Checklist",
+                    "description":"Key documents every pilot must have before flight.",
+                    "letters":[
+                        {
+                            "letter": "P",
+                            "word": "Pilot Certificate",
+                            "description": "Must be a valid pilot certificate with appropriate ratings for the flight."
+                        },
+                        {
+                            "letter": "R",
+                            "word": "Radio License",
+                            "description": "Required for international flights, not required for domestic US flights."
+                        },
+                        {
+                            "letter": "I",
+                            "word": "Government-issued Photo ID",
+                            "description": "Required for TSA security screening and to verify identity when requested by authorities."
+                        },
+                        {
+                            "letter": "M",
+                            "word": "Medical Certificate",
+                            "description": "Must hold a valid medical certificate appropriate for the flight operation (e.g., 3rd class for private pilots)."
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Endorsements & Training Records",
+                            "description": "Any additional endorsements or training records relevant to the planned flight (e.g., tailwheel, high-performance, complex, altitude above 25000ft, heavy aircraft)."
                         }
                     ]
                 }

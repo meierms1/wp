@@ -550,8 +550,27 @@
           { "label": "Occluded Front (Cold Type)", "info": "Fast cold front catches warm front · complex weather extending through the troposphere" },
           { "label": "Dry Line", "info": "Not a temperature boundary — moisture boundary in the Great Plains · explosive thunderstorm trigger (not on most charts)" }
         ]
+      },
+      {
+        "title": "Map Symbol Key",
+        "rows": [
+          { "label": "1 · Cold Front", "info": "Sharp temperature drop and wind shift on passage" },
+          { "label": "2 · Warm Front", "info": "Gradual cloud buildup and steady precip ahead" },
+          { "label": "3 · Stationary Front", "info": "Little to no movement · prolonged IFR potential" },
+          { "label": "4 · Occluded Front", "info": "Cold front overtakes warm front · complex multilayer weather" },
+          { "label": "5 · Surface Trough", "info": "Wind shift and lift without a true frontal boundary" },
+          { "label": "6 · Squall Line", "info": "Thunderstorms ahead of or unattached to a cold front · often the most severe convective threat" },
+          { "label": "7 · Dry Line", "info": "Primary thunderstorm initiator in the Great Plains" },
+          { "label": "8 · Tropical Wave", "info": "Westward-moving disturbance · precursor to tropical development" },
+          { "label": "9 · Trowal", "info": "Warm-air tongue wrapped into an occluded system · heavy snow and freezing precip risk" }
+        ]
       }
-    ]
+    ],
+    "image": {
+      "src": "/static/fronts.png",
+      "alt": "Weather fronts diagram showing cold, warm, stationary, and occluded fronts",
+      "caption": "Front types and their associated weather patterns"
+    }
   },
   {
     "id": "products",

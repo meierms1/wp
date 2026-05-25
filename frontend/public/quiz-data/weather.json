@@ -560,8 +560,8 @@
           { "label": "4 · Occluded Front", "info": "Cold front overtakes warm front · complex multilayer weather" },
           { "label": "5 · Surface Trough", "info": "Wind shift and lift without a true frontal boundary" },
           { "label": "6 · Squall Line", "info": "Thunderstorms ahead of or unattached to a cold front · often the most severe convective threat" },
-          { "label": "7 · Dry Line", "info": "Primary thunderstorm initiator in the Great Plains" },
-          { "label": "8 · Tropical Wave", "info": "Westward-moving disturbance · precursor to tropical development" },
+          { "label": "7 · Dry Line", "info": "Small temperature change · high humidity change · primary thunderstorm initiator in the Great Plains" },
+          { "label": "8 · Tropical Wave", "info": "Moving low pressure line · Westward-moving disturbance · precursor to tropical development" },
           { "label": "9 · Trowal", "info": "Warm-air tongue wrapped into an occluded system · heavy snow and freezing precip risk" }
         ]
       }

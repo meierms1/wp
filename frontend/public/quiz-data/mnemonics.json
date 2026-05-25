@@ -10,7 +10,7 @@
                 "letter": "P",
                 "word": "Pilot",
                 "description": "Assess your own fitness to fly before every flight.",
-                "subMnemonics": {
+                "subMnemonics": [{
                     "acronym": "IMSAFE",
                     "title": "Personal Minimums Checklist",
                     "description": "A self-assessment checklist to evaluate personal readiness.",
@@ -78,7 +78,7 @@
                             "description": "Any additional endorsements or training records relevant to the planned flight (e.g., tailwheel, high-performance, complex, altitude above 25000ft, heavy aircraft)."
                         }
                     ]
-                }
+                }]
             },
             {
                 "letter": "A",

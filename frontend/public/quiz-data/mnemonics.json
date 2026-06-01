@@ -48,7 +48,7 @@
                     ]
                 },
                 {
-                    "acronym":"PRIME",
+                    "acronym":"PRIMEC",
                     "title":"Pilot Documents Checklist",
                     "description":"Key documents every pilot must have before flight.",
                     "letters":[
@@ -76,9 +76,57 @@
                             "letter": "E",
                             "word": "Endorsements & Training Records",
                             "description": "Any additional endorsements or training records relevant to the planned flight (e.g., tailwheel, high-performance, complex, altitude above 25000ft, heavy aircraft)."
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Currency",
+                            "description": "Flight Review every 24 months, minimum of 1 hour of ground and 1 hour of flight. 3 takeoffs and landings in the last 90 days if carrying passengers."
                         }
                     ]
-                }]
+                },
+                {
+                    "acronym":"PSCRIPT",
+                    "title":"Compensation exceptions",
+                    "description":"List of exceptions for pilots receiving compensation or hire under 14 CFR Part 61.113.",
+                    "letters":[
+                        {
+                            "letter": "P",
+                            "word": "Pro-rata",
+                            "description": "Pro rata share (you must pay at least an equal portion of the operating expenses, like fuel and rental fees)."
+                        },
+                        {
+                            "letter": "S",
+                            "word": "Salesmen",
+                            "description": "acting as a demonstration pilot for an aircraft sale, provided you have at least 200 hours logged"
+                        },
+                        {
+                            "letter": "C",
+                            "word": "Charity",
+                            "description": " non-profit events (conducted in accordance with FAA regulations)"
+                        },
+                        {
+                            "letter": "R",
+                            "word": "Rescue",
+                            "description": " operations, search, or relief work"
+                        },
+                        {
+                            "letter": "I",
+                            "word": "Incidental",
+                            "description": "the flying must be strictly incidental to your employment, and you cannot be flying for direct compensation"
+                        },
+                        {
+                            "letter": "P",
+                            "word": "Production",
+                            "description": "flight testing an aircraft built by a light-sport builder"
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Tow",
+                            "description": "provided you meet the required PIC and logbook endorsements for towing operations"
+                        }
+                    ]
+                }
+            ]
             },
             {
                 "letter": "A",

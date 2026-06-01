@@ -79,14 +79,14 @@
                         },
                         {
                             "letter": "C",
-                            "word": "Currency",
+                            "word": "Currency 61.56",
                             "description": "Flight Review every 24 months, minimum of 1 hour of ground and 1 hour of flight. 3 takeoffs and landings in the last 90 days if carrying passengers."
                         }
                     ]
                 },
                 {
                     "acronym":"PSCRIPT",
-                    "title":"Compensation exceptions",
+                    "title":"Compensation exceptions 61.113",
                     "description":"List of exceptions for pilots receiving compensation or hire under 14 CFR Part 61.113.",
                     "letters":[
                         {
@@ -286,7 +286,7 @@
                             },
 {
                                 "acronym": "ATOMATOFLAMES",
-                                "title": "Required Day VFR Equipment",
+                                "title": "Required Day VFR Equipment 91.205(b)",
                                 "description": "Minimum required equipment for day VFR flight per 14 CFR 91.205(b).",
                                 "letters": [
                                     {
@@ -358,32 +358,32 @@
                             },
 {
                                 "acronym": "FLAPS",
-                                "title": "Required Night VFR Equipment",
+                                "title": "Required Night VFR Equipment 91.205(c)",
                                 "description": "Additional equipment required for night VFR flight per 14 CFR 91.205(c).",
                                 "letters": [
                                     {
                                         "letter": "F",
-                                        "word": "Fuses",
+                                        "word": "Fuses Source of Power 91.205(c)(6)",
                                         "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
                                     },
                                     {
                                         "letter": "L",
-                                        "word": "Landing Light",
-                                        "description": "A landing light is required for aircraft operated for hire at night; recommended for all night operations."
+                                        "word": "Landing Light 91.205(c)(4)",
+                                        "description": "A landing light is required for aircraft operated for HIRE at night; recommended for all night operations."
                                     },
                                     {
                                         "letter": "A",
-                                        "word": "Anti-Collision Lights",
+                                        "word": "Anti-Collision Lights 91.205(c)(3)",
                                         "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
                                     },
                                     {
                                         "letter": "P",
-                                        "word": "Position Lights",
+                                        "word": "Position Lights 91.205(c)(2)",
                                         "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
                                     },
                                     {
                                         "letter": "S",
-                                        "word": "Source of Power",
+                                        "word": "Source of Power 91.205(c)(5)",
                                         "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
                                     }
                                 ]

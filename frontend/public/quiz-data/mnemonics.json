@@ -10,123 +10,161 @@
                 "letter": "P",
                 "word": "Pilot",
                 "description": "Assess your own fitness to fly before every flight.",
-                "subMnemonics": [{
-                    "acronym": "IMSAFE",
-                    "title": "Personal Minimums Checklist",
-                    "description": "A self-assessment checklist to evaluate personal readiness.",
-                    "letters": [
-                        {
-                            "letter": "I",
-                            "word": "Illness",
-                            "description": "Am I suffering from any illness or symptoms that could affect performance?"
-                        },
-                        {
-                            "letter": "M",
-                            "word": "Medication",
-                            "description": "Am I taking any medication that could affect my judgement or performance?"
-                        },
-                        {
-                            "letter": "S",
-                            "word": "Stress",
-                            "description": "Am I under unusual psychological or emotional stress?"
-                        },
-                        {
-                            "letter": "A",
-                            "word": "Alcohol",
-                            "description": "Have I consumed alcohol within the last 8 hours? (8 hours bottle to throttle, <0.04% BAC)"
-                        },
-                        {
-                            "letter": "F",
-                            "word": "Fatigue",
-                            "description": "Am I adequately rested and alert? Fatigue is a leading cause of accidents."
-                        },
-                        {
-                            "letter": "E",
-                            "word": "Eating / Emotion",
-                            "description": "Have I eaten properly? Am I emotionally stable?"
-                        }
-                    ]
-                },
-                {
-                    "acronym":"PRIMEC",
-                    "title":"Pilot Documents Checklist",
-                    "description":"Key documents every pilot must have before flight.",
-                    "letters":[
-                        {
-                            "letter": "P",
-                            "word": "Pilot Certificate",
-                            "description": "Must be a valid pilot certificate with appropriate ratings for the flight."
-                        },
-                        {
-                            "letter": "R",
-                            "word": "Radio License",
-                            "description": "Required for international flights, not required for domestic US flights."
-                        },
-                        {
-                            "letter": "I",
-                            "word": "Government-issued Photo ID",
-                            "description": "Required for TSA security screening and to verify identity when requested by authorities."
-                        },
-                        {
-                            "letter": "M",
-                            "word": "Medical Certificate",
-                            "description": "Must hold a valid medical certificate appropriate for the flight operation (e.g., 3rd class for private pilots)."
-                        },
-                        {
-                            "letter": "E",
-                            "word": "Endorsements & Training Records",
-                            "description": "Any additional endorsements or training records relevant to the planned flight (e.g., tailwheel, high-performance, complex, altitude above 25000ft, heavy aircraft)."
-                        },
-                        {
-                            "letter": "C",
-                            "word": "Currency 61.56",
-                            "description": "Flight Review every 24 months, minimum of 1 hour of ground and 1 hour of flight. 3 takeoffs and landings in the last 90 days if carrying passengers."
-                        }
-                    ]
-                },
-                {
-                    "acronym":"PSCRIPT",
-                    "title":"Compensation exceptions 61.113",
-                    "description":"List of exceptions for pilots receiving compensation or hire under 14 CFR Part 61.113.",
-                    "letters":[
-                        {
-                            "letter": "P",
-                            "word": "Pro-rata",
-                            "description": "Pro rata share (you must pay at least an equal portion of the operating expenses, like fuel and rental fees)."
-                        },
-                        {
-                            "letter": "S",
-                            "word": "Salesmen",
-                            "description": "acting as a demonstration pilot for an aircraft sale, provided you have at least 200 hours logged"
-                        },
-                        {
-                            "letter": "C",
-                            "word": "Charity",
-                            "description": " non-profit events (conducted in accordance with FAA regulations)"
-                        },
-                        {
-                            "letter": "R",
-                            "word": "Rescue",
-                            "description": " operations, search, or relief work"
-                        },
-                        {
-                            "letter": "I",
-                            "word": "Incidental",
-                            "description": "the flying must be strictly incidental to your employment, and you cannot be flying for direct compensation"
-                        },
-                        {
-                            "letter": "P",
-                            "word": "Production",
-                            "description": "flight testing an aircraft built by a light-sport builder"
-                        },
-                        {
-                            "letter": "T",
-                            "word": "Tow",
-                            "description": "provided you meet the required PIC and logbook endorsements for towing operations"
-                        }
-                    ]
-                }
-            ]
+                "subMnemonics": [
+                    {
+                        "acronym": "IMSAFE",
+                        "title": "Personal Minimums Checklist",
+                        "description": "A self-assessment checklist to evaluate personal readiness.",
+                        "letters": [
+                            {
+                                "letter": "I",
+                                "word": "Illness",
+                                "description": "Am I suffering from any illness or symptoms that could affect performance?"
+                            },
+                            {
+                                "letter": "M",
+                                "word": "Medication",
+                                "description": "Am I taking any medication that could affect my judgement or performance?"
+                            },
+                            {
+                                "letter": "S",
+                                "word": "Stress",
+                                "description": "Am I under unusual psychological or emotional stress?"
+                            },
+                            {
+                                "letter": "A",
+                                "word": "Alcohol",
+                                "description": "Have I consumed alcohol within the last 8 hours? (8 hours bottle to throttle, <0.04% BAC)"
+                            },
+                            {
+                                "letter": "F",
+                                "word": "Fatigue",
+                                "description": "Am I adequately rested and alert? Fatigue is a leading cause of accidents."
+                            },
+                            {
+                                "letter": "E",
+                                "word": "Eating / Emotion",
+                                "description": "Have I eaten properly? Am I emotionally stable?"
+                            }
+                        ]
+                    },
+                    {
+                        "acronym": "PRIMEC",
+                        "title": "Pilot Documents Checklist",
+                        "description": "Key documents every pilot must have before flight.",
+                        "letters": [
+                            {
+                                "letter": "P",
+                                "word": "Pilot Certificate",
+                                "description": "Must be a valid pilot certificate with appropriate ratings for the flight."
+                            },
+                            {
+                                "letter": "R",
+                                "word": "Radio License",
+                                "description": "Required for international flights, not required for domestic US flights."
+                            },
+                            {
+                                "letter": "I",
+                                "word": "Government-issued Photo ID",
+                                "description": "Required for TSA security screening and to verify identity when requested by authorities."
+                            },
+                            {
+                                "letter": "M",
+                                "word": "Medical Certificate",
+                                "description": "Must hold a valid medical certificate appropriate for the flight operation (e.g., 3rd class for private pilots)."
+                            },
+                            {
+                                "letter": "E",
+                                "word": "Endorsements & Training Records",
+                                "description": "Any additional endorsements or training records relevant to the planned flight (e.g., tailwheel, high-performance, complex, altitude above 25000ft, heavy aircraft)."
+                            },
+                            {
+                                "letter": "C",
+                                "word": "Currency 61.56",
+                                "description": "Flight Review every 24 months, minimum of 1 hour of ground and 1 hour of flight. 3 takeoffs and landings in the last 90 days if carrying passengers."
+                            }
+                        ]
+                    },
+                    {
+                        "acronym": "PSCRIPT",
+                        "title": "Compensation exceptions 61.113 for Private Pilots",
+                        "description": "List of exceptions for pilots receiving compensation or hire under 14 CFR Part 61.113.",
+                        "letters": [
+                            {
+                                "letter": "P",
+                                "word": "Pro-rata",
+                                "description": "Pro rata share (you must pay at least an equal portion of the operating expenses, like fuel and rental fees)."
+                            },
+                            {
+                                "letter": "S",
+                                "word": "Salesmen",
+                                "description": "acting as a demonstration pilot for an aircraft sale, provided you have at least 200 hours logged"
+                            },
+                            {
+                                "letter": "C",
+                                "word": "Charity",
+                                "description": " non-profit events (conducted in accordance with FAA regulations)"
+                            },
+                            {
+                                "letter": "R",
+                                "word": "Rescue",
+                                "description": " operations, search, or relief work"
+                            },
+                            {
+                                "letter": "I",
+                                "word": "Incidental",
+                                "description": "the flying must be strictly incidental to your employment, and you cannot be flying for direct compensation"
+                            },
+                            {
+                                "letter": "P",
+                                "word": "Production",
+                                "description": "flight testing an aircraft built by a light-sport builder"
+                            },
+                            {
+                                "letter": "T",
+                                "word": "Tow",
+                                "description": "provided you meet the required PIC and logbook endorsements for towing operations"
+                            }
+                        ]
+                    },
+                    {
+                        "acronym": "66hits",
+                        "title": "Currency Requirements for IFR",
+                        "description": "List of currency requirements for pilots operating under IFR.",
+                        "letters": [
+                            {
+                                "letter": "6",
+                                "word": "6 Months of grace",
+                                "description": "."
+                            },
+                            {
+                                "letter": "6",
+                                "word": "6 Approaches",
+                                "description": "in the preceding 6 months."
+                            },
+                            {
+                                "letter": "H",
+                                "word": "Holds",
+                                "description": "Holding procedures and tasks."
+                            },
+                            {
+                                "letter": "I",
+                                "word": "Intercepting",
+                                "description": ""
+                            },
+                            {
+                                "letter": "T",
+                                "word": "Tracking",
+                                "description": ""
+                            },
+                            {
+                                "letter": "S",
+                                "word": "System",
+                                "description": ""
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 "letter": "A",
@@ -234,6 +272,43 @@
                                         "description": "Pitot-static system and altimeter must be inspected every 24 calendar months for IFR operations (14 CFR 91.411)."
                                     }
                                 ]
+                            },
+                            {
+                                "acronym": "BADVAG",
+                                "title": "VOR Inspections",
+                                "description": "VOR accuracy must be verified within the preceding 30 days for IFR flight (14 CFR 91.171). Must log Date, Error bearing, Place and signature of person performing the check.",
+                                "letters": [
+                                    {
+                                        "letter": "B",
+                                        "word": "Bench Test",
+                                        "description": " Performed by an approved avionics repair station; maximum permissible indicated bearing error is +- 4 degrees."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Airway Check",
+                                        "description": "Performed in flight over a prominent ground landmark along a centerline of an established VOR airway (at least 20 NM from the station); maximum error is +- 6 degrees."
+                                    },
+                                    {
+                                        "letter": "D",
+                                        "word": "Dual VOR Check",
+                                        "description": "Tuning both independent receivers to the same VOR station and comparing the indicated bearings; the maximum allowed variation between the two receivers is 4 degrees."
+                                    },
+                                    {
+                                        "letter": "V",
+                                        "word": "VOT VOR Test Facility",
+                                        "description": "Tuning to a designated FAA VOT frequency; the OBS should read 360 \"FROM\" or 180 \"TO\" with a maximum error of ±4 degrees."
+                                    },
+                                    {
+                                        "letter": "A",
+                                        "word": "Airborne Check",
+                                        "description": "Performed in flight; maximum error is ±6 degrees."
+                                    },
+                                    {
+                                        "letter": "G",
+                                        "word": "Ground Check",
+                                        "description": "Performed at a designated airport surface checkpoint listed in the Chart Supplement; maximum error is ±4 degrees."
+                                    }
+                                ]
                             }
                         },
                         {
@@ -246,148 +321,276 @@
                                     "detail": "If the aircraft has no MEL: determine whether the equipment is required by (1) the KOEL in the POH/AFM, (2) an Airworthiness Directive, (3) 14 CFR 91.205 for the intended operation, or (4) the airworthiness certificate. If it is NOT required by any of these, it may be deactivated or disabled, placarded INOPERATIVE, and the flight may proceed. If it IS required, the aircraft is unairworthy and cannot fly until repaired."
                                 }
                             ],
-                                                        "subMnemonics": [
-{
-                                "acronym":"RAKETS",
-                                "title":"Required Flow for evaluating Inoperative Equipment",
-                                "description":"A structured flow for evaluating if an inoperative equipment is needed.",
-                                "letters":[
-                                    {
-                                        "letter": "R",
-                                        "word": "Regulation 91.213",
-                                        "description": "Determine if the equipment is required by regulations or the aircraft's documentation."
-                                    },
-                                    {
-                                        "letter": "A",
-                                        "word": "Airworthiness Directives (ADs)",
-                                        "description": "Check if the equipment is required by any applicable Airworthiness Directives."
-                                    },
-                                    {
-                                        "letter": "K",
-                                        "word": "KOEL — Kinds of Operations Equipment List",
-                                        "description": "Check if the equipment is listed in the KOEL for the intended operation."
-                                    },
-                                    {
-                                        "letter": "E",
-                                        "word": "Equipment List in POH/AFM",
-                                        "description": "Check if the equipment is listed in the aircraft's POH/AFM."
-                                    },
-                                    {
-                                        "letter": "T",
-                                        "word": "TCDS — Type Certificate Data Sheet",
-                                        "description": "Check if the equipment is required by the Type Certificate Data Sheet."
-                                    },
-                                    {
-                                        "letter": "S",
-                                        "word": "Safe?",
-                                        "description": "1. Determine it is not required; 2. Remove or Deactivate; 3. Placard Inoperative; 4. PIC Decision to Fly."
-                                    }
-                                ]
-                            },
-{
-                                "acronym": "ATOMATOFLAMES",
-                                "title": "Required Day VFR Equipment 91.205(b)",
-                                "description": "Minimum required equipment for day VFR flight per 14 CFR 91.205(b).",
-                                "letters": [
-                                    {
-                                        "letter": "A",
-                                        "word": "Altimeter",
-                                        "description": "Sensitive pressure altimeter adjustable for barometric pressure."
-                                    },
-                                    {
-                                        "letter": "T",
-                                        "word": "Tachometer",
-                                        "description": "Required for each engine to monitor and record RPM."
-                                    },
-                                    {
-                                        "letter": "O",
-                                        "word": "Oil Pressure Gauge",
-                                        "description": "Required for each engine using a pressure oil system."
-                                    },
-                                    {
-                                        "letter": "M",
-                                        "word": "Magnetic Compass",
-                                        "description": "Primary direction-finding instrument; must include a deviation placard."
-                                    },
-                                    {
-                                        "letter": "A",
-                                        "word": "Airspeed Indicator",
-                                        "description": "Required to determine airspeed and monitor Vne, Vno, and Vs markings."
-                                    },
-                                    {
-                                        "letter": "T",
-                                        "word": "Temperature Gauge",
-                                        "description": "Coolant temperature gauge required for each liquid-cooled engine."
-                                    },
-                                    {
-                                        "letter": "O",
-                                        "word": "Oil Temperature Gauge",
-                                        "description": "Required for each air-cooled engine to monitor oil temperature."
-                                    },
-                                    {
-                                        "letter": "F",
-                                        "word": "Fuel Gauge",
-                                        "description": "Fuel quantity gauge required for each fuel tank in use."
-                                    },
-                                    {
-                                        "letter": "L",
-                                        "word": "Landing Gear Indicator",
-                                        "description": "Position indicator light required for aircraft with retractable landing gear."
-                                    },
-                                    {
-                                        "letter": "A",
-                                        "word": "Anti-Collision Lights",
-                                        "description": "Required on all aircraft certified after March 11, 1996."
-                                    },
-                                    {
-                                        "letter": "M",
-                                        "word": "Manifold Pressure Gauge",
-                                        "description": "Required for altitude engines and those with controllable-pitch propellers."
-                                    },
-                                    {
-                                        "letter": "E",
-                                        "word": "ELT",
-                                        "description": "Emergency Locator Transmitter required per 14 CFR 91.207 (with limited exceptions)."
-                                    },
-                                    {
-                                        "letter": "S",
-                                        "word": "Seatbelts",
-                                        "description": "Seat belts and shoulder harnesses required for each occupant; pilot must brief passengers."
-                                    }
-                                ]
-                            },
-{
-                                "acronym": "FLAPS",
-                                "title": "Required Night VFR Equipment 91.205(c)",
-                                "description": "Additional equipment required for night VFR flight per 14 CFR 91.205(c).",
-                                "letters": [
-                                    {
-                                        "letter": "F",
-                                        "word": "Fuses Source of Power 91.205(c)(6)",
-                                        "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
-                                    },
-                                    {
-                                        "letter": "L",
-                                        "word": "Landing Light 91.205(c)(4)",
-                                        "description": "A landing light is required for aircraft operated for HIRE at night; recommended for all night operations."
-                                    },
-                                    {
-                                        "letter": "A",
-                                        "word": "Anti-Collision Lights 91.205(c)(3)",
-                                        "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
-                                    },
-                                    {
-                                        "letter": "P",
-                                        "word": "Position Lights 91.205(c)(2)",
-                                        "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
-                                    },
-                                    {
-                                        "letter": "S",
-                                        "word": "Source of Power 91.205(c)(5)",
-                                        "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
-                                    }
-                                ]
-                            }
+                            "subMnemonics": [
+                                {
+                                    "acronym": "RAKETS",
+                                    "title": "Required Flow for evaluating Inoperative Equipment",
+                                    "description": "A structured flow for evaluating if an inoperative equipment is needed.",
+                                    "letters": [
+                                        {
+                                            "letter": "R",
+                                            "word": "Regulation 91.213",
+                                            "description": "Determine if the equipment is required by regulations or the aircraft's documentation."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Airworthiness Directives (ADs)",
+                                            "description": "Check if the equipment is required by any applicable Airworthiness Directives."
+                                        },
+                                        {
+                                            "letter": "K",
+                                            "word": "KOEL — Kinds of Operations Equipment List",
+                                            "description": "Check if the equipment is listed in the KOEL for the intended operation."
+                                        },
+                                        {
+                                            "letter": "E",
+                                            "word": "Equipment List in POH/AFM",
+                                            "description": "Check if the equipment is listed in the aircraft's POH/AFM."
+                                        },
+                                        {
+                                            "letter": "T",
+                                            "word": "TCDS — Type Certificate Data Sheet",
+                                            "description": "Check if the equipment is required by the Type Certificate Data Sheet."
+                                        },
+                                        {
+                                            "letter": "S",
+                                            "word": "Safe?",
+                                            "description": "1. Determine it is not required; 2. Remove or Deactivate; 3. Placard Inoperative; 4. PIC Decision to Fly."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "acronym": "ATOMATOFLAMES",
+                                    "title": "Required Day VFR Equipment 91.205(b)",
+                                    "description": "Minimum required equipment for day VFR flight per 14 CFR 91.205(b).",
+                                    "letters": [
+                                        {
+                                            "letter": "A",
+                                            "word": "Altimeter",
+                                            "description": "Sensitive pressure altimeter adjustable for barometric pressure."
+                                        },
+                                        {
+                                            "letter": "T",
+                                            "word": "Tachometer",
+                                            "description": "Required for each engine to monitor and record RPM."
+                                        },
+                                        {
+                                            "letter": "O",
+                                            "word": "Oil Pressure Gauge",
+                                            "description": "Required for each engine using a pressure oil system."
+                                        },
+                                        {
+                                            "letter": "M",
+                                            "word": "Magnetic Compass",
+                                            "description": "Primary direction-finding instrument; must include a deviation placard."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Airspeed Indicator",
+                                            "description": "Required to determine airspeed and monitor Vne, Vno, and Vs markings."
+                                        },
+                                        {
+                                            "letter": "T",
+                                            "word": "Temperature Gauge",
+                                            "description": "Coolant temperature gauge required for each liquid-cooled engine."
+                                        },
+                                        {
+                                            "letter": "O",
+                                            "word": "Oil Temperature Gauge",
+                                            "description": "Required for each air-cooled engine to monitor oil temperature."
+                                        },
+                                        {
+                                            "letter": "F",
+                                            "word": "Fuel Gauge",
+                                            "description": "Fuel quantity gauge required for each fuel tank in use."
+                                        },
+                                        {
+                                            "letter": "L",
+                                            "word": "Landing Gear Indicator",
+                                            "description": "Position indicator light required for aircraft with retractable landing gear."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Anti-Collision Lights",
+                                            "description": "Required on all aircraft certified after March 11, 1996."
+                                        },
+                                        {
+                                            "letter": "M",
+                                            "word": "Manifold Pressure Gauge",
+                                            "description": "Required for altitude engines and those with controllable-pitch propellers."
+                                        },
+                                        {
+                                            "letter": "E",
+                                            "word": "ELT",
+                                            "description": "Emergency Locator Transmitter required per 14 CFR 91.207 (with limited exceptions)."
+                                        },
+                                        {
+                                            "letter": "S",
+                                            "word": "Seatbelts",
+                                            "description": "Seat belts and shoulder harnesses required for each occupant; pilot must brief passengers."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "acronym": "FLAPS",
+                                    "title": "Required Night VFR Equipment 91.205(c)",
+                                    "description": "Additional equipment required for night VFR flight per 14 CFR 91.205(c).",
+                                    "letters": [
+                                        {
+                                            "letter": "F",
+                                            "word": "Fuses Source of Power 91.205(c)(6)",
+                                            "description": "Spare fuses of the correct amperage must be on board for any fuse-protected electrical system used at night."
+                                        },
+                                        {
+                                            "letter": "L",
+                                            "word": "Landing Light 91.205(c)(4)",
+                                            "description": "A landing light is required for aircraft operated for HIRE at night; recommended for all night operations."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Anti-Collision Lights 91.205(c)(3)",
+                                            "description": "Flashing red or white anti-collision lights must be operational from sunset to sunrise."
+                                        },
+                                        {
+                                            "letter": "P",
+                                            "word": "Position Lights 91.205(c)(2)",
+                                            "description": "Red (left wing), green (right wing), and white (tail) navigation lights required from sunset to sunrise."
+                                        },
+                                        {
+                                            "letter": "S",
+                                            "word": "Source of Power 91.205(c)(5)",
+                                            "description": "An adequate and reliable electrical power source (battery and alternator) must be available to power all required night lighting."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "acronym": "GRABCARDDS",
+                                    "title": "",
+                                    "description": "All equipament required in 91.205(b) and (c) plus additional equipment required for IFR flight.",
+                                    "letters": [
+                                        {
+                                            "letter": "G",
+                                            "word": "Generator / Alternator 91.205(d)(7)",
+                                            "description": "The generator or alternator must be operational to provide electrical power to the aircraft."
+                                        },
+                                        {
+                                            "letter": "R",
+                                            "word": "Radio and Nav System 91.205(d)(2)",
+                                            "description": "The aircraft must be equipped with a functioning radio and navigation system."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Altimeter 91.205(d)(5)",
+                                            "description": "The aircraft must be equipped with a functioning altimeter."
+                                        },
+                                        {
+                                            "letter": "B",
+                                            "word": "Ball (Slip/Skid Indicator) 91.205(d)(4)",
+                                            "description": "The aircraft must be equipped with a functioning slip/skid indicator."
+                                        },
+                                        {
+                                            "letter": "C",
+                                            "word": "Clock 91.205(d)(6)",
+                                            "description": "The aircraft must be equipped with a functioning clock."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Attitude Indicator 91.205(d)(8)",
+                                            "description": "The aircraft must be equipped with a functioning attitude indicator."
+                                        },
+                                        {
+                                            "letter": "R",
+                                            "word": "Rate of Turn Indicator 91.205(d)(3)",
+                                            "description": "The aircraft must be equipped with a functioning rate of turn indicator."
+                                        },
+                                        {
+                                            "letter": "D",
+                                            "word": "Directional Gyro 91.205(d)(9)",
+                                            "description": "The aircraft must be equipped with a functioning directional gyro."
+                                        },
+                                        {
+                                            "letter": "D",
+                                            "word": "DME 91.205(c)(1)",
+                                            "description": "Required for flight at or above FL240."
+                                        },
+                                        {
+                                            "letter": "S",
+                                            "word": "Strobe Lights 91.205(c)(1)",
+                                            "description": "The aircraft must be equipped with functioning strobe lights for visibility during night operations."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "acronym": "VDMONA",
+                                    "title": "Compass Errors",
+                                    "description": "Mnemonic for compass errors.",
+                                    "letters": [
+                                        {
+                                            "letter": "V",
+                                            "word": "Variation",
+                                            "description": "Difference between true north and magnetic north."
+                                        },
+                                        {
+                                            "letter": "D",
+                                            "word": "Deviation",
+                                            "description": "Compass error caused by metal and electronics in the plane."
+                                        },
+                                        {
+                                            "letter": "M",
+                                            "word": "Magnetic Dip",
+                                            "description": "The pull of Earth's magnetic field pulling down toward the poles."
+                                        },
+                                        {
+                                            "letter": "O",
+                                            "word": "Oscillation",
+                                            "description": "Bouncing of the compass card caused by bumps or rough air."
+                                        },
+                                        {
+                                            "letter": "N",
+                                            "word": "Northly Turns (UNOS)",
+                                            "description": "Undershoot North, overshoot South, Lat/2 + 15% Speed"
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Acceleration Errors (ANDS)",
+                                            "description": " Accelerate North, decelerate South when flying East or West."
+                                        }
+                                    ]
+                                }
+                                ,
+                                {
+                                    "acronym": "CARLP",
+                                    "title": "VOR Errors",
+                                    "description": "Mnemonic for VOR errors.",
+                                    "letters": [
+                                        {
+                                            "letter": "C",
+                                            "word": "Cone of confusion",
+                                            "description": "Compass error caused by metal and electronics in the plane."
+                                        },
+                                        {
+                                            "letter": "A",
+                                            "word": "Area of Ambiguity",
+                                            "description": "Occurs when the aircraft is directly over the VOR station, causing the receiver to be unable to determine the correct radial."
+                                        },
+
+                                        {
+                                            "letter": "R",
+                                            "word": "Reverse Sensing",
+                                            "description": "Occurs when tracking inbound with a \"FROM\" indication or flying away with a \"TO\" indication, causing the needle to move opposite to the expected correction direction unless compensated for"
+                                        },
+                                        {
+                                            "letter": "L",
+                                            "word": "Line of Sight",
+                                            "description": "VOR signals are line-of-sight and can be blocked by terrain or buildings. Bending and Scalloping"
+                                        },
+                                        {
+                                            "letter": "P",
+                                            "word": "Prop Modulation",
+                                            "description": "VOR signal irregularities caused by the aircraft's propeller modulation."
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -744,8 +947,6 @@
             }
         ]
     },
-       
-
     {
         "id": "NaWiHaFo",
         "acronym": "NaWiHaFo",
@@ -939,5 +1140,4 @@
             }
         ]
     }
-    
 ]

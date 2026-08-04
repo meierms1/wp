@@ -231,7 +231,8 @@
                             "letter": "I",
                             "word": "Inspections",
                             "description": "Verify all required FAA inspections are current before flight.",
-                            "subMnemonic": {
+                            "subMnemonics": [
+                                {
                                 "acronym": "AVIATES",
                                 "title": "Required Inspections",
                                 "description": "FAA-required inspection intervals that must all be current for legal flight.",
@@ -310,6 +311,7 @@
                                     }
                                 ]
                             }
+                            ]
                         },
                         {
                             "letter": "E",
@@ -556,8 +558,7 @@
                                             "description": " Accelerate North, decelerate South when flying East or West."
                                         }
                                     ]
-                                }
-                                ,
+                                },
                                 {
                                     "acronym": "CARLP",
                                     "title": "VOR Errors",
@@ -573,7 +574,6 @@
                                             "word": "Area of Ambiguity",
                                             "description": "Occurs when the aircraft is directly over the VOR station, causing the receiver to be unable to determine the correct radial."
                                         },
-
                                         {
                                             "letter": "R",
                                             "word": "Reverse Sensing",

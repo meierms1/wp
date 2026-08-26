@@ -723,6 +723,114 @@
         ]
     },
     {
+        "id": "IFR",
+        "acronym": "IFR",
+        "title": "IFR",
+        "description": "IFR .", 
+        "color": "green",
+        "letters": [
+            "letter": "M",
+            "word": "MARVELOUSVFR500",
+            "description": "required reporting",
+            "subMnemonic": {
+                "acronym": "M",
+                "word": "M",
+                "description": "M",
+                "letters": [
+                    {
+                    "letter": "M",
+                    "word": " Missed Approach"
+                    },
+                    {"letter": "A",
+                    "word": "Airspeed +/-10 5%"
+                    },
+                    {"letter": "R",
+                    "word": "Reaching a holding fix"
+                    },
+                    {"letter": "V",
+                    "word": "VFR on Top"
+                    },
+                    {"letter": "E",
+                    "word": "ETA changed +/- 2 min"
+                    },
+                    {"letter": "L",
+                    "word": "Leaving a holding Fix"
+                    },
+                    {"letter": "O",
+                    "word": "Outer Marker"
+                    },
+                    {"letter": "U",
+                    "word": "Unforecasted weather"
+                    },
+                    {"letter": "S",
+                    "word": "Safety of flight"
+                    },
+                    {"letter": "V",
+                    "word": "Vacating Altitude"
+                    },
+                    {"letter": "F",
+                    "word": "Final Approach Fix" 
+                    },
+                    {"letter": "R",
+                    "word": "Radio/Nav/Approach equipment failure"
+                    },
+                    {"letter": "C",
+                    "word": "Compulsory reporting points"
+                    },
+                    {"letter": "500",
+                    "word": "Unable to climb/descent 500fpm"
+                    }
+                ]
+                
+            },
+            {
+                "letter": "0",
+                "word": "0123",
+                "subMnemonic": [
+                    {
+                    "letter": "0",
+                    "word": "Published IAP"
+                    },
+                    {"letter": "1",
+                    "word": "1 hour before and after"
+                    },
+                    {"letter": "2",
+                    "word": "2000ft agl ceiling"
+                    },
+                    {"letter": "3",
+                    "word": "3sm visibility"
+                    },
+                ]
+                
+                
+                
+            }
+            {
+                "letter": "T",
+                "word": "5Ts",
+                "subMnemonic": [
+                    {
+                    "letter": "T",
+                    "word": "Time"
+                    },
+                    {"letter": "T",
+                    "word": "Turn"
+                    },
+                    {"letter": "T",
+                    "word": "Twist"
+                    },
+                    {"letter": "T",
+                    "word": "Throttle"
+                    },
+                    {"letter": "T",
+                    "word": "Talk"
+                    },
+                ]
+                
+            }
+        ]
+    },
+    {
         "id": "procedures",
         "acronym": "PROCEDURES",
         "title": "Lost, Emergencies, Go-Around & Spin Recovery",

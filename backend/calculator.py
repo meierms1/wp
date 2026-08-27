@@ -775,7 +775,12 @@ class SR20Interpolator():
         f = RegularGridInterpolator((x, y), landing_obs, method="linear", bounds_error=False, fill_value=None)
         self.landing_obs = f([self.pressure, self.temperature])[0]
 
-    def IFRclimb(self, flaps=True):
+    def IFRclimb(self, flaps=True, weight=None):
+        if weight is not None:
+            self.weight = float(weight)
+        elif not hasattr(self, 'weight'):
+            self.weight = 3150.0
+
         x = [0, 2000, 4000, 6000, 8000, 10000] 
         y = [-20, 0, 20, 40, 50]
         z = [2600, 3150]
@@ -804,13 +809,14 @@ class SR20Interpolator():
             self.climb_grad_heavy = f([self.pressure, self.temperature])[0]
             f = RegularGridInterpolator((x, y), light50, method="linear", bounds_error=False, fill_value=None)
             self.climb_grad_light = f([self.pressure, self.temperature])[0]
-            self.climb_grad = np.interp(self.weight, z, [self.climb_grad_light, self.climb_grad_heavy])
+            self.climb_grad = float(np.interp(self.weight, z, [self.climb_grad_light, self.climb_grad_heavy]))
         else:
             f = RegularGridInterpolator((x0, y), heavy0, method="linear", bounds_error=False, fill_value=None)
             self.climb_grad_heavy = f([self.pressure, self.temperature])[0]
             f = RegularGridInterpolator((x0, y), light0, method="linear", bounds_error=False, fill_value=None)
             self.climb_grad_light = f([self.pressure, self.temperature])[0]
-            self.climb_grad = np.interp(self.weight, z, [self.climb_grad_light, self.climb_grad_heavy])
+            self.climb_grad = float(np.interp(self.weight, z, [self.climb_grad_light, self.climb_grad_heavy]))
+        return self.climb_grad
     
     def convertor(self):
         self.temperature = (self.temperature - 32) * 5.0/9.0

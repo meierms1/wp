@@ -913,10 +913,15 @@ def app_sr20_interpolator():
         pressure = float(data.get('pressure'))
         temperature = float(data.get('temperature'))
         unit = bool(data.get('unit', False))
-        flaps = bool(data.get("flaps", True))
-        interpolator = SR20Interpolator(pressure, temperature, unit)
-        clb = interpolatior.IFRclimb(flaps)
-        return jsonify({'success': True, 'interpolated_value': vars(interpolator)})
+        flaps = bool(data.get('flaps', True))
+        weight = float(data.get('weight', 3150))
+        interpolator = SR20Interpolator(pressure, temperature, unit=unit)
+        interpolator.IFRclimb(flaps=flaps, weight=weight)
+        result = vars(interpolator)
+        result['climb_rate'] = float(interpolator.climb_grad)
+        result['weight'] = float(weight)
+        result['flaps'] = bool(flaps)
+        return jsonify({'success': True, 'interpolated_value': result})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 400
 

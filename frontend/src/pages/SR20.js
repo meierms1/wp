@@ -16,6 +16,8 @@ const SR20 = () => {
   const [sr20Form, setsr20Form] = useState({
     pressure_value: '',
     temperature_value: '',
+    weight: '',
+    flaps: 'up',
     unit: 'C',
     ac: false,
     dryGrass: false,
@@ -75,9 +77,9 @@ const SR20 = () => {
 
   const handleSR20 = async (e) => {
     e.preventDefault();
-    const { pressure_value, temperature_value } = sr20Form;
-    if (pressure_value === '' || temperature_value === '') {
-      toast.error('Please fill in all fields');
+    const { pressure_value, temperature_value, weight } = sr20Form;
+    if (pressure_value === '' || temperature_value === '' || weight === '') {
+      toast.error('Please fill in all required fields');
       return;
     }
     try {
@@ -85,6 +87,8 @@ const SR20 = () => {
       const payload = {
         pressure: parseFloat(pressure_value),
         temperature: parseFloat(temperature_value),
+        weight: parseFloat(weight),
+        flaps: sr20Form.flaps === '50',
         unit: sr20Form.unit === 'F'
       };
       const response = await axios.post('/api/calculator/sr20-interpolator', payload);
@@ -267,7 +271,7 @@ const SR20 = () => {
                   </p>
 
                   <form onSubmit={handleSR20} className="space-y-6">
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
                       <div>
                         <label className="block text-gray-300 mb-2 font-medium">Pressure Altitude (ft)</label>
                         <input
@@ -289,8 +293,32 @@ const SR20 = () => {
                         />
                       </div>
                       <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Weight (lb)</label>
+                        <input
+                          type="number" step="any" placeholder="e.g. 2800"
+                          value={sr20Form.weight}
+                          onChange={(e) => setsr20Form({ ...sr20Form, weight: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-300 mb-2 font-medium">Flaps</label>
+                        <select
+                          value={sr20Form.flaps}
+                          onChange={(e) => setsr20Form({ ...sr20Form, flaps: e.target.value })}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
+                          <option value="up" className="bg-slate-900">Up</option>
+                          <option value="50" className="bg-slate-900">50°</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-1 gap-6">
+                      <div>
                         <label className="block text-gray-300 mb-2 font-medium">Temperature Unit</label>
-                        <div className="flex">
+                        <div className="flex max-w-xs">
                           {['C', 'F'].map((u) => (
                             <button
                               key={u} type="button"
@@ -391,10 +419,14 @@ const SR20 = () => {
                                     </td>
                                   </tr>
                                   <tr>
+                                    <td className="px-4 py-2">IFR Climb Rate</td>
+                                    <td className="px-4 py-2 font-semibold">{Number(sr20Result.climb_rate ?? sr20Result.climb_grad ?? 0).toFixed(0)} fpm</td>
+                                  </tr>
+                                  <tr className="bg-gray-100">
                                     <td className="px-4 py-2">Landing Roll</td>
                                     <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_roll)}</td>
                                   </tr>
-                                  <tr className="bg-gray-100">
+                                  <tr>
                                     <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
                                     <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_obs)}</td>
                                   </tr>
@@ -405,7 +437,7 @@ const SR20 = () => {
                         </table>
                       </div>
                       <p className="text-gray-400 text-xs mt-3">
-                        Values interpolated at {sr20Form.pressure_value} ft / {sr20Form.temperature_value} °{sr20Form.unit || 'C'}. Source: Cirrus SR20 POH performance tables.
+                        Values interpolated at {sr20Form.pressure_value} ft / {sr20Form.temperature_value} °{sr20Form.unit || 'C'} and {sr20Form.weight} lb with {sr20Form.flaps === '50' ? '50° flaps' : 'flaps up'}. Source: Cirrus SR20 POH performance tables.
                       </p>
                       <p className="text-gray-500 text-xs mt-2 italic">
                         Headwind: subtract 10% per each 12 knots head wind; Tailwind: add 10% per each 2 knots of tail wind up to 10 knots.

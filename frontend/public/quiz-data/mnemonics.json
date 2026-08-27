@@ -890,10 +890,20 @@
                     "description": "Fly the highest",
                     "letters": [
                         {
-                            "letter": "T",
-                            "word": "Time",
-                            "description": "Note the time and your current conditions."
+                            "letter": "M",
+                            "word": "Minimum Altitude Prescribed for IFR",
+                            "description": "."
                         },
+                        {
+                            "letter": "E",
+                            "word": "Expected",
+                            "description": "."
+                        },
+                        {
+                            "letter": "A",
+                            "word": "Assigned",
+                            "description": "."
+                        }
                     ]
                 }
             },
@@ -925,7 +935,7 @@
                             "letter": "F",
                             "word": "Filed",
                             "description": " "
-                        },
+                        }
                     ]
                 }
             }

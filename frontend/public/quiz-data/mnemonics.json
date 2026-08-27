@@ -879,6 +879,55 @@
                         }
                     ]
                 }
+            },
+            {
+                "letter": "M",
+                "word": "MEA",
+                "description": "Fly the highest (Lost comms)",
+                "subMnemonic": {
+                    "acronym": "MEA",
+                    "title": "Altitude",
+                    "description": "Fly the highest",
+                    "letters": [
+                        {
+                            "letter": "T",
+                            "word": "Time",
+                            "description": "Note the time and your current conditions."
+                        },
+                    ]
+                }
+            },
+            {
+                "letter": "A",
+                "word": "AVEF",
+                "description": "Select course in this order (Lost comms)",
+                "subMnemonic": {
+                    "acronym": "AVEF",
+                    "title": "Route",
+                    "description": "Route",
+                    "letters": [
+                        {
+                            "letter": "A",
+                            "word": "Assigned route",
+                            "description": " "
+                        },
+                        {
+                            "letter": "V",
+                            "word": "Vectored",
+                            "description": " "
+                        },
+                        {
+                            "letter": "E",
+                            "word": "Expected",
+                            "description": " "
+                        },
+                        {
+                            "letter": "F",
+                            "word": "Filed",
+                            "description": " "
+                        },
+                    ]
+                }
             }
         ]
     },

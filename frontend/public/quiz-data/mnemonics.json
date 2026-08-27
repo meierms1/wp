@@ -815,60 +815,70 @@
                 "letter": "0",
                 "word": "0123",
                 "description": "IFR minimums for a published instrument approach once within one hour before and after the ETA.",
-                "subMnemonics": [
-                    {
-                        "letter": "0",
-                        "word": "Published IAP",
-                        "description": "Operate no lower than published minimums for the instrument approach."
-                    },
-                    {
-                        "letter": "1",
-                        "word": "1 hour before and after",
-                        "description": "A published approach is required to be available within one hour before or after your ETA."
-                    },
-                    {
-                        "letter": "2",
-                        "word": "2000ft AGL ceiling",
-                        "description": "The ceiling must be at least 2,000 feet AGL."
-                    },
-                    {
-                        "letter": "3",
-                        "word": "3 SM visibility",
-                        "description": "Visibility must be at least 3 statute miles."
-                    }
-                ]
+                "subMnemonic": {
+                    "acronym": "0123",
+                    "title": "Published Approach Minimums",
+                    "description": "The basic IFR approach criteria that must be met for a published instrument approach.",
+                    "letters": [
+                        {
+                            "letter": "0",
+                            "word": "Published IAP",
+                            "description": "Operate no lower than published minimums for the instrument approach."
+                        },
+                        {
+                            "letter": "1",
+                            "word": "1 hour before and after",
+                            "description": "A published approach is required to be available within one hour before or after your ETA."
+                        },
+                        {
+                            "letter": "2",
+                            "word": "2000ft AGL ceiling",
+                            "description": "The ceiling must be at least 2,000 feet AGL."
+                        },
+                        {
+                            "letter": "3",
+                            "word": "3 SM visibility",
+                            "description": "Visibility must be at least 3 statute miles."
+                        }
+                    ]
+                }
             },
             {
                 "letter": "T",
                 "word": "5Ts",
                 "description": "In an emergency or abnormal situation, the first few calls should cover Time, Turn, Twist, Throttle, and Talk.",
-                "subMnemonics": [
-                    {
-                        "letter": "T",
-                        "word": "Time",
-                        "description": "Note the time and your current conditions."
-                    },
-                    {
-                        "letter": "T",
-                        "word": "Turn",
-                        "description": "Determine the aircraft heading or turn needed to reach a safe option."
-                    },
-                    {
-                        "letter": "T",
-                        "word": "Twist",
-                        "description": "Tune the correct navigation frequency or set the intended approach."
-                    },
-                    {
-                        "letter": "T",
-                        "word": "Throttle",
-                        "description": "Set the throttle and power as required for the emergency or recovery."
-                    },
-                    {
-                        "letter": "T",
-                        "word": "Talk",
-                        "description": "Communicate clearly with ATC and declare the emergency if needed."
-                    }
-                ]
+                "subMnemonic": {
+                    "acronym": "5Ts",
+                    "title": "5 Ts",
+                    "description": "The first five items to cover in an abnormal or emergency situation.",
+                    "letters": [
+                        {
+                            "letter": "T",
+                            "word": "Time",
+                            "description": "Note the time and your current conditions."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Turn",
+                            "description": "Determine the aircraft heading or turn needed to reach a safe option."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Twist",
+                            "description": "Tune the correct navigation frequency or set the intended approach."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Throttle",
+                            "description": "Set the throttle and power as required for the emergency or recovery."
+                        },
+                        {
+                            "letter": "T",
+                            "word": "Talk",
+                            "description": "Communicate clearly with ATC and declare the emergency if needed."
+                        }
+                    ]
+                }
             }
         ]
     },

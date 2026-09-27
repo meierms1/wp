@@ -990,10 +990,12 @@ def app_sr20_advanced():
                 'vbg_landing': float(fp.glide_speed2),
             },
             'performance': {
-                'takeoff_roll': float(interp_act.takeoff_roll),
-                'takeoff_obs':  float(interp_act.takeoff_obs),
-                'landing_roll': float(interp_base.landing_roll),
-                'landing_obs':  float(interp_base.landing_obs),
+                'takeoff_roll':     float(interp_act.takeoff_roll),
+                'takeoff_obs':      float(interp_act.takeoff_obs),
+                'takeoff_roll_max': float(interp_act.takeoff_roll_max),
+                'takeoff_obs_max':  float(interp_act.takeoff_obs_max),
+                'landing_roll':     float(interp_base.landing_roll),
+                'landing_obs':      float(interp_base.landing_obs),
             }
         }
 

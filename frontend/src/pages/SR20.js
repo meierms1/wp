@@ -876,7 +876,8 @@ const SR20 = () => {
                             <thead>
                               <tr className="bg-purple-200">
                                 <th className="px-4 py-2 text-left">Phase</th>
-                                <th className="px-4 py-2 text-right">Distance (ft)</th>
+                                <th className="px-4 py-2 text-right">At {sr20aResult.wb.takeoff_weight.toFixed(0)} lb</th>
+                                <th className="px-4 py-2 text-right">At 3150 lb</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -886,6 +887,8 @@ const SR20 = () => {
                                 const acObs  = sr20aform.ac ? 400 : 0;
                                 const toRoll = Math.round((sr20aResult.performance.takeoff_roll + acRoll) * grassMult);
                                 const toObs  = Math.round((sr20aResult.performance.takeoff_obs  + acObs)  * grassMult);
+                                const toRollMax = Math.round((sr20aResult.performance.takeoff_roll_max + acRoll) * grassMult);
+                                const toObsMax  = Math.round((sr20aResult.performance.takeoff_obs_max  + acObs)  * grassMult);
                                 const modified = sr20aform.ac || sr20aform.dryGrass || sr20aform.wetGrass;
                                 return (
                                   <>
@@ -897,6 +900,12 @@ const SR20 = () => {
                                           <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_roll)}</span>
                                         )}
                                       </td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">
+                                        {toRollMax}
+                                        {modified && (
+                                          <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_roll_max)}</span>
+                                        )}
+                                      </td>
                                     </tr>
                                     <tr className="bg-gray-100">
                                       <td className="px-4 py-2">Takeoff over 50 ft Obstacle</td>
@@ -906,14 +915,20 @@ const SR20 = () => {
                                           <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_obs)}</span>
                                         )}
                                       </td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700">
+                                        {toObsMax}
+                                        {modified && (
+                                          <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20aResult.performance.takeoff_obs_max)}</span>
+                                        )}
+                                      </td>
                                     </tr>
                                     <tr>
                                       <td className="px-4 py-2">Landing Roll</td>
-                                      <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_roll)}</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700" colSpan={2}>{Math.round(sr20aResult.performance.landing_roll)}</td>
                                     </tr>
                                     <tr className="bg-gray-100">
                                       <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
-                                      <td className="px-4 py-2 text-right font-bold text-purple-700">{Math.round(sr20aResult.performance.landing_obs)}</td>
+                                      <td className="px-4 py-2 text-right font-bold text-purple-700" colSpan={2}>{Math.round(sr20aResult.performance.landing_obs)}</td>
                                     </tr>
                                   </>
                                 );

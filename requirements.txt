@@ -38,7 +38,8 @@ python-dotenv>=1.0.0
 cryptography>=42.0.0
 
 # Database drivers (for production)
-psycopg2-binary>=2.9.0  # PostgreSQL support
+psycopg2-binary>=2.9.0  # PostgreSQL support (psycopg2 dialect: postgresql:// )
+psycopg[binary]>=3.1.0  # PostgreSQL support (psycopg3 dialect: postgresql+psycopg:// )
 pymysql>=1.0.0         # MySQL support (alternative)
 
 # Security and authentication

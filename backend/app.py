@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.calculator import SR20Interpolator, flight_params, material, BaseConverter, GeneralConverter, crosscountry
+from backend.calculator import SR20Interpolator, flight_params, material, BaseConverter, GeneralConverter, crosscountry, wind_components
 
 # Import finance functions with error handling
 try:
@@ -915,7 +915,7 @@ def app_sr20_interpolator():
         unit = bool(data.get('unit', False))
         flaps = bool(data.get('flaps', True))
         weight = float(data.get('weight', 3150))
-        interpolator = SR20Interpolator(pressure, temperature, unit=unit)
+        interpolator = SR20Interpolator(pressure, temperature, unit=unit, advanced=True, weight=weight)
         interpolator.IFRclimb(flaps=flaps, weight=weight)
         result = vars(interpolator)
         result['climb_rate'] = float(interpolator.climb_grad)
@@ -996,6 +996,13 @@ def app_sr20_advanced():
                 'landing_obs':  float(interp_base.landing_obs),
             }
         }
+
+        wind_direction   = data.get('wind_direction')
+        wind_speed       = data.get('wind_speed')
+        runway_direction = data.get('runway_direction')
+        if wind_direction not in (None, '') and wind_speed not in (None, '') and runway_direction not in (None, ''):
+            result['wind'] = wind_components(float(runway_direction), float(wind_direction), float(wind_speed))
+
         return jsonify({'success': True, 'result': result})
     except Exception as e:
         import traceback

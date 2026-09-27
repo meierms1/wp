@@ -838,8 +838,23 @@ class SR20Interpolator():
 
     def advanced_interpolation(self):
         z = [2600, 3150]
+        # self.takeoff_roll/obs already hold the max gross weight (3150 lb) values from sr()
+        self.takeoff_roll_max = float(self.takeoff_roll)
+        self.takeoff_obs_max  = float(self.takeoff_obs)
         self.takeoff_roll = np.interp(self.weight, z, [self.takeoff_roll2, self.takeoff_roll])
         self.takeoff_obs  = np.interp(self.weight, z, [self.takeoff_obs2,  self.takeoff_obs])
+
+def wind_components(runway_direction, wind_direction, wind_speed):
+    """Headwind/crosswind components (kt) for a runway heading given wind direction/speed."""
+    angle = np.radians(wind_direction - runway_direction)
+    headwind = wind_speed * np.cos(angle)
+    crosswind = wind_speed * np.sin(angle)
+    return {
+        'headwind': float(headwind),
+        'tailwind': bool(headwind < 0),
+        'crosswind': float(abs(crosswind)),
+        'crosswind_direction': 'right' if crosswind >= 0 else 'left',
+    }
 
 class flight_params():
     def __init__(self, empty_weight, empty_weight_cg, front_seat, front_seat_cg, rear_seat, rear_seat_cg, baggage, baggage_cg, fuel, fuel_cg, burn, runup, altimeter,  temperature, elevation=969,unit=False):

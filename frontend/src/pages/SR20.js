@@ -44,7 +44,10 @@ const SR20 = () => {
     unit: 'C',
     ac: false,
     dryGrass: false,
-    wetGrass: false
+    wetGrass: false,
+    wind_direction: '',
+    wind_speed: '',
+    runway_direction: ''
   });
 
   const [ccForm, setCcForm] = useState({
@@ -138,6 +141,11 @@ const SR20 = () => {
         elevation_value:   parseFloat(sr20aform.elevation_value),
         unit:              sr20aform.unit === 'F'
       };
+      if (sr20aform.wind_direction !== '' && sr20aform.wind_speed !== '' && sr20aform.runway_direction !== '') {
+        payload.wind_direction   = parseFloat(sr20aform.wind_direction);
+        payload.wind_speed       = parseFloat(sr20aform.wind_speed);
+        payload.runway_direction = parseFloat(sr20aform.runway_direction);
+      }
       const response = await axios.post('/api/calculator/sr20-advanced', payload);
       if (response.data.success) {
         setSR20aResult(response.data.result);
@@ -386,7 +394,8 @@ const SR20 = () => {
                           <thead>
                             <tr className="bg-purple-200">
                               <th className="px-4 py-2">Phase</th>
-                              <th className="px-4 py-2">Distance (ft)</th>
+                              <th className="px-4 py-2">At {sr20Form.weight} lb (ft)</th>
+                              <th className="px-4 py-2">At 3150 lb (ft)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -396,6 +405,8 @@ const SR20 = () => {
                               const acObs  = sr20Form.ac ? 400 : 0;
                               const toRoll = Math.round((sr20Result.takeoff_roll + acRoll) * grassMult);
                               const toObs  = Math.round((sr20Result.takeoff_obs  + acObs)  * grassMult);
+                              const toRollMax = Math.round((sr20Result.takeoff_roll_max + acRoll) * grassMult);
+                              const toObsMax  = Math.round((sr20Result.takeoff_obs_max  + acObs)  * grassMult);
                               return (
                                 <>
                                   <tr>
@@ -404,6 +415,12 @@ const SR20 = () => {
                                       {toRoll}
                                       {(sr20Form.ac || sr20Form.dryGrass || sr20Form.wetGrass) && (
                                         <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_roll)}</span>
+                                      )}
+                                    </td>
+                                    <td className="px-4 py-2 font-semibold">
+                                      {toRollMax}
+                                      {(sr20Form.ac || sr20Form.dryGrass || sr20Form.wetGrass) && (
+                                        <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_roll_max)}</span>
                                       )}
                                     </td>
                                   </tr>
@@ -415,14 +432,20 @@ const SR20 = () => {
                                         <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_obs)}</span>
                                       )}
                                     </td>
+                                    <td className="px-4 py-2 font-semibold">
+                                      {toObsMax}
+                                      {(sr20Form.ac || sr20Form.dryGrass || sr20Form.wetGrass) && (
+                                        <span className="ml-2 text-gray-400 font-normal text-xs line-through">{Math.round(sr20Result.takeoff_obs_max)}</span>
+                                      )}
+                                    </td>
                                   </tr>
                                   <tr>
                                     <td className="px-4 py-2">Landing Roll</td>
-                                    <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_roll)}</td>
+                                    <td className="px-4 py-2 font-semibold" colSpan={2}>{Math.round(sr20Result.landing_roll)}</td>
                                   </tr>
                                   <tr className="bg-gray-100">
                                     <td className="px-4 py-2">Landing over 50 ft Obstacle</td>
-                                    <td className="px-4 py-2 font-semibold">{Math.round(sr20Result.landing_obs)}</td>
+                                    <td className="px-4 py-2 font-semibold" colSpan={2}>{Math.round(sr20Result.landing_obs)}</td>
                                   </tr>
                                 </>
                               );
@@ -646,6 +669,34 @@ const SR20 = () => {
                       </div>
                     </div>
 
+                    {/* Wind Inputs (optional) */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-purple-300 mb-4">Wind <span className="text-gray-500 text-sm font-normal">(optional)</span></h3>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-gray-300 mb-1 text-sm font-medium">Wind Direction (°)</label>
+                          <input type="number" step="any" placeholder="e.g. 250"
+                            value={sr20aform.wind_direction}
+                            onChange={(e) => setsr20aForm({ ...sr20aform, wind_direction: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 mb-1 text-sm font-medium">Wind Speed (kt)</label>
+                          <input type="number" step="any" placeholder="e.g. 12"
+                            value={sr20aform.wind_speed}
+                            onChange={(e) => setsr20aForm({ ...sr20aform, wind_speed: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 mb-1 text-sm font-medium">Runway Direction (°)</label>
+                          <input type="number" step="any" placeholder="e.g. 270"
+                            value={sr20aform.runway_direction}
+                            onChange={(e) => setsr20aForm({ ...sr20aform, runway_direction: e.target.value })}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Optional modifiers */}
                     <div className="flex flex-wrap gap-6">
                       <label className="flex items-center gap-3 cursor-pointer select-none">
@@ -789,6 +840,33 @@ const SR20 = () => {
                           </table>
                         </div>
                       </div>
+
+                      {/* Wind Components */}
+                      {sr20aResult.wind && (
+                        <div>
+                          <h3 className="text-xl font-bold text-white mb-3">Wind Components</h3>
+                          <div className="overflow-x-auto">
+                            <table className="table-auto w-full bg-white/90 rounded-lg text-black text-sm">
+                              <thead>
+                                <tr className="bg-purple-200">
+                                  <th className="px-4 py-2 text-left">Component</th>
+                                  <th className="px-4 py-2 text-right">Value (kt)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td className="px-4 py-2">{sr20aResult.wind.tailwind ? 'Tailwind' : 'Headwind'}</td>
+                                  <td className="px-4 py-2 text-right font-semibold">{Math.abs(sr20aResult.wind.headwind).toFixed(1)}</td>
+                                </tr>
+                                <tr className="bg-gray-100">
+                                  <td className="px-4 py-2">Crosswind ({sr20aResult.wind.crosswind_direction})</td>
+                                  <td className="px-4 py-2 text-right font-semibold">{sr20aResult.wind.crosswind.toFixed(1)}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Performance Table */}
                       <div>

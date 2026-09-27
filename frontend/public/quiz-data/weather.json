@@ -292,6 +292,16 @@
     ],
     "sections": [
       {
+        "title": "Types of Thunderstorms",
+        "rows": [
+          { "label": "Single-Cell", "info": "" },
+          { "label": "Multi-Cell", "info": "Cluster of cells moving as a single unit · moderate to severe weather · can produce heavy rain, hail, and tornadoes" },
+          { "label": "Orographic", "info": "Forced lifting over mountains · can be stationary relative to terrain" },
+          { "label": "Supercell", "info": "Long-lived rotating storm · produces largest hail, strongest tornadoes, extreme winds" },
+          { "label": "Embedded ", "info": "Hidden inside stratiform clouds · no visual warning · detected by radar or PIREP only — most dangerous to encounter" }
+        ]
+      },
+      {
         "title": "Formation Requirements (all 3 needed)",
         "rows": [
           { "label": "Moisture", "info": "Sufficient water vapor — maritime tropical (mT) air masses are primary fuel" },
@@ -356,6 +366,14 @@
     ],
     "sections": [
       {
+        "title": "Types & Causes",
+        "rows": [
+          { "label": "Structural Icing", "info": "Ice accumulation on airframe surfaces from supercooled water droplets in visible moisture" },
+          { "label": "Instrument Icing", "info": "Ice accumulation on aircraft instruments, affecting their accuracy and functionality" },
+          { "label": "Induction Icing", "info": "Ice forming in the engine induction system, potentially causing power loss or engine failure" }
+        ]
+      },
+      {
         "title": "Structural Icing — Requirements",
         "hazard": "danger",
         "rows": [
@@ -410,6 +428,18 @@
       { "label": "Lenticular clouds", "value": "Mark wave crests (not the rotor)" }
     ],
     "sections": [
+      {
+        "title":"Types of Turbulence",
+        "rows": [
+          { "label": "Thermal (Convective)", "info": "Rising/sinking columns of air from surface heating · strongest in afternoon" },
+          { "label": "Mechanical", "info": "Wind flowing over rough terrain, buildings, trees · increases with wind speed" },
+          {"label": "Frontal and Inversion", "info": "Turbulence along frontal boundaries due to wind shear and instability" },
+          { "label": "Wind Shear", "info": "Abrupt change in wind speed/direction over short distance · near fronts, inversions, jet stream" },
+          { "label": "Mountain Wave", "info": "Standing wave in lee of mountains · rotor zone extremely turbulent · can persist 100s of nm downwind" },
+          { "label": "Clear Air (CAT)", "info": "No visual cue · near jet stream, tropopause · fast and sudden · abrupt changes alert crew" },
+          { "label": "Wake Turbulence", "info": "Wingtip vortices from large aircraft · descend and move upwind · stay above and upwind of large aircraft flight path" }
+        ]
+      },
       {
         "title": "Intensities",
         "rows": [
@@ -622,6 +652,15 @@
           { "label": "Flight Service Station (FSS)", "info": "Initial contact on 122.2 or 1-800-992-7433 | Standard, Outlook, and Abbreviated Briefings available." },
           { "label": "Aviation Weather Center (AWC)", "info": "aviationweather.gov for radar, satellite, METAR, TAFs, and GFA tools." },
           { "label": "Flight Information Service-Broadcast (FIS-B)", "info": "Provides weather and aeronautical information to aircraft equipped with ADS-B In." }
+        ]
+      },
+      {
+        "title": "Charts & Graphical Tools",
+        "rows": [
+          {"label": "Surface Analysis", "info": "Current surface conditions · pressure systems, fronts, isobars" },
+          { "label": "Upper-Air Analysis and Winds Aloft", "info": "500 mb and 300 mb charts · troughs/ridges, jet stream position, vorticity" },
+          { "label": "Significant Weather Prognostic Chart", "info": "Forecast of significant weather events · includes fronts, pressure systems, and areas of precipitation" },
+          { "label": "Turbulence & Icing Forecasts", "info": "Graphical depiction of turbulence and icing risk at various altitudes" }
         ]
       },
       {

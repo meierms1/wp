@@ -1,0 +1,114 @@
+{
+  "title": "Instrument Approaches",
+  "source": "Cirrus SR20 POH Supplement — Chapter 3, Normals (Sections 160–200)",
+  "intro": "Every instrument approach starts the same way in the FMS and cockpit flow. The procedures only begin to differ once the aircraft nears the runway environment, based on what kind of minimums and vertical guidance the approach provides.",
+  "considerations": [
+    { "title": "Selecting an Approach", "text": "Loading an approach lets the system keep navigating the current flight plan; activating it navigates direct to the first fix. Loading the full procedure early ensures all fixes are available." },
+    { "title": "Hold or Straight-In?", "text": "Load the hold if any ambiguity exists — it can be removed later with CLR. Only skip it if ATC has explicitly stated \"straight-in.\"" },
+    { "title": "GPS / SBAS", "text": "RNAV/GPS approaches use SBAS when available for lateral/vertical guidance; Baro-VNAV is used if SBAS is unavailable. SBAS is required for LP+V and LPV." },
+    { "title": "Loss of SBAS", "text": "Downgrades (e.g., LPV → LNAV/VNAV) are allowed up to 60 seconds before the FAF. After that point, only a downgrade to LNAV is permitted." },
+    { "title": "Vectors-to-Final", "text": "Activating vectors-to-final removes all fixes outside the FAF and makes the inbound course to the FAF active — confirm ATC's intent first." },
+    { "title": "Temperature Compensation", "text": "The system can adjust waypoint crossing altitudes for cold temperatures if manually enabled with the destination temperature entered." }
+  ],
+  "trunk": [
+    { "step": "FMS & Radios", "detail": "Verify/set avionics; line-select the approach procedure and check approach/missed waypoints." },
+    { "step": "Transition & Minimums", "detail": "Select the appropriate transition and set minimums (BARO or TEMP COMP)." },
+    { "step": "Load / Activate", "detail": "Load or activate the procedure in the flight plan." },
+    { "step": "After Cleared", "detail": "Arm the approach mode / select the guidance appropriate to the loaded procedure." },
+    { "step": "Inbound", "detail": "Target airspeed ~100–120 kt, seatbelts & shoulder harnesses secure, fuel pump on, mixture set for altitude." }
+  ],
+  "branchPrompt": "The procedure diverges based on the type of minimums and vertical guidance available for the approach:",
+  "types": [
+    {
+      "id": "vertical",
+      "name": "Approach with Vertical Guidance",
+      "shortName": "Vertical Guidance",
+      "emoji": "📉",
+      "color": "sky",
+      "tagline": "ILS · LPV · LNAV/VNAV · LNAV+V · LP+V · VOR+V",
+      "keyPoints": [
+        "Vertical path information is available from the FAF to the missed approach point.",
+        "ILS, LPV, and LNAV/VNAV use an FAA-approved Decision Altitude (DA).",
+        "LNAV+V, LP+V, and VOR+V use an advisory glidepath to a Derived DA (published MDA + 50 ft)."
+      ],
+      "steps": [
+        { "step": "Descent", "detail": "Continuous descent following GP/GS (or advisory glidepath) — never level off before minimums." },
+        { "step": "By 500 ft AGL", "detail": "Flaps 100%, final items complete, airspeed VTGT +10." },
+        { "step": "100 ft above minimums", "detail": "\"Approaching minimums\" announced." },
+        { "step": "At DA/DDA", "detail": "\"Minimums, minimums\" — decide Landing or Going around." }
+      ]
+    },
+    {
+      "id": "nonvertical",
+      "name": "Approach without Vertical Guidance",
+      "shortName": "Non-Vertical (MDA)",
+      "emoji": "📊",
+      "color": "amber",
+      "tagline": "LNAV · LP",
+      "keyPoints": [
+        "No vertical guidance is available from the FAF to the missed approach point.",
+        "All descents use a Minimum Descent Altitude (MDA).",
+        "Descent is planned to reach MDA at or slightly before the Visual Descent Point (VDP)."
+      ],
+      "steps": [
+        { "step": "Descent", "detail": "Pilot-flown V/S from the FAF, planned to arrive at MDA at or slightly before the VDP." },
+        { "step": "Level-off (if early)", "detail": "Level at MDA if reached before the VDP — never reach the VDP before the MDA." },
+        { "step": "At MDA", "detail": "\"Minimums, minimums\" + \"Set missed approach altitude.\"" },
+        { "step": "At VDP", "detail": "Decide Landing (if in sight) or Going around / missed approach." }
+      ]
+    },
+    {
+      "id": "circling",
+      "name": "Circle-to-Land Maneuver",
+      "shortName": "Circling",
+      "emoji": "🔄",
+      "color": "purple",
+      "tagline": "Visual maneuvering to a runway not suited for straight-in",
+      "keyPoints": [
+        "The visual phase of an instrument approach used to align with a runway not suited for a straight-in.",
+        "SR20 is Category A, but Category B minimums apply if approach speed exceeds 90 knots.",
+        "The entire maneuver must stay within the protected circling area for the approach category."
+      ],
+      "steps": [
+        { "step": "To Circling MDA", "detail": "Fly the underlying vertical/non-vertical procedure, but do not select flaps 100% or complete final items — flaps 50%, 90 kt no later than the circling MDA." },
+        { "step": "50 ft above MDA", "detail": "ALT selected to command the flight director/autopilot to level at the circling MDA." },
+        { "step": "At MDA", "detail": "\"Minimums, minimums\" — \"Circling\" (any part of airport in sight) or Going around." },
+        { "step": "Circling Maneuver", "detail": "Maneuver within the protected area at flaps 50%/90 kt; autopilot must be disengaged before descending below MDA." },
+        { "step": "Final Descent", "detail": "Only after intercepting a normal visual glidepath — set missed approach altitude, complete flaps/final items by 300 ft AGL." }
+      ]
+    },
+    {
+      "id": "visual",
+      "name": "IFR Visual Approach",
+      "shortName": "Visual",
+      "emoji": "👁️",
+      "color": "emerald",
+      "tagline": "Conducted under an IFR flight plan, flown visually",
+      "keyPoints": [
+        "Allows the pilot to proceed visually to the airport under an IFR flight plan.",
+        "Back up with a line-selectable instrument approach's vertical path whenever one is available.",
+        "If none is available, build a visual approach with PROC — obstacle clearance is not provided and is the pilot's responsibility."
+      ],
+      "steps": [
+        { "step": "Build / Fly Visual Path", "detail": "Follow a loaded instrument approach for guidance, or construct an approximate 3° visual path via PROC." },
+        { "step": "By 4 NM", "detail": "100 kt, seatbelts secure, fuel pump on, mixture set for altitude." },
+        { "step": "No lower than 1000 ft AGL", "detail": "Autopilot disengaged — required regardless of altitude source." },
+        { "step": "500 / 300 ft AGL", "detail": "Flaps set and final items complete at each gate; \"Stable\"/\"Unstable\" call at 300 ft AGL." }
+      ]
+    }
+  ],
+  "convergence": [
+    { "step": "Runway Environment in Sight & Stable", "detail": "Announce \"Landing\" and continue to touchdown." },
+    { "step": "Not in Sight / Unstable / Cannot Continue", "detail": "Announce \"Going around\" and execute the missed approach or go-around procedure." }
+  ],
+  "comparisonRows": [
+    { "label": "Minimums Type", "vertical": "DA / DDA (+V uses MDA + 50 ft)", "nonvertical": "MDA + Visual Descent Point (VDP)", "circling": "Circling MDA (Cat A, or Cat B if >90 kt)", "visual": "None published — pilot flies visually" },
+    { "label": "Vertical Guidance", "vertical": "Continuous GP/GS, or advisory glidepath for +V", "nonvertical": "None — pilot-flown vertical speed", "circling": "Same as underlying approach, then visual", "visual": "Self-built or visual ~3° path" },
+    { "label": "Level-Off Before Landing", "vertical": "Never — continuous descent to DA/DDA", "nonvertical": "Yes — may level at MDA until the VDP", "circling": "Yes — ALT arms 50 ft prior to circling MDA", "visual": "No — constant stabilized descent" },
+    { "label": "Minimums Callout", "vertical": "\"Minimums, minimums\" → Landing / Going around", "nonvertical": "\"Minimums, minimums\" + set missed altitude, decide at VDP", "circling": "\"Minimums, minimums\" → \"Circling\" / Going around", "visual": "None — flies to touchdown or go-around" },
+    { "label": "Autopilot Restriction", "vertical": "Off no lower than DA/DDA or 200 ft AGL in GP/GS", "nonvertical": "Off no lower than MDA or 200 ft AGL in GP/GS", "circling": "Disengaged before descending below MDA", "visual": "Disengaged no lower than 1000 ft AGL" },
+    { "label": "Flaps / Landing Checklist", "vertical": "To the line by FAF; flaps 100% by 500 ft AGL", "nonvertical": "To the line by FAF; flaps 100% by 500 ft AGL", "circling": "Flaps held at 50%/90 kt; final items withheld until below MDA", "visual": "To the line; flaps 100% by 500 ft AGL" },
+    { "label": "Obstacle Clearance", "vertical": "Provided by procedure design", "nonvertical": "Provided by procedure design", "circling": "Pilot must remain in the protected circling area", "visual": "Not provided — pilot responsibility" },
+    { "label": "Applies To", "vertical": "ILS, LPV, LNAV/VNAV, LNAV+V, LP+V, VOR+V", "nonvertical": "LNAV, LP", "circling": "Any approach flown to a circling MDA", "visual": "Visual approach / charted visual flight procedure (CVFP)" }
+  ]
+}

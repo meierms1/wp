@@ -8,6 +8,7 @@ import AirspaceView from './AirspaceView';
 import WeatherView from './WeatherView';
 import CamelsView from './CamelsView';
 import AerodynamicsView from './AerodynamicsView';
+import ApproachesView from './ApproachesView';
 import SEO from './SEO';
 
 const colorMap = {
@@ -268,6 +269,7 @@ const Study = () => {
     weather:      '/quiz-data/weather.json',
     camels:       '/quiz-data/camels.json',
     aerodynamics: '/quiz-data/aerodynamics.json',
+    approaches:   '/quiz-data/approaches.json',
   };
 
   const handleSelectStudy = async (key) => {
@@ -483,6 +485,20 @@ const Study = () => {
               Start Studying →
             </span>
           </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelectStudy('approaches')}
+            className="group bg-gradient-to-br from-sky-600/40 to-emerald-400/20 hover:from-sky-600/60 hover:to-emerald-400/40 border border-sky-400/40 rounded-2xl p-8 text-left transition-all duration-300 backdrop-blur-sm"
+          >
+            <BookOpenIcon className="w-12 h-12 text-sky-300 mb-4 group-hover:text-sky-200 transition-colors" />
+            <h2 className="text-2xl font-bold text-white mb-2">Approaches</h2>
+            <p className="text-sky-200 mb-4">Vertical guidance · Non-vertical · Circling · Visual</p>
+            <span className="text-sky-300 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+              Start Studying →
+            </span>
+          </motion.button>
         </motion.div>
       ) : (
         <motion.div
@@ -513,6 +529,8 @@ const Study = () => {
             <CamelsView data={sectionData.camels} />
           ) : selectedStudy === 'aerodynamics' ? (
             <AerodynamicsView data={sectionData.aerodynamics} />
+          ) : selectedStudy === 'approaches' ? (
+            <ApproachesView data={sectionData.approaches} />
           ) : (
             <StudyBox
               data={sectionData[selectedStudy]}

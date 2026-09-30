@@ -15,7 +15,8 @@
     { "step": "Transition & Minimums", "detail": "Select the appropriate transition and set minimums (BARO or TEMP COMP)." },
     { "step": "Load / Activate", "detail": "Load or activate the procedure in the flight plan." },
     { "step": "After Cleared", "detail": "Arm the approach mode / select the guidance appropriate to the loaded procedure." },
-    { "step": "Inbound", "detail": "Target airspeed ~100–120 kt, seatbelts & shoulder harnesses secure, fuel pump on, mixture set for altitude." }
+    { "step": "Inbound", "detail": "Target airspeed ~120 kt, seatbelts & shoulder harnesses secure, fuel pump on, mixture set for altitude." },
+    { "step": "By the FAF", "detail": "Set Mixture, Airspeed to 100kt, Flaps 50%, Landing checklist to line" }
   ],
   "branchPrompt": "The procedure diverges based on the type of minimums and vertical guidance available for the approach:",
   "types": [
@@ -32,10 +33,12 @@
         "LNAV+V, LP+V, and VOR+V use an advisory glidepath to a Derived DA (published MDA + 50 ft)."
       ],
       "steps": [
+        { "step": "GS Intercept", "detail": "Set Missed Approach altitude" },
         { "step": "Descent", "detail": "Continuous descent following GP/GS (or advisory glidepath) — never level off before minimums." },
-        { "step": "By 500 ft AGL", "detail": "Flaps 100%, final items complete, airspeed VTGT +10." },
+        { "step": "By 500 ft AGL (Can configure at 1000 ft AGL)", "detail": "Flaps 100%, final items complete, airspeed VTGT +10." },
+        { "step": "At 500 ft AGL", "detail": "Announce Stable/Unstable and Clearance Received." },
         { "step": "100 ft above minimums", "detail": "\"Approaching minimums\" announced." },
-        { "step": "At DA/DDA", "detail": "\"Minimums, minimums\" — decide Landing or Going around." }
+        { "step": "At DA/DDA", "detail": "\"Minimums, minimums\" — decide Landing or Going miss." }
       ]
     },
     {
@@ -44,15 +47,19 @@
       "shortName": "Non-Vertical (MDA)",
       "emoji": "📊",
       "color": "amber",
-      "tagline": "LNAV · LP",
+      "tagline": "LNAV · LP · NDB · LOC · LP · VOR",
       "keyPoints": [
         "No vertical guidance is available from the FAF to the missed approach point.",
         "All descents use a Minimum Descent Altitude (MDA).",
         "Descent is planned to reach MDA at or slightly before the Visual Descent Point (VDP)."
       ],
       "steps": [
+        { "step": "at FAF", "detail": "Set MDA and VS Mode" },
         { "step": "Descent", "detail": "Pilot-flown V/S from the FAF, planned to arrive at MDA at or slightly before the VDP." },
         { "step": "Level-off (if early)", "detail": "Level at MDA if reached before the VDP — never reach the VDP before the MDA." },
+        { "step": "By 500 ft AGL (Can configure at 1000 ft AGL)", "detail": "Flaps 100%, final items complete, airspeed VTGT +10." },
+        { "step": "At 500 ft AGL", "detail": "Announce Stable/Unstable and Clearance Received." },
+        { "step": "No lower than MDA", "detail": "Autopilot off." },
         { "step": "At MDA", "detail": "\"Minimums, minimums\" + \"Set missed approach altitude.\"" },
         { "step": "At VDP", "detail": "Decide Landing (if in sight) or Going around / missed approach." }
       ]
@@ -70,11 +77,14 @@
         "The entire maneuver must stay within the protected circling area for the approach category."
       ],
       "steps": [
-        { "step": "To Circling MDA", "detail": "Fly the underlying vertical/non-vertical procedure, but do not select flaps 100% or complete final items — flaps 50%, 90 kt no later than the circling MDA." },
+        { "step": "Approach", "detail": "Follow the procedure for the underlying instrument approach." },
+        { "step": "To Circling MDA", "detail": "Set flaps 50%, 90 kt no later than the circling MDA." },
         { "step": "50 ft above MDA", "detail": "ALT selected to command the flight director/autopilot to level at the circling MDA." },
         { "step": "At MDA", "detail": "\"Minimums, minimums\" — \"Circling\" (any part of airport in sight) or Going around." },
-        { "step": "Circling Maneuver", "detail": "Maneuver within the protected area at flaps 50%/90 kt; autopilot must be disengaged before descending below MDA." },
-        { "step": "Final Descent", "detail": "Only after intercepting a normal visual glidepath — set missed approach altitude, complete flaps/final items by 300 ft AGL." }
+        { "step": "Circling Maneuver", "detail": "Maneuver within the protected area; autopilot must be disengaged before descending below MDA." },
+        { "step": "At 500 ft AGL", "detail": "Clearance Received." },
+        { "step": "Final Descent", "detail": "Only after intercepting a normal visual glidepath — set missed approach altitude, complete flaps/final items by 300 ft AGL." },
+        { "step": "At 300 ft AGL", "detail": "Announce Stable/Unstable." }
       ]
     },
     {
@@ -92,8 +102,10 @@
       "steps": [
         { "step": "Build / Fly Visual Path", "detail": "Follow a loaded instrument approach for guidance, or construct an approximate 3° visual path via PROC." },
         { "step": "By 4 NM", "detail": "100 kt, seatbelts secure, fuel pump on, mixture set for altitude." },
-        { "step": "No lower than 1000 ft AGL", "detail": "Autopilot disengaged — required regardless of altitude source." },
-        { "step": "500 / 300 ft AGL", "detail": "Flaps set and final items complete at each gate; \"Stable\"/\"Unstable\" call at 300 ft AGL." }
+        { "step": "No lower than 1000 ft AGL", "detail": "Autopilot disengaged." },
+        { "step": "by 500 ft AGL", "detail": "Flaps 100, Close checklist, Airspeed VTGT +10." },
+        { "step": "at 500 ft AGL", "detail": "Announce Clearance Received" },
+        { "step": "at 300 ft AGL", "detail": "Announce Stable/Unstable" }
       ]
     }
   ],
@@ -110,5 +122,46 @@
     { "label": "Flaps / Landing Checklist", "vertical": "To the line by FAF; flaps 100% by 500 ft AGL", "nonvertical": "To the line by FAF; flaps 100% by 500 ft AGL", "circling": "Flaps held at 50%/90 kt; final items withheld until below MDA", "visual": "To the line; flaps 100% by 500 ft AGL" },
     { "label": "Obstacle Clearance", "vertical": "Provided by procedure design", "nonvertical": "Provided by procedure design", "circling": "Pilot must remain in the protected circling area", "visual": "Not provided — pilot responsibility" },
     { "label": "Applies To", "vertical": "ILS, LPV, LNAV/VNAV, LNAV+V, LP+V, VOR+V", "nonvertical": "LNAV, LP", "circling": "Any approach flown to a circling MDA", "visual": "Visual approach / charted visual flight procedure (CVFP)" }
+  ],
+  "classification": {
+    "title": "ICAO Annex 10 Approach Classification",
+    "intro": "Beyond how United's SR20 procedures are flown, ICAO Annex 10 groups every instrument approach into three categories based on the guidance quality and obstacle protection behind the charted minimums.",
+    "categories": [
+      {
+        "id": "precision",
+        "name": "Precision Approach (PA)",
+        "color": "red",
+        "examples": "ILS · GLS · PAR",
+        "minimum": "Decision Altitude / Height (DA/DH)",
+        "description": "Provides certified, continuous precision lateral AND vertical guidance to the runway. Obstacle protection is designed around a Missed Approach Point that occurs exactly at DA.",
+        "descendBelow": "Yes, momentarily. The missed approach obstacle clearance surface is built assuming the aircraft continues to descend slightly below DA while the pilot recognizes minimums and initiates the climb — this is why a true DA (not a floor) can be flown as a continuous descent."
+      },
+      {
+        "id": "apv",
+        "name": "Approach with Vertical Guidance (APV)",
+        "color": "sky",
+        "examples": "LPV · LNAV/VNAV · GPS with vertical · LNAV+V · LP+V · VOR+V",
+        "minimum": "DA (LPV, LNAV/VNAV) or Derived DA — DDA (advisory +V variants, published MDA + 50 ft)",
+        "description": "Flown exactly like a precision approach — a stabilized, continuous descent with no level-off — but the underlying obstacle protection is not full precision-approach design. LPV and LNAV/VNAV have dedicated APV vertical protection and use a true DA; the advisory +V variants borrow an MDA-based non-precision approach and add a 50 ft buffer to create the DDA.",
+        "descendBelow": "No. Unlike a true DA, the DDA's +50 ft buffer exists specifically so the aircraft's momentum through the missed approach does not carry it below the charted MDA obstacle protection."
+      },
+      {
+        "id": "npa",
+        "name": "Non-Precision Approach (NPA)",
+        "color": "amber",
+        "examples": "VOR · LOC · ASR · NDB · LP · LNAV",
+        "minimum": "Minimum Descent Altitude (MDA)",
+        "description": "No vertical guidance segment from the FAF to the Missed Approach Point — a \"dive and drive\" technique flown with pilot-selected vertical speed down to the MDA.",
+        "descendBelow": "No. MDA is a hard floor — the aircraft must level off at or before MDA and may not descend further until the required visual references are in sight, at or before the Visual Descent Point (VDP)/MAP."
+      }
+    ]
+  },
+  "downgrades": [
+    { "failure": "Loss of SBAS more than 60 sec before the FAF", "from": "LPV (APV, true DA)", "to": "LNAV/VNAV (Baro-VNAV) if supported, otherwise LNAV (MDA)", "note": "The system displays \"APR ADVISORY – SBAS VNAV not available. Using Baro VNAV\" and flags the VDI; the approach mode annunciation shows in amber if LPV service was required." },
+    { "failure": "Loss of SBAS within 60 sec of the FAF (or not restored by the FAF)", "from": "Any SBAS-based approach (LPV, LP, LP+V, LNAV+V)", "to": "LNAV only (MDA)", "note": "Too close to the FAF to safely downgrade to a vertical source — all vertical guidance is removed and the approach reverts to MDA minimums." },
+    { "failure": "ILS glideslope failure / flag", "from": "Precision Approach (ILS, DA)", "to": "Localizer-only approach (LOC, MDA — NPA)", "note": "Obstacle protection reverts to the non-precision localizer segment; the pilot must level at the (higher) LOC MDA instead of continuing to a DA." },
+    { "failure": "Baro-VNAV data invalid (temperature or altitude out of limits)", "from": "LNAV/VNAV (APV, DA)", "to": "LNAV (NPA, MDA)", "note": "The vertical deviation indicator is flagged; LNAV is the only downgrade path this close to or after the FAF." },
+    { "failure": "GPS / RAIM fault or satellite signal loss", "from": "Any GPS-based approach (LPV, LNAV/VNAV, LNAV, LP)", "to": "Underlying conventional approach (VOR, NDB, ILS localizer) if loaded, otherwise missed approach", "note": "RNAV overlay approaches can revert to the underlying conventional NAVAID; stand-alone RNAV approaches with no ground-based backup require a missed approach." },
+    { "failure": "FMS / navigation equipment malfunction", "from": "Any approach type", "to": "Raw-data or conventional backup NAVAID approach, or missed approach if unavailable", "note": "Always brief a conventional backup when flying an RNAV approach, especially into unfamiliar airports." }
   ]
 }

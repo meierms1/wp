@@ -7,6 +7,7 @@ const COLORS = {
   amber:   { grad: 'from-amber-900/60 to-amber-700/20',   border: 'border-amber-500/30',   text: 'text-amber-300',   head: 'bg-amber-900/40 text-amber-200', dot: 'bg-amber-400',   line: 'bg-amber-400/60',   chip: 'bg-amber-500/20 border-amber-400/40 text-amber-100' },
   purple:  { grad: 'from-purple-900/60 to-purple-700/20', border: 'border-purple-500/30',  text: 'text-purple-300',  head: 'bg-purple-900/40 text-purple-200', dot: 'bg-purple-400', line: 'bg-purple-400/60', chip: 'bg-purple-500/20 border-purple-400/40 text-purple-100' },
   emerald: { grad: 'from-emerald-900/60 to-emerald-700/20', border: 'border-emerald-500/30', text: 'text-emerald-300', head: 'bg-emerald-900/40 text-emerald-200', dot: 'bg-emerald-400', line: 'bg-emerald-400/60', chip: 'bg-emerald-500/20 border-emerald-400/40 text-emerald-100' },
+  red:     { grad: 'from-red-900/60 to-red-700/20',       border: 'border-red-500/30',     text: 'text-red-300',     head: 'bg-red-900/40 text-red-200',     dot: 'bg-red-400',     line: 'bg-red-400/60',     chip: 'bg-red-500/20 border-red-400/40 text-red-100' },
 };
 
 const StepList = ({ items, colorClass = 'bg-white/20' }) => (
@@ -25,7 +26,7 @@ const ApproachesView = ({ data }) => {
   const [considerationsOpen, setConsiderationsOpen] = useState(false);
 
   if (!data) return null;
-  const { title, source, intro, considerations, trunk, branchPrompt, types, convergence, comparisonRows } = data;
+  const { title, source, intro, considerations, trunk, branchPrompt, types, convergence, comparisonRows, classification, downgrades } = data;
 
   return (
     <div>
@@ -167,6 +168,60 @@ const ApproachesView = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* ICAO Annex 10 Classification */}
+      {classification && (
+        <div className="mt-10">
+          <h4 className="text-white font-bold text-lg mb-1">{classification.title}</h4>
+          <p className="text-white/40 text-xs mb-4 max-w-3xl">{classification.intro}</p>
+
+          <div className="grid gap-3 md:grid-cols-3 mb-8">
+            {classification.categories.map(cat => {
+              const c = COLORS[cat.color] || COLORS.sky;
+              return (
+                <div key={cat.id} className={`bg-gradient-to-br ${c.grad} rounded-2xl border ${c.border} p-4 flex flex-col`}>
+                  <span className={`self-start text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full border mb-2 ${c.chip}`}>{cat.id.toUpperCase()}</span>
+                  <h5 className="text-white font-bold text-base leading-tight mb-1">{cat.name}</h5>
+                  <p className={`text-xs font-semibold mb-2 ${c.text}`}>{cat.examples}</p>
+                  <p className="text-white/40 text-[11px] font-semibold mb-1">Minimums: <span className="text-white/70 font-normal">{cat.minimum}</span></p>
+                  <p className="text-white/55 text-xs leading-relaxed mb-2">{cat.description}</p>
+                  <p className="text-white/40 text-[11px] font-semibold mt-auto pt-2 border-t border-white/10">Descend below minimums? <span className="text-white/70 font-normal block mt-0.5">{cat.descendBelow}</span></p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Downgrade Paths */}
+      {downgrades?.length > 0 && (
+        <div>
+          <h4 className="text-white font-bold text-lg mb-1">Approach Downgrades by Failure</h4>
+          <p className="text-white/40 text-xs mb-4 max-w-3xl">Equipment or signal failures can force a reversion to a lower level of service mid-approach. Knowing the downgrade path ahead of time keeps the transition from being a surprise.</p>
+          <div className="overflow-x-auto rounded-xl border border-white/10">
+            <table className="w-full text-left border-collapse min-w-[760px]">
+              <thead>
+                <tr className="bg-white/10">
+                  <th className="text-white/70 text-xs font-semibold px-3 py-3 w-1/4">Failure</th>
+                  <th className="text-red-200 text-xs font-semibold px-3 py-3 w-1/6">From</th>
+                  <th className="text-emerald-200 text-xs font-semibold px-3 py-3 w-1/6">Downgrades To</th>
+                  <th className="text-white/70 text-xs font-semibold px-3 py-3">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {downgrades.map((d, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white/[0.03]' : 'bg-white/[0.06]'}>
+                    <td className="text-white/85 text-xs font-semibold px-3 py-3 align-top">{d.failure}</td>
+                    <td className="text-white/60 text-xs px-3 py-3 align-top border-l border-white/5">{d.from}</td>
+                    <td className="text-white/60 text-xs px-3 py-3 align-top border-l border-white/5">{d.to}</td>
+                    <td className="text-white/45 text-xs px-3 py-3 align-top leading-relaxed border-l border-white/5">{d.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
